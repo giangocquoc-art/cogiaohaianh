@@ -1500,3 +1500,134 @@ Stage Summary:
 6. Could add more lesson content beyond chapters 1-3
 7. Could add student avatar customization in profile view
 8. Practice view could track high scores per grade/subject
+
+---
+Task ID: 25
+Agent: Bug Fix Developer
+Task: Fix critical/medium bugs and add profile navigation
+
+Work Log:
+- Fixed `goHome()` in `/src/store/app-store.ts` to preserve `studentInfo` instead of clearing it
+- Added `clearStudent()` action for explicit logout that removes studentInfo and localStorage
+- Added localStorage persistence for studentInfo via `useAppStore.subscribe()` and hydration on load
+- Fixed Daily Challenge "Chọn lớp học" button UX in `/src/components/daily-challenge-view.tsx`
+  - Improved message to be clearer about the flow: "Về Trang chủ → Chọn lớp → Chọn môn → Nhập tên để bắt đầu!"
+  - Renamed button from "Chọn lớp học" to "Về Trang chủ" for clarity
+- Moved "Hồ sơ" (Profile) nav button to end of nav items in `/src/components/app-header.tsx`
+  - Previously was first item; now placed last (before XP widget) so it's accessible but not primary
+- Renamed "Học bài" to "Xem nội dung" in `/src/components/lessons-view.tsx` (3 instances)
+  - Button label in LessonCard component
+  - Grade selection subtitle
+  - Bottom tip text
+- All lint checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+**Bug Fixes:**
+1. CRITICAL: `goHome()` no longer clears `studentInfo` — students keep their name/class/school when navigating home
+2. MEDIUM: Daily Challenge shows clearer message and "Về Trang chủ" button when student has no info
+3. MEDIUM: Profile "Hồ sơ" nav button moved to end of nav items (before XP widget)
+
+**New Features:**
+1. `clearStudent()` action for explicit logout
+2. localStorage persistence for `studentInfo` with auto-hydration on page load
+
+**Label Changes:**
+1. "Học bài" → "Xem nội dung" in Lessons view (3 instances)
+
+**Files Modified:**
+- `/src/store/app-store.ts` — goHome fix, clearStudent action, localStorage persistence/hydration
+- `/src/components/daily-challenge-view.tsx` — Improved no-student-info UX
+- `/src/components/app-header.tsx` — Moved Hồ sơ nav item to end
+- `/src/components/lessons-view.tsx` — Renamed Học bài → Xem nội dung
+
+---
+Task ID: 26
+Agent: Feature Developer
+Task: Add Mobile Bottom Navigation Bar + Study Calendar / Lịch Học View
+
+Work Log:
+- Created `/src/components/mobile-bottom-nav.tsx`:
+  - Fixed bottom nav bar visible only on screens < 640px (sm breakpoint)
+  - 5 tabs: 🏠 Trang chủ, 📚 Bài học, ⚡ Luyện tập, 🏆 Xếp hạng, 📅 Lịch (Calendar replaces Profile)
+  - Active tab: orange icon + orange text + animated dot indicator (Framer Motion layoutId)
+  - Inactive: gray icon + gray text
+  - Glassmorphism background: bg-white/90 dark:bg-[#1a1208]/90 backdrop-blur-md
+  - Top border: border-t border-orange-200 dark:border-orange-900/30
+  - iOS safe area bottom padding via env(safe-area-inset-bottom)
+  - Hides during quiz/result views
+  - z-index: 40 (below dialogs/overlays)
+  - Height ~64px (h-16)
+- Created `/src/app/api/calendar/route.ts`:
+  - GET endpoint accepting studentName and className query params
+  - Returns calendar: array of last 90 days with date, completed, score, quizCount, subjects
+  - Returns stats: totalStudyDays, currentStreak, longestStreak, totalQuizzes, averageScore, bestDay
+  - Returns monthlySummary: array of last 3 months with month, monthLabel, totalDays, totalQuizzes, avgScore
+  - Queries StudentResult table grouped by date with quiz relation for subject info
+  - Vietnamese month labels (Tháng 1, Tháng 2, etc.)
+- Created `/src/components/study-calendar-view.tsx`:
+  - Header: "📅 Lịch Học" with CalendarDays icon and decorative elements
+  - Search form: student name + class name with Enter key support
+  - Stats row: 4 mini stat cards (📚 Study days, 🔥 Current streak, 📝 Total quizzes, ⭐ Avg score)
+  - GitHub contribution-style calendar grid:
+    - Last 90 days displayed as colored squares (3.5x3.5px rounded-sm)
+    - Color scale: gray (no activity), light green (1 quiz), green (2-3), dark green (4+)
+    - Dark mode: same pattern with darker tones
+    - Tooltip on hover showing date + details (quiz count, avg score, subjects)
+    - Month labels (T1-T12) above the grid
+    - Day-of-week labels (T2, T4, T6, CN)
+    - Scrollable horizontally on mobile
+  - Legend: color scale from "Ít hơn" to "Nhiều hơn"
+  - Streak section: 🔥 fire emoji with current streak number + motivational message
+    - Motivational messages vary by streak length (1, 3, 7, 14, 30+ days)
+    - Shows longest streak badge
+  - Monthly summary: 3 cards for last 3 months with emoji, month name, stats
+  - Best day indicator with star emoji
+  - Navigation: Back + Home buttons
+  - All in Vietnamese
+  - Responsive design
+  - Dark mode support with warm emerald/amber colors
+  - Framer Motion animations for all cards and sections
+- Updated `/src/store/app-store.ts`: Added 'studyCalendar' to ViewType union
+- Updated `/src/app/page.tsx`:
+  - Imported StudyCalendarView and MobileBottomNav
+  - Added studyCalendar entry to viewMap
+  - Added `<MobileBottomNav />` before closing `</div>` of main wrapper
+  - Added `pb-20 sm:pb-6` to `<main>` element for bottom nav spacing on mobile
+- Updated `/src/components/app-header.tsx`:
+  - Added CalendarDays import from lucide-react
+  - Added "Lịch học" navigation button with CalendarDays icon (between Badges and Scoreboard)
+  - Added 'studyCalendar' to breadcrumb exclusion list
+- Fixed lint error: parsing error in type annotation on useMemo return value
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**Feature 1 - Mobile Bottom Navigation Bar:**
+1. Fixed bottom nav visible only on mobile (< 640px)
+2. 5 tabs: Trang chủ, Bài học, Luyện tập, Xếp hạng, Lịch (Calendar)
+3. Active tab: orange color + animated dot indicator with Framer Motion layoutId
+4. Glassmorphism with backdrop-blur, orange border-t
+5. iOS safe area padding via env(safe-area-inset-bottom)
+6. Hides during quiz/result views
+7. z-index: 40
+
+**Feature 2 - Study Calendar / Lịch Học:**
+1. Backend: GET /api/calendar with 90-day calendar, stats (streaks, totals, best day), monthly summaries
+2. Frontend: GitHub contribution-style grid with colored squares and tooltips
+3. Stats row: 4 cards (study days, current streak, total quizzes, avg score)
+4. Streak section with fire emoji and motivational messages varying by streak length
+5. Monthly summary cards for last 3 months
+6. Best day indicator
+7. Navigation: "Lịch học" button in header with CalendarDays icon
+8. Mobile bottom nav: Profile tab replaced with Calendar tab (📅 Lịch)
+9. Bottom padding added to main content (pb-20 on mobile, sm:pb-6 on desktop)
+
+**Files Created:**
+- `/src/components/mobile-bottom-nav.tsx`
+- `/src/app/api/calendar/route.ts`
+- `/src/components/study-calendar-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added 'studyCalendar' to ViewType
+- `/src/app/page.tsx` - Added StudyCalendarView, MobileBottomNav, bottom padding
+- `/src/components/app-header.tsx` - Added CalendarDays import, "Lịch học" nav button, breadcrumb exclusion

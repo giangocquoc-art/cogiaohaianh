@@ -394,7 +394,7 @@ export function ProgressView() {
             </motion.div>
           </div>
 
-          {/* Subject Breakdown */}
+          {/* Subject Breakdown with animated progress bars */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -405,16 +405,21 @@ export function ProgressView() {
               <BookOpen className="w-5 h-5" />
               Theo môn học 📚
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-xl p-4 text-center border bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 relative overflow-hidden">
                 <div className="absolute top-1 right-1 text-lg opacity-20">🔢</div>
                 <p className="text-2xl mb-1">🔢</p>
                 <p className="font-bold text-foreground">Toán</p>
                 <p className="text-sm text-muted-foreground">{stats.toanCount} bài</p>
                 {stats.toanCount > 0 ? (
-                  <p className={`text-xl font-bold mt-1 ${getScoreColor(stats.toanAvg)}`}>
-                    {stats.toanAvg.toFixed(1)} TB
-                  </p>
+                  <>
+                    <p className={`text-xl font-bold mt-1 ${getScoreColor(stats.toanAvg)}`}>
+                      {stats.toanAvg.toFixed(1)} TB
+                    </p>
+                    <div className="progress-bar-animated mt-2">
+                      <div className="fill bg-gradient-to-r from-orange-400 to-amber-400" style={{ width: `${Math.min(stats.toanAvg * 10, 100)}%` }} />
+                    </div>
+                  </>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-1">Chưa có bài</p>
                 )}
@@ -425,9 +430,14 @@ export function ProgressView() {
                 <p className="font-bold text-foreground">Ngữ văn</p>
                 <p className="text-sm text-muted-foreground">{stats.nguVanCount} bài</p>
                 {stats.nguVanCount > 0 ? (
-                  <p className={`text-xl font-bold mt-1 ${getScoreColor(stats.nguVanAvg)}`}>
-                    {stats.nguVanAvg.toFixed(1)} TB
-                  </p>
+                  <>
+                    <p className={`text-xl font-bold mt-1 ${getScoreColor(stats.nguVanAvg)}`}>
+                      {stats.nguVanAvg.toFixed(1)} TB
+                    </p>
+                    <div className="progress-bar-animated mt-2">
+                      <div className="fill bg-gradient-to-r from-pink-400 to-rose-400" style={{ width: `${Math.min(stats.nguVanAvg * 10, 100)}%` }} />
+                    </div>
+                  </>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-1">Chưa có bài</p>
                 )}

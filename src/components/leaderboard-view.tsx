@@ -4,7 +4,7 @@ import { useAppStore } from '@/store/app-store'
 import { motion } from 'framer-motion'
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import { Trophy, Medal, Crown, Star, ChevronRight, ArrowLeft, Home, Sparkles } from 'lucide-react'
+import { Trophy, Medal, Crown, Star, ChevronRight, ArrowLeft, Home, Sparkles, TrendingUp, TrendingDown } from 'lucide-react'
 
 interface LeaderboardEntry {
   rank: number
@@ -238,11 +238,16 @@ export function LeaderboardView() {
 
                       {/* Podium bar */}
                       <div
-                        className={`w-20 sm:w-28 ${heightClass} ${medal.bg} rounded-t-xl border-2 ${medal.border} ${medal.shadow} shadow-lg flex items-center justify-center relative overflow-hidden`}
+                        className={`w-20 sm:w-28 ${heightClass} ${medal.bg} rounded-t-xl border-2 ${medal.border} ${medal.shadow} shadow-lg flex items-center justify-center relative overflow-hidden ${isGold ? 'gold-shimmer' : ''}`}
                       >
-                        {/* Shimmer overlay */}
+                        {/* Crown sparkles for 1st place */}
                         {isGold && (
-                          <div className="absolute inset-0 animate-shimmer opacity-30" />
+                          <>
+                            <div className="crown-sparkle" style={{ top: '-2px', left: '10px' }} />
+                            <div className="crown-sparkle" style={{ top: '2px', right: '12px' }} />
+                            <div className="crown-sparkle" style={{ top: '-5px', left: '25px' }} />
+                            <div className="crown-sparkle" style={{ top: '0px', right: '25px' }} />
+                          </>
                         )}
                         <span className={`font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl ${medal.text} font-bold relative z-10`}>
                           {actualRank}
@@ -261,7 +266,7 @@ export function LeaderboardView() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="bg-white dark:bg-card rounded-3xl border-2 border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm"
+              className="bg-white dark:bg-card rounded-3xl border-2 border-gray-100 dark:border-gray-700 dark:dark-border-visible overflow-hidden shadow-sm"
             >
               <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                 <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground flex items-center gap-2">
@@ -289,13 +294,18 @@ export function LeaderboardView() {
                             : 'bg-white dark:bg-card'
                       }`}
                     >
-                      {/* Rank */}
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${
-                        isCurrentUser
-                          ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md'
-                          : 'bg-gray-100 dark:bg-gray-700 text-muted-foreground'
-                      }`}>
-                        {entry.rank}
+                      {/* Rank with change arrow */}
+                      <div className="flex items-center gap-1 shrink-0">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                          isCurrentUser
+                            ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md'
+                            : 'bg-gray-100 dark:bg-gray-700 text-muted-foreground'
+                        }`}>
+                          {entry.rank}
+                        </div>
+                        {entry.rank <= 3 && (
+                          <TrendingUp className="w-3 h-3 rank-up" />
+                        )}
                       </div>
 
                       {/* Student info */}
@@ -348,7 +358,7 @@ export function LeaderboardView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 rounded-2xl p-5 border-2 border-amber-200 dark:border-amber-800 shadow-md"
+              className="your-rank-card rounded-2xl p-5 shadow-md"
             >
               <h3 className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-800 dark:text-amber-200 mb-3 flex items-center gap-2">
                 <Medal className="w-5 h-5 text-amber-500" />
@@ -400,23 +410,23 @@ export function LeaderboardView() {
             </h3>
             <ul className="space-y-2 text-orange-700 dark:text-orange-300 text-sm">
               <li className="flex items-start gap-2">
-                <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <span className="xp-coin">10</span>
                 <span>Hoàn thành bài kiểm tra: <strong>+10 XP</strong></span>
               </li>
               <li className="flex items-start gap-2">
-                <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <span className="xp-coin">5+</span>
                 <span>Điểm ≥ 7: <strong>+5 XP</strong> · Điểm ≥ 9: <strong>+10 XP</strong> · Điểm 10: <strong>+15 XP</strong></span>
               </li>
               <li className="flex items-start gap-2">
-                <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <span className="xp-coin">20</span>
                 <span>Thử thách hàng ngày: <strong>+20 XP</strong></span>
               </li>
               <li className="flex items-start gap-2">
-                <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <span className="xp-coin">5</span>
                 <span>Chuỗi ngày liên tiếp: <strong>+5 XP/ngày</strong> (tối đa +25)</span>
               </li>
               <li className="flex items-start gap-2">
-                <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <span className="xp-coin">100</span>
                 <span>Lên cấp mỗi 100 XP · Cấp 5+: <strong>Cao thủ 👑</strong></span>
               </li>
             </ul>

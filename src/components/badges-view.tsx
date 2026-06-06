@@ -4,7 +4,7 @@ import { useAppStore } from '@/store/app-store'
 import { motion } from 'framer-motion'
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import { Award, Lock, ArrowLeft, Home, Trophy, Star, Sparkles, Target, Flame, BookOpen, TrendingUp } from 'lucide-react'
+import { Award, Lock, ArrowLeft, Home, Trophy, Star, Sparkles, Target, Flame, BookOpen, TrendingUp, Share2, ClipboardList } from 'lucide-react'
 import { evaluateBadges, saveBadgesToStorage, type Badge, type QuizResultForBadge } from '@/lib/badges'
 
 const container = {
@@ -127,6 +127,21 @@ export function BadgesView() {
   const [results, setResults] = useState<QuizResultForBadge[]>([])
   const [activeCategory, setActiveCategory] = useState<string>('all')
 
+  // Confetti state - must be before early return
+  const [showConfetti, setShowConfetti] = useState(false)
+  const earnedCount = badges.filter(b => b.earned).length
+
+  useEffect(() => {
+    if (earnedCount > 0) {
+      const prev = localStorage.getItem('cogiaohaianh-badge-count')
+      if (prev && parseInt(prev) < earnedCount) {
+        setShowConfetti(true)
+        setTimeout(() => setShowConfetti(false), 3000)
+      }
+      localStorage.setItem('cogiaohaianh-badge-count', String(earnedCount))
+    }
+  }, [earnedCount])
+
   const fetchAndEvaluate = useCallback(async () => {
     setLoading(true)
     try {
@@ -190,7 +205,32 @@ export function BadgesView() {
 
   const earnedBadges = badges.filter(b => b.earned)
   const totalBadges = badges.length
-  const earnedCount = earnedBadges.length
+  // earnedCount is already defined above (before early return)
+
+  // Recently earned badges (within last 7 days)
+  const recentlyEarned = new Set(
+    earnedBadges
+      .filter(b => b.earnedDate && (Date.now() - new Date(b.earnedDate).getTime()) < 7 * 24 * 60 * 60 * 1000)
+      .map(b => b.id)
+  )
+
+  // Collection progress ring values
+  const progressPercent = totalBadges > 0 ? (earnedCount / totalBadges) * 100 : 0
+  const ringCircumference = 2 * Math.PI * 54 // radius 54
+  const ringOffset = ringCircumference - (progressPercent / 100) * ringCircumference
+
+  // Share badges handler
+  const handleShareBadges = () => {
+    const earnedNames = earnedBadges.map(b => `${b.emoji} ${b.name}`).join(', ')
+    const shareText = `🏅 Huy hiệu của tôi trên Cô Giáo Hải Anh:\n\n${earnedNames}\n\nĐã đạt ${earnedCount}/${totalBadges} huy hiệu!\n\ncogiaohaianh.io`
+    if (navigator.share) {
+      navigator.share({ title: 'Huy hiệu thành tích', text: shareText }).catch(() => {})
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('Đã sao chép thông tin huy hiệu!')
+      }).catch(() => {})
+    }
+  }
 
   // Filter badges by active category
   const filteredBadges = activeCategory === 'all'
@@ -232,6 +272,31 @@ export function BadgesView() {
             </div>
           </motion.div>
 
+          {/* Collection progress ring */}
+          <div className="hidden sm:flex collection-ring w-28 h-28">
+            <svg className="w-full h-full" viewBox="0 0 120 120">
+              <circle className="ring-track" cx="60" cy="60" r="54" strokeWidth="6" />
+              <circle
+                className="ring-fill"
+                cx="60" cy="60" r="54"
+                strokeWidth="6"
+                stroke="url(#badgeProgressGradient)"
+                strokeDasharray={ringCircumference}
+                strokeDashoffset={ringOffset}
+              />
+              <defs>
+                <linearGradient id="badgeProgressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#f97316" />
+                  <stop offset="50%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#fbbf24" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-amber-700 dark:text-amber-300 font-bold">{Math.round(progressPercent)}%</span>
+            </div>
+          </div>
+
           <div className="text-center sm:text-left flex-1">
             <h1 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-amber-800 dark:text-amber-200 mb-2">
               Huy Hiệu Thành Tích 🏅
@@ -265,7 +330,7 @@ export function BadgesView() {
             </div>
 
             {/* Quick stats */}
-            <div className="flex items-center gap-4 mt-3 justify-center sm:justify-start">
+            <div className="flex items-center gap-4 mt-3 justify-center sm:justify-start flex-wrap">
               <div className="flex items-center gap-1.5 text-sm">
                 <Star className="w-4 h-4 text-amber-500" />
                 <span className="text-amber-700 dark:text-amber-300 font-semibold">{results.length} bài làm</span>
@@ -277,6 +342,15 @@ export function BadgesView() {
                     TB: {(results.reduce((s, r) => s + r.score, 0) / results.length).toFixed(1)} điểm
                   </span>
                 </div>
+              )}
+              {earnedCount > 0 && (
+                <button
+                  onClick={handleShareBadges}
+                  className="flex items-center gap-1.5 text-sm bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 px-3 py-1.5 rounded-full transition-colors"
+                >
+                  <Share2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <span className="text-amber-700 dark:text-amber-300 font-semibold">Chia sẻ</span>
+                </button>
               )}
             </div>
           </div>
@@ -380,7 +454,7 @@ export function BadgesView() {
             >
               {/* Glow effect for earned badges */}
               {isEarned && (
-                <div className="absolute inset-0 animate-shimmer-enhanced pointer-events-none" />
+                <div className="absolute inset-0 animate-shimmer-enhanced badge-glow pointer-events-none rounded-2xl" />
               )}
 
               {/* Dark mode subtle glow for earned */}
@@ -389,14 +463,18 @@ export function BadgesView() {
               )}
 
               {/* Badge emoji */}
-              <div className="text-center mb-3">
+              <div className="text-center mb-3 relative">
                 <motion.div
                   className={`text-4xl sm:text-5xl ${isEarned ? '' : 'grayscale opacity-50'}`}
                   animate={isEarned ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                 >
-                  {isEarned ? badge.emoji : <Lock className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500" />}
+                  {isEarned ? badge.emoji : <Lock className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 lock-icon" />}
                 </motion.div>
+                {/* MỚI badge for recently earned */}
+                {isEarned && recentlyEarned.has(badge.id) && (
+                  <div className="moi-badge absolute -top-1 -right-1">MỚI</div>
+                )}
               </div>
 
               {/* Badge info */}
@@ -436,8 +514,8 @@ export function BadgesView() {
                 </div>
               )}
 
-              {/* Earned indicator */}
-              {isEarned && (
+              {/* Earned/Locked indicator */}
+              {isEarned ? (
                 <div className="mt-2 flex items-center justify-center gap-1">
                   <Award className="w-3.5 h-3.5 text-amber-500" />
                   <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400">Đã đạt</span>
@@ -446,6 +524,11 @@ export function BadgesView() {
                       · {new Date(badge.earnedDate).toLocaleDateString('vi-VN')}
                     </span>
                   )}
+                </div>
+              ) : (
+                <div className="mt-2 flex items-center justify-center gap-1 opacity-40">
+                  <Lock className="w-3 h-3 text-gray-400" />
+                  <span className="text-[10px] text-gray-400">Chưa mở khóa</span>
                 </div>
               )}
             </motion.div>

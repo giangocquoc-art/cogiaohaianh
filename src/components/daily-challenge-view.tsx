@@ -59,14 +59,15 @@ function CountdownTimer() {
       ].map((unit, i) => (
         <div key={unit.label} className="flex items-center gap-3">
           <div className="flex flex-col items-center">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 min-w-[56px] text-center border border-white/10">
-              <span className="font-mono text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 min-w-[56px] text-center border border-white/10 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+              <span className="font-mono text-2xl sm:text-3xl font-bold text-white drop-shadow-sm count-flip">
                 {String(unit.value).padStart(2, '0')}
               </span>
             </div>
             <span className="text-white/70 text-xs mt-1">{unit.label}</span>
           </div>
-          {i < 2 && <span className="text-white/50 text-2xl font-bold">:</span>}
+          {i < 2 && <span className="text-white/50 text-2xl font-bold animate-pulse-soft">:</span>}
         </div>
       ))}
     </div>
@@ -289,25 +290,51 @@ export function DailyChallengeView() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 200 }}
-              className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 text-center"
+              className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 text-center completed-pulse"
             >
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="text-5xl mb-3"
-              >
-                🔥
-              </motion.div>
+              {/* Animated fire particles around fire emoji */}
+              <div className="relative inline-block">
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-5xl mb-3"
+                >
+                  🔥
+                </motion.div>
+                <div className="fire-particle" style={{ bottom: '10px', left: '10px' }} />
+                <div className="fire-particle" style={{ bottom: '10px', left: '10px' }} />
+                <div className="fire-particle" style={{ bottom: '10px', left: '10px' }} />
+                <div className="fire-particle" style={{ bottom: '10px', left: '10px' }} />
+                <div className="fire-particle" style={{ bottom: '10px', left: '10px' }} />
+              </div>
               <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-emerald-700 dark:text-emerald-300 mb-2">
                 Thử thách hoàn thành!
               </h3>
               <p className="text-emerald-600 dark:text-emerald-300 text-sm">
-                Bạn đã hoàn thành thử thách hôm nay. Hãy quay lại ngày mai nhé! 🌟
+                {challenge.streak >= 3
+                  ? 'Tuyệt vời! Bạn đang trong trạng thái cực tốt! 🔥'
+                  : challenge.streak >= 1
+                    ? 'Bạn đã hoàn thành thử thách hôm nay. Hãy quay lại ngày mai nhé! 🌟'
+                    : 'Bạn đã hoàn thành thử thách hôm nay. Hãy tiếp tục nhé! ✨'}
               </p>
-              {challenge.streak > 1 && (
-                <div className="mt-3 inline-flex items-center gap-2 bg-emerald-100 px-4 py-2 rounded-full">
-                  <Zap className="w-4 h-4 text-emerald-600" />
-                  <span className="text-emerald-700 font-semibold text-sm">
+              {challenge.streak >= 3 && (
+                <div className="mt-3 flex flex-col items-center gap-2">
+                  <div className="shield-badge">
+                    🛡️ Chuỗi {challenge.streak} ngày
+                  </div>
+                  <p className="text-emerald-600 dark:text-emerald-400 text-xs italic">
+                    {challenge.streak >= 7
+                      ? '"Bậc thầy kiên trì! Không gì có thể ngăn cản bạn!" 💪'
+                      : challenge.streak >= 5
+                        ? '"Sự kiên nhẫn là chìa khóa của thành công!" 🌟'
+                        : '"Mỗi ngày một bước, bạn đang đi đúng hướng!" 🚀'}
+                  </p>
+                </div>
+              )}
+              {challenge.streak > 1 && challenge.streak < 3 && (
+                <div className="mt-3 inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 px-4 py-2 rounded-full">
+                  <Zap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-emerald-700 dark:text-emerald-300 font-semibold text-sm">
                     Chuỗi {challenge.streak} ngày liên tiếp!
                   </span>
                 </div>
@@ -317,16 +344,18 @@ export function DailyChallengeView() {
             <div className="text-center">
               {!studentInfo?.name ? (
                 <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-4">
-                  <p className="text-amber-700 dark:text-amber-300 text-sm">
-                    Vui lòng nhập thông tin học sinh trước khi bắt đầu thử thách.
-                    Hãy chọn lớp và môn học để bắt đầu!
+                  <p className="text-amber-700 dark:text-amber-300 text-sm mb-1">
+                    👋 Chào bạn! Để tham gia thử thách, bạn cần nhập thông tin trước.
+                  </p>
+                  <p className="text-amber-600 dark:text-amber-400 text-xs mb-3">
+                    Về Trang chủ → Chọn lớp → Chọn môn → Nhập tên để bắt đầu!
                   </p>
                   <Button
                     onClick={() => setView('home')}
-                    className="mt-3 bg-orange-500 hover:bg-orange-600 text-white gap-2"
+                    className="bg-orange-500 hover:bg-orange-600 text-white gap-2"
                   >
                     <Home className="w-4 h-4" />
-                    Chọn lớp học
+                    Về Trang chủ
                   </Button>
                 </div>
               ) : (

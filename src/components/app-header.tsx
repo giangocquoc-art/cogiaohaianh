@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User, Zap, BookMarked } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User, Zap, BookMarked, CalendarDays } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -57,16 +57,17 @@ export function AppHeader() {
   const studentInfo = useAppStore((s) => s.studentInfo)
 
   const navItems = [
-    ...(studentInfo ? [{ view: 'profile' as const, icon: User, label: 'Hồ sơ', action: () => useAppStore.getState().setView('profile') }] : []),
     { view: 'home' as const, icon: Home, label: 'Trang chủ', action: goHome },
     { view: 'dailyChallenge' as const, icon: Flame, label: 'Thử thách', action: () => useAppStore.getState().setView('dailyChallenge') },
     { view: 'lessons' as const, icon: BookMarked, label: 'Bài học', action: () => useAppStore.getState().setView('lessons') },
     { view: 'practice' as const, icon: Zap, label: 'Luyện tập', action: () => useAppStore.getState().setView('practice') },
     { view: 'badges' as const, icon: Award, label: 'Huy hiệu', action: () => useAppStore.getState().setView('badges') },
+    { view: 'studyCalendar' as const, icon: CalendarDays, label: 'Lịch học', action: () => useAppStore.getState().setView('studyCalendar') },
     { view: 'scoreboard' as const, icon: Trophy, label: 'Bảng điểm', action: () => useAppStore.getState().setView('scoreboard') },
     { view: 'leaderboard' as const, icon: Crown, label: 'Xếp hạng', action: () => useAppStore.getState().setView('leaderboard') },
     { view: 'progress' as const, icon: BarChart3, label: 'Tiến độ', action: () => useAppStore.getState().setView('progress') },
     { view: 'teacherDashboard' as const, icon: ClipboardList, label: 'Giáo viên', action: () => useAppStore.getState().setView('teacherDashboard') },
+    ...(studentInfo ? [{ view: 'profile' as const, icon: User, label: 'Hồ sơ', action: () => useAppStore.getState().setView('profile') }] : []),
   ]
 
   return (
@@ -241,7 +242,7 @@ export function AppHeader() {
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && currentView !== 'practice' && currentView !== 'lessons' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && currentView !== 'practice' && currentView !== 'lessons' && currentView !== 'studyCalendar' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}

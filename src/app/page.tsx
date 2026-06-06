@@ -17,6 +17,8 @@ import { TeacherDashboardView } from '@/components/teacher-dashboard-view'
 import { ProfileView } from '@/components/profile-view'
 import { LessonsView } from '@/components/lessons-view'
 import { PracticeView } from '@/components/practice-view'
+import { StudyCalendarView } from '@/components/study-calendar-view'
+import { MobileBottomNav } from '@/components/mobile-bottom-nav'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { initTheme } from '@/lib/theme'
@@ -39,6 +41,7 @@ function ViewRenderer() {
     profile: <ProfileView />,
     lessons: <LessonsView />,
     practice: <PracticeView />,
+    studyCalendar: <StudyCalendarView />,
   }
 
   return (
@@ -88,10 +91,11 @@ export default function Home() {
         Đến nội dung chính
       </a>
       <AppHeader />
-      <main id="main-content" className="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+      <main id="main-content" className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 pb-20 sm:pb-6">
         <ViewRenderer />
       </main>
       <AppFooter />
+      <MobileBottomNav />
     </div>
   )
 }

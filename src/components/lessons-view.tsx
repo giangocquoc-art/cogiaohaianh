@@ -194,7 +194,7 @@ function LessonCard({ lesson, gradeColor, onQuizClick }: { lesson: Lesson; grade
             className="flex-1 gap-1 text-sm font-semibold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-orange-200 dark:border-orange-800"
           >
             <BookCheck className="w-4 h-4" />
-            Học bài
+            Xem nội dung
             <motion.div
               animate={{ rotate: expanded ? 180 : 0 }}
               transition={{ duration: 0.2 }}
@@ -433,7 +433,7 @@ export function LessonsView() {
                 📖 Chọn Lớp Học
               </h2>
               <p className="text-orange-600 dark:text-orange-400 text-sm mt-1 relative z-10">
-                Học bài theo chương trình SGK 2024
+                Xem nội dung theo chương trình SGK 2024
               </p>
             </motion.div>
 
@@ -628,7 +628,7 @@ export function LessonsView() {
               >
                 <p className="text-muted-foreground text-xs flex items-center justify-center gap-2">
                   <GraduationCap className="w-4 h-4 text-amber-500" />
-                  Nhấn &quot;Học bài&quot; để xem nội dung chi tiết · Nhấn &quot;Kiểm tra&quot; để làm bài tập
+                  Nhấn &quot;Xem nội dung&quot; để xem chi tiết · Nhấn &quot;Kiểm tra&quot; để làm bài tập
                 </p>
               </motion.div>
             )}

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ViewType = 'home' | 'subjects' | 'chapters' | 'quiz' | 'result' | 'scoreboard' | 'progress' | 'dailyChallenge' | 'badges' | 'leaderboard' | 'teacherDashboard' | 'profile' | 'lessons' | 'practice'
+export type ViewType = 'home' | 'subjects' | 'chapters' | 'quiz' | 'result' | 'scoreboard' | 'progress' | 'dailyChallenge' | 'badges' | 'leaderboard' | 'teacherDashboard' | 'profile' | 'lessons' | 'practice' | 'studyCalendar'
 
 export interface StudentInfo {
   name: string
@@ -33,6 +33,7 @@ interface AppStore {
   setQuizResult: (result: QuizResult) => void
   goBack: () => void
   goHome: () => void
+  clearStudent: () => void
 }
 
 const viewHistory: ViewType[] = []
@@ -98,9 +99,36 @@ export const useAppStore = create<AppStore>((set, get) => ({
       selectedGrade: null,
       selectedSubject: null,
       selectedQuizId: null,
-      studentInfo: null,
+      // Keep studentInfo - DON'T clear it
       quizResult: null,
       previousView: null,
     })
   },
+
+  clearStudent: () => {
+    set({ studentInfo: null })
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cogiaohaianh-student')
+    }
+  },
 }))
+
+// Persist studentInfo to localStorage
+useAppStore.subscribe(
+  (state) => state.studentInfo,
+  (studentInfo) => {
+    if (typeof window !== 'undefined') {
+      if (studentInfo) {
+        localStorage.setItem('cogiaohaianh-student', JSON.stringify(studentInfo))
+      }
+    }
+  }
+)
+
+// Hydrate studentInfo from localStorage on load
+const savedStudent = typeof window !== 'undefined'
+  ? JSON.parse(localStorage.getItem('cogiaohaianh-student') || 'null') as StudentInfo | null
+  : null
+if (savedStudent) {
+  useAppStore.setState({ studentInfo: savedStudent })
+}

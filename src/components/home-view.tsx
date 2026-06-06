@@ -328,8 +328,32 @@ export function HomeView() {
         transition={{ duration: 0.6 }}
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-200 via-amber-100 to-yellow-200 dark:from-orange-950 dark:via-amber-950 dark:to-yellow-950 p-8 sm:p-10 shadow-lg wave-separator"
       >
+        {/* Decorative gradient border (2px orange to amber) */}
+        <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-br from-orange-400 via-amber-400 to-yellow-400 opacity-20 pointer-events-none" style={{ WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude' }} />
+
+        {/* Floating particle dots */}
+        <div className="particle-dot" style={{ top: '15%', left: '10%' }} />
+        <div className="particle-dot" style={{ top: '30%', right: '15%' }} />
+        <div className="particle-dot" style={{ bottom: '25%', left: '25%' }} />
+        <div className="particle-dot" style={{ top: '50%', right: '30%' }} />
+        <div className="particle-dot" style={{ bottom: '40%', left: '60%' }} />
+        <div className="particle-dot" style={{ top: '70%', left: '45%' }} />
+
+        {/* Floating pencil/ruler emoji decorations */}
+        <div className="absolute top-8 left-12 text-3xl opacity-10 dark:opacity-8 animate-float pointer-events-none" style={{ animationDelay: '0.3s' }}>✏️</div>
+        <div className="absolute top-20 right-16 text-2xl opacity-10 dark:opacity-8 animate-drift-right pointer-events-none" style={{ animationDelay: '1.5s' }}>📏</div>
+        <div className="absolute bottom-16 right-24 text-2xl opacity-10 dark:opacity-8 animate-float pointer-events-none" style={{ animationDelay: '2s' }}>📐</div>
+        <div className="absolute bottom-28 left-20 text-xl opacity-10 dark:opacity-8 animate-drift-left pointer-events-none" style={{ animationDelay: '0.8s' }}>🖍️</div>
+
+        {/* Wave SVG decoration at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none opacity-30 dark:opacity-20">
+          <svg viewBox="0 0 1200 40" className="w-full" preserveAspectRatio="none">
+            <path d="M0,20 C100,35 200,5 300,20 C400,35 500,5 600,20 C700,35 800,5 900,20 C1000,35 1100,5 1200,20 L1200,40 L0,40 Z" fill="currentColor" className="text-orange-300 dark:text-orange-800" />
+          </svg>
+        </div>
+
         {/* Layered background patterns */}
-        <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-15" />
+        <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-25" />
         <div className="absolute inset-0 pattern-dots opacity-20 dark:opacity-8" />
 
         {/* School building SVG silhouette in background */}
@@ -403,6 +427,8 @@ export function HomeView() {
         <div className="relative flex flex-col sm:flex-row items-center gap-6">
           {/* Teacher image with breathing animation */}
           <div className="relative w-36 h-36 sm:w-48 sm:h-48 shrink-0">
+            {/* Animated glow ring around mascot image */}
+            <div className="glow-ring" />
             <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-full opacity-30 animate-breathing scale-110" />
             <Image
               src="/images/teacher-hero.png"
@@ -694,6 +720,11 @@ export function HomeView() {
                   ))}
                 </div>
 
+                {/* Emoji badge in top-right corner */}
+                <div className="absolute top-2 right-2 text-2xl z-10 opacity-80 group-hover:opacity-100 group-hover:animate-wiggle transition-opacity">
+                  {emoji}
+                </div>
+
                 {/* Bottom info bar */}
                 <div className="flex items-center gap-3 text-[11px] relative z-10">
                   <span className={`${colors.accent} text-white px-2 py-0.5 rounded-full font-semibold`}>
@@ -702,6 +733,11 @@ export function HomeView() {
                   <span className="text-foreground/50">
                     {chapters} chương
                   </span>
+                </div>
+
+                {/* Start arrow on hover */}
+                <div className="absolute bottom-2 right-2 text-xs font-semibold text-foreground/0 group-hover:text-foreground/60 transition-all duration-300 z-10 flex items-center gap-0.5">
+                  Bắt đầu <ChevronRight className="w-3 h-3" />
                 </div>
               </motion.button>
             )
