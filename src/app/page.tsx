@@ -14,6 +14,7 @@ import { DailyChallengeView } from '@/components/daily-challenge-view'
 import { BadgesView } from '@/components/badges-view'
 import { LeaderboardView } from '@/components/leaderboard-view'
 import { TeacherDashboardView } from '@/components/teacher-dashboard-view'
+import { ProfileView } from '@/components/profile-view'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { initTheme } from '@/lib/theme'
@@ -33,15 +34,16 @@ function ViewRenderer() {
     badges: <BadgesView />,
     leaderboard: <LeaderboardView />,
     teacherDashboard: <TeacherDashboardView />,
+    profile: <ProfileView />,
   }
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={currentView}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -5, scale: 0.99 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
         style={{ minHeight: '200px' }}
       >
@@ -78,8 +80,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <a href="#main-content" className="skip-to-content">
+        Đến nội dung chính
+      </a>
       <AppHeader />
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+      <main id="main-content" className="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
         <ViewRenderer />
       </main>
       <AppFooter />

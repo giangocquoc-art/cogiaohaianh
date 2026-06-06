@@ -433,7 +433,7 @@ export function ScoreboardView() {
                   )}
                 </p>
               </div>
-              <div className="max-h-[28rem] overflow-y-auto">
+              <div className="max-h-[28rem] overflow-y-auto overflow-x-auto mobile-table-scroll">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-orange-50 dark:bg-orange-950/20">

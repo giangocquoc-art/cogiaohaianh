@@ -413,13 +413,13 @@ export function QuizView() {
       {/* Quiz header with student name */}
       <div className="sticky top-16 z-40 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border dark:border-border">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0 w-full sm:w-auto">
               <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700 dark:text-orange-300 truncate">
                 {quiz.title}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
               {/* Mini-map of answered/unanswered questions */}
               <div className="hidden sm:flex items-center gap-0.5">
                 {questions.map((qu, idx) => {
@@ -600,6 +600,7 @@ export function QuizView() {
                       playClickSound()
                       setAnswers((prev) => ({ ...prev, [q.id]: optionKey }))
                     }}
+                    aria-label={`Đáp án ${optionKey}: ${option.replace(/^[A-D]\.\s*/, '')}`}
                     className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
                       isSelected
                         ? 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'

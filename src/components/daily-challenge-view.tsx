@@ -59,8 +59,8 @@ function CountdownTimer() {
       ].map((unit, i) => (
         <div key={unit.label} className="flex items-center gap-3">
           <div className="flex flex-col items-center">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 min-w-[56px] text-center">
-              <span className="font-mono text-2xl sm:text-3xl font-bold text-white">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 min-w-[56px] text-center border border-white/10">
+              <span className="font-mono text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">
                 {String(unit.value).padStart(2, '0')}
               </span>
             </div>
@@ -260,10 +260,10 @@ export function DailyChallengeView() {
               <span className="text-xs text-muted-foreground block">Điểm thưởng</span>
               <span className="font-semibold text-orange-700 dark:text-orange-300 text-sm">+{challenge.bonusPoints} điểm</span>
             </div>
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-3 text-center border border-amber-200 shadow-sm">
+            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 rounded-xl p-3 text-center border border-amber-200 dark:border-amber-800 shadow-sm">
               <span className="text-2xl block mb-1">⭐</span>
               <span className="text-xs text-muted-foreground block">XP thưởng</span>
-              <span className="font-semibold text-amber-700 text-sm">+20 XP</span>
+              <span className="font-semibold text-amber-700 dark:text-amber-300 text-sm">+20 XP</span>
               {challenge.streak > 0 && (
                 <span className="block text-[10px] text-amber-500">+{Math.min(challenge.streak, 5) * 5} chuỗi</span>
               )}

@@ -1122,3 +1122,166 @@ Stage Summary:
 8. Could add batch score import for teachers (CSV upload)
 9. Could improve mobile drawer with better touch targets
 10. Teacher Dashboard could show trends over time (charts)
+
+---
+Task ID: 27
+Agent: Feature Developer - Student Profiles + More Quiz Content
+Task: Add Student Profile Page with Avatar + More Quiz Questions
+
+Work Log:
+- Updated `/src/store/app-store.ts`: Added 'profile' to ViewType union
+- Created `/src/components/profile-view.tsx`:
+  - Header section with large avatar, student name/class/school, XP level badge
+  - Avatar selection grid (12 emoji presets: 🦊🐱🐰🐻🦁🐼🦄🐸🦉🐳🦋🐲)
+  - Selected avatar saved to localStorage with key 'cogiaohaianh-avatar'
+  - Glow ring effect on selected avatar
+  - Stats summary cards (total quizzes, average score, best score, total XP, current level)
+  - Subject breakdown (Toán vs Ngữ văn averages)
+  - Recent activity section (last 5 quiz results with score badges)
+  - Badges earned section with link to full badges view
+  - Quick actions: Làm bài kiểm tra, Xem bảng xếp hạng, Xem tiến độ
+  - Edit profile modal with name/class/school inputs
+  - No student info state with friendly prompt
+  - Dark mode support, responsive design, Framer Motion animations
+- Updated `/src/app/page.tsx`: Added ProfileView import and viewMap entry
+- Updated `/src/components/app-header.tsx`:
+  - Added User icon import
+  - Added "Hồ sơ" nav button (first in nav items, only shown when studentInfo exists)
+  - Added profile quick access card in mobile drawer (avatar + name + class)
+  - Updated breadcrumb condition to exclude 'profile' view
+- Updated `/src/components/home-view.tsx`:
+  - Hero section now shows personalized greeting with avatar when studentInfo exists
+  - "Chào [name]! 🎉" with clickable avatar button → goes to profile
+  - Falls back to existing generic welcome message when no studentInfo
+- Created `/src/lib/additional-questions.ts`:
+  - 73 additional questions across all 27 existing quizzes
+  - 3-4 questions per quiz, covering different difficulty levels
+  - Mix of multiple-choice and fill-in-the-blank
+  - Age-appropriate content for each grade level (SGK curriculum)
+  - Questions stored as a map by quiz title for easy lookup
+- Updated `/src/app/api/seed/route.ts`:
+  - Implemented upsert pattern for adding new questions to existing quizzes
+  - Checks if questions already exist by quiz title + question text
+  - Initial seed now includes both original and additional questions
+  - Subsequent calls add only new questions that don't already exist
+  - Idempotent: re-seeding does not create duplicates
+- Ran seed API: 73 new questions added to existing 248 (now 321 total)
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**Feature 1: Student Profile Page (Trang Cá Nhân)**
+1. ProfileView component with avatar, stats, badges, edit form, quick actions
+2. 12 emoji avatar presets with glow ring selection and localStorage persistence
+3. Personalized hero greeting on homepage with avatar + "Chào [name]!"
+4. "Hồ sơ" nav button in header (first position, only when student info exists)
+5. Profile quick access card in mobile drawer
+6. Edit profile modal with decorative gradient header
+
+**Feature 2: More Quiz Questions**
+1. 73 additional questions added across all 27 existing quizzes
+2. Total questions increased from 248 to 321 (average ~12 per quiz)
+3. Upsert seed pattern prevents duplicate questions on re-seed
+4. Questions follow Vietnamese primary school curriculum (SGK)
+5. Mix of difficulty levels and question types per quiz
+
+**Files Created:**
+- `/src/components/profile-view.tsx`
+- `/src/lib/additional-questions.ts`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added 'profile' to ViewType
+- `/src/app/page.tsx` - Added ProfileView to viewMap
+- `/src/components/app-header.tsx` - Added Hồ sơ nav + drawer profile card
+- `/src/components/home-view.tsx` - Added personalized hero greeting
+- `/src/app/api/seed/route.ts` - Added upsert pattern for additional questions
+
+---
+Task ID: 28
+Agent: Styling Improvement Developer
+Task: Improve mobile experience, dark mode, animations, accessibility
+
+Work Log:
+- Created /src/hooks/use-scroll-reveal.ts with IntersectionObserver hook
+- Improved mobile drawer: backdrop-blur-md, gradient top strip, close button, min-h-12 touch targets, border-l-4 active indicator, role="dialog" aria-modal, branding
+- Updated globals.css: Vietnamese font-feature-settings, line-height 1.6, skip-to-content link, mobile-table-scroll shadow, skeleton loading components
+- Improved page.tsx: scale effect in transitions (0.98→1), skip-to-content link
+- Improved home-view.tsx: reduced hover scale, mobile padding, standardized H2 headings
+- Improved quiz-view.tsx: stacked timer/progress on small screens, ARIA labels on options
+- Improved result-view.tsx: responsive score circle (130px mobile), dark mode bg opacity
+- Improved scoreboard-view.tsx: horizontal scroll with shadow indicator
+- Dark mode audit: fixed leaderboard borders, badges locked cards, daily challenge countdown, progress score colors/bars/bgs
+
+Stage Summary:
+- Mobile drawer: backdrop-blur-md, gradient, close X button, active border-l-4 indicator, touch targets, branding, role="dialog"
+- Mobile layout: quiz stacks vertically, score circle responsive, table scrolls horizontally with shadow
+- Dark mode: all score color functions have dark: variants, borders/text consistently styled
+- Accessibility: skip-to-content, ARIA labels, dialog roles, focus-visible on all interactives
+- Typography: Vietnamese ligatures enabled, line-height 1.6, skeleton loading components
+- Animations: page transitions with scale, skeleton loading utilities
+- Lint passes, no runtime errors
+
+---
+Task ID: 29 (Main Agent - Round 5)
+Agent: Main
+Task: QA Testing + Student Profile + More Quiz Content + Styling Improvements
+
+Work Log:
+- Reviewed worklog.md (1124 lines of history, 29 previous tasks completed)
+- Performed comprehensive QA testing with agent-browser + VLM
+- Light mode homepage rated: 7-8/10, Dark mode: 7/10
+- No bugs found, all 12 API routes working, lint passes clean
+- Launched 2 parallel sub-agents:
+  - Task 27: Student Profile + Avatar + More Quiz Content (completed)
+  - Task 28: Mobile/dark mode/animations/accessibility improvements (completed)
+- Verified all new features working via API testing and browser testing
+- Confirmed quiz questions increased from 248 to 321 (73 new questions)
+- Confirmed lint passes with no errors
+
+Stage Summary:
+**New Features:**
+1. Student Profile Page (Trang Cá Nhân):
+   - Avatar selection: 12 emoji presets (🦊 Cáo, 🐱 Mèo, 🐰 Thỏ, 🐻 Gấu, 🦁 Sư tử, 🐼 Gấu trúc, 🦄 Kỳ lân, 🐸 Ếch, 🦉 Cú mèo, 🐳 Cá voi, 🦋 Bướm, 🐲 Rồng)
+   - Stats summary cards, recent activity, badges earned, quick actions
+   - Edit profile modal with name/class/school inputs
+   - "Hồ sơ" nav button (only shown when student info exists)
+   - Personalized hero greeting on homepage ("Chào [name]!" with avatar)
+   - Avatar saved to localStorage with key 'cogiaohaianh-avatar'
+
+2. More Quiz Questions:
+   - 73 additional questions across all 27 existing quizzes
+   - Total: 248 → 321 questions (avg ~12 per quiz, up from ~9)
+   - Upsert seed pattern prevents duplicates on re-seed
+   - Questions follow Vietnamese primary curriculum (SGK), age-appropriate
+   - Mix of multiple-choice and fill-in-the-blank
+
+**Styling Improvements:**
+1. Mobile drawer: backdrop-blur-md, gradient top, larger close button, min-h-12 touch targets, orange border-l active indicator, role="dialog" aria-modal="true"
+2. Page transitions: subtle scale effect (0.98→1) on enter, smoother exit
+3. Typography: font-feature-settings for Vietnamese diacritics, line-height 1.6 for children's readability
+4. Accessibility: skip-to-content link, ARIA labels on quiz options/theme toggle/drawer, focus-visible styles
+5. Dark mode consistency: fixed borders in leaderboard/badges/daily-challenge/progress views, proper dark variants for all score color functions
+6. Mobile layout: quiz header stacks vertically on small screens, scoreboard table has horizontal scroll with shadow, score circle responsive size
+7. Skeleton loading utilities: .skeleton-line, .skeleton-circle, .skeleton-card classes
+
+**Current Project Status:**
+- 14 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard, TeacherDashboard, Profile
+- 12 API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge, /xp, /leaderboard, /explain, /teacher
+- 321 quiz questions across 27 quizzes (avg 12 per quiz)
+- Full dark mode support (7/10 VLM rating)
+- Student profile with avatar customization
+- XP system + Leaderboard + AI hints + AI review + Teacher dashboard
+- 12 achievement badges + daily challenge + streak tracking
+- VLM QA scores: Homepage 8/10, Dark mode 7/10
+- No lint errors, no runtime errors
+
+**Unresolved / Future Recommendations:**
+1. Add more quiz questions to reach 15+ per quiz
+2. Add classroom competition mode (class vs class)
+3. Add parent notification system for low scores
+4. Add VLM-powered question image understanding
+5. Add batch score import for teachers (CSV upload)
+6. Add printable class reports for teachers
+7. Improve mobile drawer with swipe-to-close gesture
+8. Add animated background patterns that change with seasons/holidays
+9. Consider adding a "Luyện tập" (Practice) mode without timer for stressed students
+10. Add AI-powered question generation to create unlimited practice questions

@@ -261,9 +261,9 @@ export function LeaderboardView() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="bg-white dark:bg-card rounded-3xl border-2 border-gray-100 dark:border-border overflow-hidden shadow-sm"
+              className="bg-white dark:bg-card rounded-3xl border-2 border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm"
             >
-              <div className="p-4 border-b border-gray-100 dark:border-border">
+              <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                 <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-amber-500" />
                   Xếp hạng chi tiết
@@ -281,11 +281,11 @@ export function LeaderboardView() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 + index * 0.03 }}
-                      className={`flex items-center gap-3 px-4 py-3 border-b border-gray-50 dark:border-border/50 transition-colors ${
+                      className={`flex items-center gap-3 px-4 py-3 border-b border-gray-50 dark:border-gray-700/50 transition-colors ${
                         isCurrentUser
                           ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-l-4 border-l-amber-400'
                           : index % 2 === 0
-                            ? 'bg-gray-50/50 dark:bg-transparent'
+                            ? 'bg-gray-50/50 dark:bg-gray-800/30'
                             : 'bg-white dark:bg-card'
                       }`}
                     >
@@ -293,7 +293,7 @@ export function LeaderboardView() {
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${
                         isCurrentUser
                           ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md'
-                          : 'bg-gray-100 dark:bg-gray-800 text-muted-foreground'
+                          : 'bg-gray-100 dark:bg-gray-700 text-muted-foreground'
                       }`}>
                         {entry.rank}
                       </div>

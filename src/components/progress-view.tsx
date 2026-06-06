@@ -39,17 +39,17 @@ interface ProgressResult {
 type TrendType = 'up' | 'down' | 'stable'
 
 function getScoreColor(score: number): string {
-  if (score >= 9) return 'text-amber-600'
-  if (score >= 7) return 'text-emerald-600'
-  if (score >= 5) return 'text-orange-600'
-  return 'text-rose-600'
+  if (score >= 9) return 'text-amber-600 dark:text-amber-400'
+  if (score >= 7) return 'text-emerald-600 dark:text-emerald-400'
+  if (score >= 5) return 'text-orange-600 dark:text-orange-400'
+  return 'text-rose-600 dark:text-rose-400'
 }
 
 function getScoreBg(score: number): string {
-  if (score >= 9) return 'bg-amber-100 ring-amber-300 text-amber-700'
-  if (score >= 7) return 'bg-emerald-100 ring-emerald-200 text-emerald-700'
-  if (score >= 5) return 'bg-orange-100 ring-orange-200 text-orange-700'
-  return 'bg-rose-100 ring-rose-200 text-rose-700'
+  if (score >= 9) return 'bg-amber-100 dark:bg-amber-900/30 ring-amber-300 dark:ring-amber-700 text-amber-700 dark:text-amber-300'
+  if (score >= 7) return 'bg-emerald-100 dark:bg-emerald-900/30 ring-emerald-200 dark:ring-emerald-700 text-emerald-700 dark:text-emerald-300'
+  if (score >= 5) return 'bg-orange-100 dark:bg-orange-900/30 ring-orange-200 dark:ring-orange-700 text-orange-700 dark:text-orange-300'
+  return 'bg-rose-100 dark:bg-rose-900/30 ring-rose-200 dark:ring-rose-700 text-rose-700 dark:text-rose-300'
 }
 
 function getScoreEmoji(score: number): string {
@@ -60,17 +60,17 @@ function getScoreEmoji(score: number): string {
 }
 
 function getScoreBarColor(score: number): string {
-  if (score >= 9) return 'bg-amber-400'
-  if (score >= 7) return 'bg-emerald-400'
-  if (score >= 5) return 'bg-orange-400'
-  return 'bg-rose-400'
+  if (score >= 9) return 'bg-amber-400 dark:bg-amber-500'
+  if (score >= 7) return 'bg-emerald-400 dark:bg-emerald-500'
+  if (score >= 5) return 'bg-orange-400 dark:bg-orange-500'
+  return 'bg-rose-400 dark:bg-rose-500'
 }
 
 function getScoreBarBg(score: number): string {
-  if (score >= 9) return 'bg-amber-100'
-  if (score >= 7) return 'bg-emerald-100'
-  if (score >= 5) return 'bg-orange-100'
-  return 'bg-rose-100'
+  if (score >= 9) return 'bg-amber-100 dark:bg-amber-900/30'
+  if (score >= 7) return 'bg-emerald-100 dark:bg-emerald-900/30'
+  if (score >= 5) return 'bg-orange-100 dark:bg-orange-900/30'
+  return 'bg-rose-100 dark:bg-rose-900/30'
 }
 
 function formatDate(dateStr: string): string {
@@ -208,10 +208,10 @@ export function ProgressView() {
         <div className="absolute bottom-2 right-3 text-2xl opacity-20 animate-bounce" style={{ animationDelay: '0.5s' }}>📈</div>
 
         <BarChart3 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-        <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-emerald-800">
+        <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-emerald-800 dark:text-emerald-200">
           Tiến Độ Học Tập 📊
         </h2>
-        <p className="text-emerald-600 text-sm mt-1">Xem quá trình học tập và phát triển của bạn 🌱</p>
+        <p className="text-emerald-600 dark:text-emerald-400 text-sm mt-1">Xem quá trình học tập và phát triển của bạn 🌱</p>
       </motion.div>
 
       {/* Search Form */}
@@ -313,10 +313,10 @@ export function ProgressView() {
             className="bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-2xl p-4 text-center border border-emerald-200 dark:border-emerald-800"
           >
             <p className="text-emerald-700 text-sm font-medium">Tiến độ học tập của</p>
-            <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-emerald-800 mt-1">
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl sm:text-2xl text-emerald-800 dark:text-emerald-200 mt-1">
               {displayName} 🌈
             </h3>
-            <p className="text-emerald-600 text-sm">Lớp {displayClass}</p>
+            <p className="text-emerald-600 dark:text-emerald-400 text-sm">Lớp {displayClass}</p>
           </motion.div>
 
           {/* Summary Dashboard */}
@@ -342,7 +342,7 @@ export function ProgressView() {
               <p className={`text-2xl font-bold ${getScoreColor(stats.averageScore)}`}>
                 {stats.averageScore.toFixed(1)}
               </p>
-              <p className="text-xs text-emerald-600 font-medium">Điểm TB</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Điểm TB</p>
             </motion.div>
 
             <motion.div
@@ -384,10 +384,10 @@ export function ProgressView() {
               </div>
               <p className={`text-xs font-medium ${
                 stats.trend === 'up'
-                  ? 'text-emerald-600'
+                  ? 'text-emerald-600 dark:text-emerald-400'
                   : stats.trend === 'down'
-                    ? 'text-rose-600'
-                    : 'text-sky-600'
+                    ? 'text-rose-600 dark:text-rose-400'
+                    : 'text-sky-600 dark:text-sky-400'
               }`}>
                 {stats.trend === 'up' ? 'Đang tiến bộ' : stats.trend === 'down' ? 'Cần cố gắng' : 'Ổn định'}
               </p>
@@ -653,12 +653,12 @@ export function ProgressView() {
               </div>
               <p className={`font-[family-name:var(--font-patrick-hand)] text-xl ${
                 stats.averageScore >= 9
-                  ? 'text-amber-800'
+                  ? 'text-amber-800 dark:text-amber-200'
                   : stats.averageScore >= 7
-                    ? 'text-emerald-800'
+                    ? 'text-emerald-800 dark:text-emerald-200'
                     : stats.averageScore >= 5
-                      ? 'text-orange-800'
-                      : 'text-rose-800'
+                      ? 'text-orange-800 dark:text-orange-200'
+                      : 'text-rose-800 dark:text-rose-200'
               }`}>
                 {stats.averageScore >= 9
                   ? 'Bạn thật xuất sắc! Hãy giữ vững phong độ nhé! 🌟'
@@ -690,10 +690,10 @@ export function ProgressView() {
           className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-8 text-center"
         >
           <p className="text-5xl mb-3">🌱</p>
-          <p className="text-emerald-800 font-semibold text-lg mb-1">
+          <p className="text-emerald-800 dark:text-emerald-200 font-semibold text-lg mb-1">
             Theo dõi sự tiến bộ của bạn!
           </p>
-          <p className="text-emerald-600 text-sm max-w-md mx-auto">
+          <p className="text-emerald-600 dark:text-emerald-400 text-sm max-w-md mx-auto">
             Nhập họ tên và tên lớp để xem tất cả bài kiểm tra đã làm, điểm số và sự tiến bộ qua từng ngày 📈
           </p>
           <div className="flex justify-center gap-3 mt-4 text-2xl">

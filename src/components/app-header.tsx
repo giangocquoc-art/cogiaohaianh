@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -54,7 +54,10 @@ export function AppHeader() {
     }
   }, [drawerOpen])
 
+  const studentInfo = useAppStore((s) => s.studentInfo)
+
   const navItems = [
+    ...(studentInfo ? [{ view: 'profile' as const, icon: User, label: 'Hồ sơ', action: () => useAppStore.getState().setView('profile') }] : []),
     { view: 'home' as const, icon: Home, label: 'Trang chủ', action: goHome },
     { view: 'dailyChallenge' as const, icon: Flame, label: 'Thử thách', action: () => useAppStore.getState().setView('dailyChallenge') },
     { view: 'badges' as const, icon: Award, label: 'Huy hiệu', action: () => useAppStore.getState().setView('badges') },
@@ -236,7 +239,7 @@ export function AppHeader() {
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -279,14 +282,15 @@ export function AppHeader() {
       <AnimatePresence>
         {drawerOpen && (
           <>
-            {/* Overlay */}
+            {/* Overlay with backdrop blur */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm"
+              className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-md"
               onClick={() => setDrawerOpen(false)}
+              aria-hidden="true"
             />
 
             {/* Drawer panel */}
@@ -296,36 +300,69 @@ export function AppHeader() {
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white dark:bg-[#1a1208] z-[70] shadow-2xl overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu điều hướng"
             >
-              {/* Drawer header */}
-              <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-900 dark:via-orange-950 dark:to-amber-900 p-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white shadow-md">
-                      <Image
-                        src="/images/mascot.png"
-                        alt="Cô Giáo Hải Anh"
-                        fill
-                        sizes="48px"
-                        className="object-contain p-1"
-                      />
+              {/* Drawer header with gradient top strip */}
+              <div className="relative">
+                {/* Subtle gradient at top */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-pink-400 to-amber-400" />
+                <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-900 dark:via-orange-950 dark:to-amber-900 p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white shadow-md">
+                        <Image
+                          src="/images/mascot.png"
+                          alt="Cô Giáo Hải Anh"
+                          fill
+                          sizes="48px"
+                          className="object-contain p-1"
+                        />
+                      </div>
+                      <div>
+                        <h2 className="font-[family-name:var(--font-patrick-hand)] text-orange-800 dark:text-amber-200 text-lg font-bold">
+                          Cô Giáo Hải Anh
+                        </h2>
+                        <p className="text-orange-600 dark:text-amber-300 text-xs">Học Tập Vui Vẻ 🌟</p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="font-[family-name:var(--font-patrick-hand)] text-orange-800 dark:text-amber-200 text-lg font-bold">
-                        Cô Giáo Hải Anh
-                      </h2>
-                      <p className="text-orange-600 dark:text-amber-300 text-xs">Học Tập Vui Vẻ 🌟</p>
-                    </div>
+                    <button
+                      onClick={() => setDrawerOpen(false)}
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/20 text-white hover:bg-white/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
+                      aria-label="Đóng menu"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setDrawerOpen(false)}
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors"
-                    aria-label="Đóng menu"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
                 </div>
               </div>
+
+              {/* Profile quick access in drawer */}
+              {studentInfo && (
+                <div className="px-4 pt-4 pb-2">
+                  <button
+                    onClick={() => {
+                      useAppStore.getState().setView('profile')
+                      setDrawerOpen(false)
+                    }}
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left border-2 ${
+                      currentView === 'profile'
+                        ? 'bg-orange-50 border-orange-300 dark:bg-orange-900/30 dark:border-orange-700'
+                        : 'bg-orange-50/50 border-orange-100 dark:bg-orange-950/20 dark:border-orange-900/30 hover:bg-orange-100 dark:hover:bg-orange-900/20'
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-white dark:bg-card shadow-sm flex items-center justify-center text-xl ring-2 ring-orange-200 dark:ring-orange-700">
+                      {typeof window !== 'undefined' ? (localStorage.getItem('cogiaohaianh-avatar') || '🐱') : '🐱'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-foreground text-sm truncate">{studentInfo.name}</p>
+                      <p className="text-[10px] text-muted-foreground">Lớp {studentInfo.className} · Xem hồ sơ</p>
+                    </div>
+                    <User className="w-4 h-4 text-orange-400" />
+                  </button>
+                </div>
+              )}
 
               {/* Drawer nav items */}
               <div className="p-4 space-y-1">
@@ -336,7 +373,7 @@ export function AppHeader() {
                       goBack()
                       setDrawerOpen(false)
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-3 min-h-12 rounded-xl text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
                   >
                     <ArrowLeft className="w-5 h-5 text-orange-500" />
                     <span className="font-medium">Quay lại</span>
@@ -352,10 +389,10 @@ export function AppHeader() {
                         navItem.action()
                         setDrawerOpen(false)
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left ${
+                      className={`w-full flex items-center gap-3 px-4 py-3 min-h-12 rounded-xl transition-colors text-left border-l-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400 ${
                         isActive
-                          ? 'bg-orange-50 text-orange-700 font-semibold dark:bg-orange-900/30 dark:text-orange-300'
-                          : 'text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20'
+                          ? 'bg-orange-50 border-orange-500 text-orange-700 font-semibold dark:bg-orange-900/30 dark:border-orange-400 dark:text-orange-300'
+                          : 'border-transparent text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20'
                       }`}
                     >
                       <navItem.icon className={`w-5 h-5 ${isActive ? 'text-orange-500' : 'text-muted-foreground'}`} />
@@ -368,7 +405,7 @@ export function AppHeader() {
                 })}
               </div>
 
-              {/* Drawer footer */}
+              {/* Drawer footer with branding */}
               <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 dark:border-orange-900/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
@@ -377,13 +414,15 @@ export function AppHeader() {
                   </div>
                   <button
                     onClick={handleToggleTheme}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/50 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
+                    aria-label={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
                   >
                     {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
                     {theme === 'dark' ? 'Sáng' : 'Tối'}
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Kiểm tra Toán & Ngữ văn 📚</p>
+                <p className="text-[10px] text-orange-400 dark:text-orange-500 mt-1 text-center font-medium">cogiaohaianh.io</p>
               </div>
             </motion.div>
           </>

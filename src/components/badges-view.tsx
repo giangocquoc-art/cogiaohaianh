@@ -209,7 +209,7 @@ export function BadgesView() {
               className={`relative rounded-2xl p-4 sm:p-5 border-2 transition-all overflow-hidden ${
                 isEarned
                   ? `bg-gradient-to-br ${colors.bg} ${colors.border} shadow-lg ${colors.glow}`
-                  : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-70'
+                  : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-600 opacity-70'
               }`}
             >
               {/* Glow effect for earned badges */}
@@ -236,7 +236,7 @@ export function BadgesView() {
                   {badge.name}
                 </h3>
                 <p className={`text-xs leading-relaxed ${
-                  isEarned ? 'text-foreground/70' : 'text-gray-400 dark:text-gray-500'
+                  isEarned ? 'text-foreground/70 dark:text-gray-300' : 'text-gray-400 dark:text-gray-500'
                 }`}>
                   {badge.description}
                 </p>
@@ -245,7 +245,7 @@ export function BadgesView() {
               {/* Progress bar */}
               {!isEarned && (
                 <div className="mt-3">
-                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-orange-300 to-amber-400 rounded-full transition-all duration-500"
                       style={{ width: `${badge.progress}%` }}

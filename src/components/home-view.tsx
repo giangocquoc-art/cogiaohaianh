@@ -5,6 +5,7 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
 import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap, Crown, Medal, ClipboardList } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
+import { useScrollReveal } from '@/hooks/use-scroll-reveal'
 import { Button } from '@/components/ui/button'
 
 const gradeColors = [
@@ -426,14 +427,40 @@ export function HomeView() {
               <span className="text-xl animate-sparkle" style={{ animationDelay: '0.5s' }}>🌟</span>
               <span className="text-xl animate-sparkle" style={{ animationDelay: '1s' }}>🌟</span>
             </div>
-            <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-900 dark:text-orange-100 mb-2 leading-tight min-h-[1.3em] drop-shadow-sm">
-              {welcomeText}
-              {isTyping && <span className="typing-cursor" />}
-            </h2>
-            <p className="text-orange-800 dark:text-orange-200 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
-              Cô Giáo Hải Anh chúc các em có những giờ học thật vui vẻ và thú vị!
-              Hãy chọn lớp của các em để bắt đầu nhé!
-            </p>
+            {/* Greeting with avatar if student info exists */}
+            {studentInfo ? (
+              <>
+                <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setView('profile')}
+                    className="w-12 h-12 rounded-full bg-white dark:bg-card shadow-md flex items-center justify-center text-2xl ring-2 ring-orange-300 dark:ring-orange-700 hover:ring-orange-400 dark:hover:ring-orange-500 transition-all cursor-pointer"
+                    aria-label="Xem hồ sơ"
+                  >
+                    {typeof window !== 'undefined' ? (localStorage.getItem('cogiaohaianh-avatar') || '🐱') : '🐱'}
+                  </motion.button>
+                  <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-900 dark:text-orange-100 leading-tight drop-shadow-sm">
+                    Chào {studentInfo.name}! 🎉
+                  </h2>
+                </div>
+                <p className="text-orange-800 dark:text-orange-200 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
+                  Chúc em có những giờ học thật vui vẻ và thú vị!
+                  Hãy chọn lớp để bắt đầu nhé!
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-900 dark:text-orange-100 mb-2 leading-tight min-h-[1.3em] drop-shadow-sm">
+                  {welcomeText}
+                  {isTyping && <span className="typing-cursor" />}
+                </h2>
+                <p className="text-orange-800 dark:text-orange-200 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
+                  Cô Giáo Hải Anh chúc các em có những giờ học thật vui vẻ và thú vị!
+                  Hãy chọn lớp của các em để bắt đầu nhé!
+                </p>
+              </>
+            )}
             </div>
             <div className="flex items-center gap-2 mt-3 justify-center sm:justify-start flex-wrap">
               <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400 animate-sparkle" />
@@ -455,7 +482,7 @@ export function HomeView() {
       <section className="py-2">
         <div className="flex items-center gap-2 mb-5">
           <Flame className="w-6 h-6 text-orange-500" />
-          <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
+          <h2 className="font-[family-name:var(--font-patrick-hand)] text-xl sm:text-2xl text-foreground">
             Bài Kiểm Tra Phổ Biến
           </h2>
           <span className="text-xl animate-flame">🔥</span>
@@ -522,7 +549,7 @@ export function HomeView() {
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <Crown className="w-6 h-6 text-amber-500" />
-              <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
+              <h2 className="font-[family-name:var(--font-patrick-hand)] text-xl sm:text-2xl text-foreground">
                 Top Học Sinh
               </h2>
               <span className="text-xl animate-sparkle">👑</span>
@@ -598,7 +625,7 @@ export function HomeView() {
       <section className="py-2">
         <div className="flex items-center gap-2 mb-5">
           <BookOpen className="w-6 h-6 text-orange-500" />
-          <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
+          <h2 className="font-[family-name:var(--font-patrick-hand)] text-xl sm:text-2xl text-foreground">
             Chọn Lớp Học
           </h2>
           <Star className="w-5 h-5 text-amber-400 animate-sparkle" />
@@ -608,7 +635,7 @@ export function HomeView() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5"
         >
           {[1, 2, 3, 4, 5].map((grade) => {
             const colors = gradeColors[grade - 1]
@@ -620,10 +647,10 @@ export function HomeView() {
               <motion.button
                 key={grade}
                 variants={item}
-                whileHover={{ scale: 1.07, y: -6 }}
+                whileHover={{ scale: 1.04, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => selectGrade(grade)}
-                className={`${colors.bg} dark:bg-opacity-20 ${colors.border} border-2 ${colors.hover} rounded-2xl p-5 sm:p-7 flex flex-col items-center gap-2 transition-all shadow-md hover:shadow-xl cursor-pointer group relative overflow-hidden card-glow animate-border-glow ${colors.glow}`}
+                className={`${colors.bg} dark:bg-opacity-20 ${colors.border} border-2 ${colors.hover} rounded-2xl p-4 sm:p-7 flex flex-col items-center gap-2 transition-all shadow-md hover:shadow-xl cursor-pointer group relative overflow-hidden card-glow animate-border-glow ${colors.glow}`}
               >
                 {/* Subtle gradient background */}
                 <div className={`absolute inset-0 bg-gradient-to-b ${colors.gradientSubtle} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -682,7 +709,7 @@ export function HomeView() {
       <section className="py-2">
         <div className="flex items-center gap-2 mb-5">
           <GraduationCap className="w-6 h-6 text-emerald-500" />
-          <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
+          <h2 className="font-[family-name:var(--font-patrick-hand)] text-xl sm:text-2xl text-foreground">
             Tính Năng Học Tập
           </h2>
           <span className="text-xl animate-sparkle">✨</span>

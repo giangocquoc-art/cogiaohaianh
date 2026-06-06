@@ -36,9 +36,12 @@ interface QuizInfo {
 
 function CircularProgress({ score, size = 160, strokeWidth = 10 }: { score: number; size?: number; strokeWidth?: number }) {
   const [animatedScore, setAnimatedScore] = useState(0)
-  const radius = (size - strokeWidth) / 2
+  // Make responsive: smaller on mobile
+  const responsiveSize = typeof window !== 'undefined' && window.innerWidth < 400 ? 130 : size
+  const actualSize = responsiveSize
+  const radius = (actualSize - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
-  const center = size / 2
+  const center = actualSize / 2
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -50,17 +53,17 @@ function CircularProgress({ score, size = 160, strokeWidth = 10 }: { score: numb
   const offset = circumference - (animatedScore / 10) * circumference
 
   const getColor = (s: number) => {
-    if (s >= 9) return { stroke: '#F59E0B', bg: '#FEF3C7', text: '#92400E' }
-    if (s >= 7) return { stroke: '#10B981', bg: '#D1FAE5', text: '#065F46' }
-    if (s >= 5) return { stroke: '#F97316', bg: '#FFEDD5', text: '#9A3412' }
-    return { stroke: '#EF4444', bg: '#FEE2E2', text: '#991B1B' }
+    if (s >= 9) return { stroke: '#F59E0B', bg: '#FEF3C7', text: '#92400E', darkBg: '#78350f' }
+    if (s >= 7) return { stroke: '#10B981', bg: '#D1FAE5', text: '#065F46', darkBg: '#064e3b' }
+    if (s >= 5) return { stroke: '#F97316', bg: '#FFEDD5', text: '#9A3412', darkBg: '#7c2d12' }
+    return { stroke: '#EF4444', bg: '#FEE2E2', text: '#991B1B', darkBg: '#7f1d1d' }
   }
 
   const colors = getColor(score)
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
+    <div className="relative" style={{ width: actualSize, height: actualSize }}>
+      <svg width={actualSize} height={actualSize} className="-rotate-90">
         {/* Background circle */}
         <circle
           cx={center}
@@ -68,6 +71,7 @@ function CircularProgress({ score, size = 160, strokeWidth = 10 }: { score: numb
           r={radius}
           fill="none"
           stroke={colors.bg}
+          className="dark:opacity-20"
           strokeWidth={strokeWidth}
         />
         {/* Progress circle */}
