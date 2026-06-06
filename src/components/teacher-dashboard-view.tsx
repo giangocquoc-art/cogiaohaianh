@@ -1,9 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ClipboardList, Users, BookOpen, TrendingUp, Search, Loader2, GraduationCap, BarChart3, Star, Trophy, Clock, Calendar } from 'lucide-react'
+import { ClipboardList, Users, BookOpen, TrendingUp, Search, Loader2, GraduationCap, BarChart3, Star, Trophy, Clock, Calendar, Activity, CheckCircle2, Zap, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useToast } from '@/hooks/use-toast'
 
 interface TeacherData {
@@ -41,6 +41,33 @@ interface TeacherData {
     average: number
     poor: number
   }
+}
+
+/* Animated counter component */
+function AnimatedNumber({ target, duration = 1200 }: { target: number; duration?: number }) {
+  const [current, setCurrent] = useState(0)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    if (hasAnimated.current) return
+    hasAnimated.current = true
+
+    let start: number | null = null
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp
+      const progress = Math.min((timestamp - start) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setCurrent(Number((eased * target).toFixed(1)))
+      if (progress < 1) {
+        requestAnimationFrame(step)
+      } else {
+        setCurrent(Number(target.toFixed(1)))
+      }
+    }
+    requestAnimationFrame(step)
+  }, [target, duration])
+
+  return <span>{typeof current === 'number' ? (Number.isInteger(current) ? current : current.toFixed(1)) : current}</span>
 }
 
 export function TeacherDashboardView() {
@@ -135,16 +162,16 @@ export function TeacherDashboardView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center"
+        className="bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-950/30 dark:to-emerald-950/30 border-2 border-teal-200 dark:border-teal-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
       >
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <ClipboardList className="w-8 h-8 text-teal-600 dark:text-teal-400" />
-          <h1 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-foreground">
-            Bảng Điều Khiển Giáo Viên 📋
-          </h1>
-        </div>
-        <p className="text-muted-foreground text-sm sm:text-base">
-          Xem thống kê học tập của học sinh theo trường
+        <div className="absolute top-2 left-4 text-lg opacity-10 dark:opacity-40 animate-float">📋</div>
+        <div className="absolute bottom-2 right-4 text-lg opacity-10 dark:opacity-40 animate-float" style={{ animationDelay: '0.5s' }}>📊</div>
+        <ClipboardList className="w-10 h-10 text-teal-500 mx-auto mb-2" />
+        <h1 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-teal-800 dark:text-teal-200">
+          Bảng Điều Khiển Giáo Viên 📋
+        </h1>
+        <p className="text-teal-600 dark:text-teal-400 text-sm mt-1">
+          Xem thống kê học tập của học sinh theo trường 🎯
         </p>
       </motion.div>
 
@@ -207,9 +234,28 @@ export function TeacherDashboardView() {
 
       {/* Loading state */}
       {loading && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <Loader2 className="w-12 h-12 text-teal-500 animate-spin mb-4" />
-          <p className="text-muted-foreground text-lg">Đang tải dữ liệu thống kê...</p>
+        <div className="space-y-6">
+          {/* Skeleton stat cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-card-inner">
+                  <div className="skeleton-circle w-10 h-10" />
+                  <div className="skeleton-line h-8 w-16" />
+                  <div className="skeleton-line h-3 w-24" />
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Skeleton chart */}
+          <div className="skeleton-card p-6">
+            <div className="skeleton-line h-6 w-40 mb-4" />
+            <div className="space-y-3">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="skeleton-line h-8" style={{ width: `${70 - i * 15}%` }} />
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
@@ -256,74 +302,88 @@ export function TeacherDashboardView() {
           animate={{ opacity: 1 }}
           className="space-y-6"
         >
-          {/* Summary cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-card border-2 border-teal-200 dark:border-teal-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
-                  <Users className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          {/* ===== THỐNG KÊ TỔNG QUAN ===== */}
+          <div>
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground mb-3 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-teal-500" />
+              Thống kê tổng quan 📊
+            </h3>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 border-2 border-teal-200 dark:border-teal-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow hover-lift"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  </div>
+                  <span className="text-sm text-teal-600 dark:text-teal-400 font-medium">Tổng bài làm</span>
                 </div>
-                <span className="text-sm text-muted-foreground">Học sinh</span>
-              </div>
-              <p className="font-[family-name:var(--font-patrick-hand)] text-3xl text-foreground">{data.totalStudents}</p>
-            </motion.div>
+                <p className="font-[family-name:var(--font-patrick-hand)] text-3xl text-teal-700 dark:text-teal-300">
+                  <AnimatedNumber target={data.totalQuizzes} />
+                </p>
+                <p className="text-xs text-teal-500 dark:text-teal-500 mt-0.5">📝 từ {data.totalStudents} học sinh</p>
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="bg-white dark:bg-card border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow hover-lift"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
+                    <Star className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <span className="text-sm text-amber-600 dark:text-amber-400 font-medium">Điểm trung bình</span>
                 </div>
-                <span className="text-sm text-muted-foreground">Bài làm</span>
-              </div>
-              <p className="font-[family-name:var(--font-patrick-hand)] text-3xl text-foreground">{data.totalQuizzes}</p>
-            </motion.div>
+                <p className={`font-[family-name:var(--font-patrick-hand)] text-3xl ${getScoreColor(data.averageScore)}`}>
+                  <AnimatedNumber target={data.averageScore} />
+                </p>
+                <p className="text-xs text-amber-500 dark:text-amber-500 mt-0.5">⭐ trên thang 10</p>
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-card border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
-                  <Star className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow hover-lift"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Học sinh hoạt động</span>
                 </div>
-                <span className="text-sm text-muted-foreground">Điểm TB</span>
-              </div>
-              <p className={`font-[family-name:var(--font-patrick-hand)] text-3xl ${getScoreColor(data.averageScore)}`}>
-                {data.averageScore.toFixed(1)}
-              </p>
-            </motion.div>
+                <p className="font-[family-name:var(--font-patrick-hand)] text-3xl text-emerald-700 dark:text-emerald-300">
+                  <AnimatedNumber target={data.totalStudents} />
+                </p>
+                <p className="text-xs text-emerald-500 dark:text-emerald-500 mt-0.5">👥 đã làm bài kiểm tra</p>
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              className="bg-white dark:bg-card border-2 border-orange-200 dark:border-orange-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border-2 border-orange-200 dark:border-orange-800 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow hover-lift"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <span className="text-sm text-orange-600 dark:text-orange-400 font-medium">Tỷ lệ hoàn thành</span>
                 </div>
-                <span className="text-sm text-muted-foreground">Đạt</span>
-              </div>
-              <p className="font-[family-name:var(--font-patrick-hand)] text-3xl text-foreground">
-                {data.passRate}%
-              </p>
-            </motion.div>
+                <p className="font-[family-name:var(--font-patrick-hand)] text-3xl text-orange-700 dark:text-orange-300">
+                  {data.passRate}%
+                </p>
+                <p className="text-xs text-orange-500 dark:text-orange-500 mt-0.5">✅ đạt điểm ≥ 5</p>
+              </motion.div>
+            </div>
           </div>
 
-          {/* Subject comparison */}
+          {/* ===== PHÂN BỐ ĐIỂM ===== */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -333,7 +393,141 @@ export function TeacherDashboardView() {
             <div className="flex items-center gap-2 mb-5">
               <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
-                So sánh môn học
+                Phân bố điểm 📊
+              </h3>
+            </div>
+            <div className="space-y-3">
+              {[
+                { label: 'Xuất sắc', emoji: '🌟', range: '≥8', count: data.scoreDistribution.excellent, color: 'from-emerald-400 to-green-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/20', textColor: 'text-emerald-700 dark:text-emerald-300' },
+                { label: 'Khá', emoji: '⭐', range: '6-8', count: data.scoreDistribution.good, color: 'from-teal-400 to-cyan-400', bgColor: 'bg-teal-100 dark:bg-teal-900/20', textColor: 'text-teal-700 dark:text-teal-300' },
+                { label: 'Trung bình', emoji: '👍', range: '5-6', count: data.scoreDistribution.average, color: 'from-amber-400 to-yellow-400', bgColor: 'bg-amber-100 dark:bg-amber-900/20', textColor: 'text-amber-700 dark:text-amber-300' },
+                { label: 'Cần cố gắng', emoji: '💪', range: '<5', count: data.scoreDistribution.poor, color: 'from-rose-400 to-pink-400', bgColor: 'bg-rose-100 dark:bg-rose-900/20', textColor: 'text-rose-700 dark:text-rose-300' },
+              ].map((item) => {
+                const pct = totalDistribution > 0 ? Math.round((item.count / totalDistribution) * 100) : 0
+                return (
+                  <div key={item.label} className={`${item.bgColor} rounded-xl p-3 sm:p-4`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{item.emoji}</span>
+                        <span className={`font-medium ${item.textColor} text-sm`}>{item.label}</span>
+                        <span className="text-xs text-muted-foreground">({item.range} điểm)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-foreground">{item.count}</span>
+                        <span className="text-muted-foreground text-sm">({pct}%)</span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-white/50 dark:bg-black/20 rounded-full h-3">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.max(pct > 0 ? 5 : 0, pct)}%` }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className={`bg-gradient-to-r ${item.color} h-3 rounded-full transition-all relative overflow-hidden`}
+                      >
+                        <div className="absolute inset-0 animate-shimmer opacity-30" />
+                      </motion.div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            {/* Summary emoji */}
+            <div className="mt-4 pt-3 border-t dark:border-gray-700 flex items-center justify-center gap-2">
+              {totalDistribution > 0 && (
+                <>
+                  {(() => {
+                    const excellentPct = Math.round((data.scoreDistribution.excellent / totalDistribution) * 100)
+                    if (excellentPct >= 40) return <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">🎉 Tỷ lệ xuất sắc rất cao!</span>
+                    if (excellentPct >= 20) return <span className="text-sm text-teal-600 dark:text-teal-400 font-medium">👏 Tỷ lệ khá tốt!</span>
+                    if (data.scoreDistribution.poor > data.scoreDistribution.excellent) return <span className="text-sm text-amber-600 dark:text-amber-400 font-medium">📚 Cần thêm hỗ trợ cho học sinh</span>
+                    return <span className="text-sm text-foreground/70 font-medium">📊 Phân bố điểm ổn định</span>
+                  })()}
+                </>
+              )}
+            </div>
+          </motion.div>
+
+          {/* ===== LỚP HỌC HOẠT ĐỘNG NHẤT ===== */}
+          {data.gradeBreakdown.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="bg-white dark:bg-card border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 sm:p-6 shadow-sm"
+            >
+              <div className="flex items-center gap-2 mb-5">
+                <GraduationCap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
+                  Lớp học hoạt động nhất 🔥
+                </h3>
+              </div>
+              {/* Sort by activity count */}
+              {(() => {
+                const sortedGrades = [...data.gradeBreakdown].sort((a, b) => b.count - a.count)
+                const maxCount = Math.max(...sortedGrades.map(g => g.count), 1)
+                return (
+                  <div className="space-y-3">
+                    {sortedGrades.map((g, idx) => {
+                      const activityPct = (g.count / maxCount) * 100
+                      const isTop = idx === 0
+                      return (
+                        <div
+                          key={g.grade}
+                          className={`${getScoreBg(g.avgScore)} border-2 rounded-xl p-4 ${isTop ? 'ring-2 ring-orange-300 dark:ring-orange-600 shadow-md' : ''}`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              {isTop && <Zap className="w-4 h-4 text-orange-500" />}
+                              <span className="font-semibold text-foreground">{getGradeLabel(g.grade)}</span>
+                              {isTop && (
+                                <span className="text-[10px] bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded-full font-bold">
+                                  🔥 Hoạt động nhất
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <span className={`font-[family-name:var(--font-patrick-hand)] text-xl ${getScoreColor(g.avgScore)}`}>
+                                  {g.avgScore.toFixed(1)}
+                                </span>
+                                <p className="text-[10px] text-muted-foreground">điểm TB</p>
+                              </div>
+                              <div className="text-right">
+                                <span className="font-bold text-foreground">{g.count}</span>
+                                <p className="text-[10px] text-muted-foreground">bài làm</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="w-full bg-white/50 dark:bg-black/20 rounded-full h-2.5">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${Math.max(activityPct > 0 ? 5 : 0, activityPct)}%` }}
+                              transition={{ duration: 0.6, delay: 0.3 + idx * 0.1 }}
+                              className="bg-gradient-to-r from-teal-400 to-emerald-400 dark:from-teal-500 dark:to-emerald-500 h-2.5 rounded-full relative overflow-hidden"
+                            >
+                              <div className="absolute inset-0 animate-shimmer opacity-30" />
+                            </motion.div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })()}
+            </motion.div>
+          )}
+
+          {/* Subject comparison */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white dark:bg-card border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 sm:p-6 shadow-sm"
+          >
+            <div className="flex items-center gap-2 mb-5">
+              <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
+                So sánh môn học 📚
               </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -355,9 +549,11 @@ export function TeacherDashboardView() {
                   </div>
                   <div className="w-full bg-orange-200 dark:bg-orange-900 rounded-full h-3">
                     <div
-                      className="bg-gradient-to-r from-orange-400 to-amber-400 dark:from-orange-500 dark:to-amber-500 h-3 rounded-full transition-all duration-500"
+                      className="bg-gradient-to-r from-orange-400 to-amber-400 dark:from-orange-500 dark:to-amber-500 h-3 rounded-full transition-all duration-500 relative overflow-hidden"
                       style={{ width: `${Math.max(5, (data.subjectBreakdown.toan.avgScore / 10) * 100)}%` }}
-                    />
+                    >
+                      <div className="absolute inset-0 animate-shimmer opacity-30" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -380,89 +576,14 @@ export function TeacherDashboardView() {
                   </div>
                   <div className="w-full bg-pink-200 dark:bg-pink-900 rounded-full h-3">
                     <div
-                      className="bg-gradient-to-r from-pink-400 to-rose-400 dark:from-pink-500 dark:to-rose-500 h-3 rounded-full transition-all duration-500"
+                      className="bg-gradient-to-r from-pink-400 to-rose-400 dark:from-pink-500 dark:to-rose-500 h-3 rounded-full transition-all duration-500 relative overflow-hidden"
                       style={{ width: `${Math.max(5, (data.subjectBreakdown['ngu-van'].avgScore / 10) * 100)}%` }}
-                    />
+                    >
+                      <div className="absolute inset-0 animate-shimmer opacity-30" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Grade breakdown */}
-          {data.gradeBreakdown.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="bg-white dark:bg-card border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 sm:p-6 shadow-sm"
-            >
-              <div className="flex items-center gap-2 mb-5">
-                <GraduationCap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
-                  Thống kê theo lớp
-                </h3>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                {data.gradeBreakdown.map((g) => (
-                  <div
-                    key={g.grade}
-                    className={`${getScoreBg(g.avgScore)} border-2 rounded-xl p-3 sm:p-4 text-center`}
-                  >
-                    <p className="text-lg mb-1">{getGradeLabel(g.grade)}</p>
-                    <p className={`font-[family-name:var(--font-patrick-hand)] text-2xl ${getScoreColor(g.avgScore)}`}>
-                      {g.avgScore.toFixed(1)}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">{g.count} bài làm</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Score distribution */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white dark:bg-card border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-5 sm:p-6 shadow-sm"
-          >
-            <div className="flex items-center gap-2 mb-5">
-              <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-              <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
-                Phân loại điểm
-              </h3>
-            </div>
-            <div className="space-y-3">
-              {[
-                { label: 'Xuất sắc', emoji: '🌟', count: data.scoreDistribution.excellent, color: 'from-emerald-400 to-green-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
-                { label: 'Khá', emoji: '⭐', count: data.scoreDistribution.good, color: 'from-teal-400 to-cyan-400', bgColor: 'bg-teal-100 dark:bg-teal-900/30' },
-                { label: 'Trung bình', emoji: '👍', count: data.scoreDistribution.average, color: 'from-amber-400 to-yellow-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' },
-                { label: 'Cần cố gắng', emoji: '💪', count: data.scoreDistribution.poor, color: 'from-rose-400 to-pink-400', bgColor: 'bg-rose-100 dark:bg-rose-900/30' },
-              ].map((item) => {
-                const pct = totalDistribution > 0 ? Math.round((item.count / totalDistribution) * 100) : 0
-                return (
-                  <div key={item.label} className={`${item.bgColor} rounded-xl p-3 sm:p-4`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{item.emoji}</span>
-                        <span className="font-medium text-foreground text-sm">{item.label}</span>
-                        <span className="text-xs text-muted-foreground">(≥8 / 6-8 / 5-6 / &lt;5)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-foreground">{item.count}</span>
-                        <span className="text-muted-foreground text-sm">({pct}%)</span>
-                      </div>
-                    </div>
-                    <div className="w-full bg-white/50 dark:bg-black/20 rounded-full h-2.5">
-                      <div
-                        className={`bg-gradient-to-r ${item.color} h-2.5 rounded-full transition-all duration-500`}
-                        style={{ width: `${Math.max(pct > 0 ? 3 : 0, pct)}%` }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
             </div>
           </motion.div>
 
@@ -477,7 +598,7 @@ export function TeacherDashboardView() {
               <div className="flex items-center gap-2 mb-5">
                 <Trophy className="w-5 h-5 text-amber-500" />
                 <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
-                  Top 10 học sinh xuất sắc
+                  Top 10 học sinh xuất sắc 🏆
                 </h3>
               </div>
               <div className="overflow-x-auto">
@@ -538,7 +659,7 @@ export function TeacherDashboardView() {
               <div className="flex items-center gap-2 mb-5">
                 <Clock className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
-                  Hoạt động gần đây
+                  Hoạt động gần đây ⏱️
                 </h3>
               </div>
               <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -594,21 +715,21 @@ export function TeacherDashboardView() {
         >
           <div className="text-7xl mb-4">📊</div>
           <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-foreground mb-2">
-            Chào mừng giáo viên!
+            Chào mừng giáo viên! 👋
           </h3>
           <p className="text-muted-foreground max-w-md mx-auto">
             Nhập tên trường của bạn để xem thống kê chi tiết về kết quả học tập của học sinh.
           </p>
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
-            <div className="bg-teal-50 dark:bg-teal-950/30 rounded-xl p-3">
+            <div className="bg-teal-50 dark:bg-teal-950/30 rounded-xl p-3 hover-lift">
               <p className="text-2xl mb-1">📈</p>
               <p className="text-xs text-muted-foreground">Xem điểm trung bình</p>
             </div>
-            <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-3">
+            <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-3 hover-lift">
               <p className="text-2xl mb-1">🏆</p>
               <p className="text-xs text-muted-foreground">Top học sinh xuất sắc</p>
             </div>
-            <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3">
+            <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3 hover-lift">
               <p className="text-2xl mb-1">📊</p>
               <p className="text-xs text-muted-foreground">Phân loại theo điểm</p>
             </div>

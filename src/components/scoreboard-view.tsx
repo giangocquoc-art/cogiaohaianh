@@ -270,11 +270,11 @@ export function ScoreboardView() {
     'bg-gradient-to-r from-teal-400 to-teal-500',
   ]
   const distributionBgColors = [
-    'bg-rose-100',
-    'bg-orange-100',
-    'bg-amber-100',
-    'bg-emerald-100',
-    'bg-teal-100',
+    'bg-rose-100 dark:bg-rose-900/20',
+    'bg-orange-100 dark:bg-orange-900/20',
+    'bg-amber-100 dark:bg-amber-900/20',
+    'bg-emerald-100 dark:bg-emerald-900/20',
+    'bg-teal-100 dark:bg-teal-900/20',
   ]
   const distributionEmojis = ['😢', '😟', '😐', '😊', '🌟']
 
@@ -1056,7 +1056,11 @@ export function ScoreboardView() {
                     Lịch sử điểm 📅
                   </h3>
                   {allScores.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">Chưa có dữ liệu lịch sử</p>
+                    <div className="text-center py-12">
+                      <p className="text-4xl mb-3">📅</p>
+                      <p className="text-amber-700 dark:text-amber-300 font-medium">Chưa có dữ liệu lịch sử điểm</p>
+                      <p className="text-muted-foreground text-xs mt-1">Hãy làm bài kiểm tra hoặc nhập điểm để xem lịch sử</p>
+                    </div>
                   ) : (
                     <div className="relative pl-8">
                       {/* Timeline line */}
@@ -1103,9 +1107,13 @@ export function ScoreboardView() {
                               <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                                 <Clock className="w-3 h-3" />
                                 <span>{entry.date}</span>
-                                {entry.source === 'online' && (
-                                  <span className="bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full font-medium">
+                                {entry.source === 'online' ? (
+                                  <span className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded-full font-medium">
                                     Online
+                                  </span>
+                                ) : (
+                                  <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-medium">
+                                    Nhập tay
                                   </span>
                                 )}
                               </div>

@@ -98,15 +98,28 @@ export function XPWidget() {
 
   const progressPercent = (xpData.xpInCurrentLevel / xpData.xpForNextLevel) * 100
 
+  // Character emoji based on XP level (matches /api/character evolution stages)
+  function getCharacterEmoji(totalXP: number): string {
+    if (totalXP >= 500) return '🦅'
+    if (totalXP >= 300) return '🐔'
+    if (totalXP >= 150) return '🐥'
+    if (totalXP >= 50) return '🐣'
+    return '🥚'
+  }
+
+  const characterEmoji = getCharacterEmoji(xpData.totalXP)
+
   return (
     <div className="relative">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5"
+        className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 cursor-pointer hover:bg-white/30 transition-colors"
+        onClick={() => useAppStore.getState().setView('character')}
+        title="Xem nhân vật học tập"
       >
         <div className="flex items-center gap-1">
-          <span className="text-base">{xpData.levelEmoji}</span>
+          <span className="text-base">{characterEmoji}</span>
           <div className="flex flex-col items-start">
             <div className="flex items-center gap-1">
               <Star className="w-3 h-3 text-amber-200" fill="currentColor" />

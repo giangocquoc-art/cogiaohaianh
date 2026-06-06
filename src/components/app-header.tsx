@@ -1,8 +1,9 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User, Zap, BookMarked, CalendarDays, Users } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User, Zap, BookMarked, CalendarDays, Users, ChevronDown, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -61,6 +62,11 @@ export function AppHeader() {
     { view: 'dailyChallenge' as const, icon: Flame, label: 'Thử thách', action: () => useAppStore.getState().setView('dailyChallenge') },
     { view: 'lessons' as const, icon: BookMarked, label: 'Bài học', action: () => useAppStore.getState().setView('lessons') },
     { view: 'practice' as const, icon: Zap, label: 'Luyện tập', action: () => useAppStore.getState().setView('practice') },
+  ]
+
+  // Items shown in the "Xem thêm" dropdown
+  const moreNavItems = [
+    { view: 'character' as const, icon: Sparkles, label: 'Nhân vật', action: () => useAppStore.getState().setView('character') },
     { view: 'badges' as const, icon: Award, label: 'Huy hiệu', action: () => useAppStore.getState().setView('badges') },
     { view: 'studyCalendar' as const, icon: CalendarDays, label: 'Lịch học', action: () => useAppStore.getState().setView('studyCalendar') },
     { view: 'scoreboard' as const, icon: Trophy, label: 'Bảng điểm', action: () => useAppStore.getState().setView('scoreboard') },
@@ -70,6 +76,9 @@ export function AppHeader() {
     { view: 'parentCorner' as const, icon: Users, label: 'Phụ huynh', action: () => useAppStore.getState().setView('parentCorner') },
     { view: 'profile' as const, icon: User, label: studentInfo ? 'Hồ sơ' : 'Đăng nhập', action: () => useAppStore.getState().setView('profile') },
   ]
+
+  // All nav items for the mobile drawer
+  const allNavItems = [...navItems, ...moreNavItems]
 
   return (
     <>
@@ -180,6 +189,37 @@ export function AppHeader() {
                         </Button>
                       )
                     })}
+
+                    {/* Xem thêm dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`text-white hover:bg-white/20 gap-1 text-sm sm:text-base h-9 sm:h-10 ${moreNavItems.some((item) => currentView === item.view) ? 'bg-white/20 nav-active' : ''}`}
+                        >
+                          <span className="hidden sm:inline">Xem thêm</span>
+                          <ChevronDown className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-52">
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">Khác</DropdownMenuLabel>
+                        {moreNavItems.map((navItem) => {
+                          const isActive = currentView === navItem.view
+                          return (
+                            <DropdownMenuItem
+                              key={navItem.view}
+                              onClick={navItem.action}
+                              className={`flex items-center gap-2 cursor-pointer ${isActive ? 'bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-300 font-semibold' : ''}`}
+                            >
+                              <navItem.icon className={`w-4 h-4 ${isActive ? 'text-orange-500' : 'text-muted-foreground'}`} />
+                              <span>{navItem.label}</span>
+                              {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-orange-500" />}
+                            </DropdownMenuItem>
+                          )
+                        })}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </>
                 )}
               </nav>
@@ -243,7 +283,7 @@ export function AppHeader() {
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && currentView !== 'practice' && currentView !== 'lessons' && currentView !== 'studyCalendar' && currentView !== 'parentCorner' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && currentView !== 'practice' && currentView !== 'lessons' && currentView !== 'studyCalendar' && currentView !== 'parentCorner' && currentView !== 'character' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -384,7 +424,7 @@ export function AppHeader() {
                   </button>
                 )}
 
-                {navItems.map((navItem) => {
+                {allNavItems.map((navItem) => {
                   const isActive = currentView === navItem.view || (navItem.view === 'home' && currentView === 'home')
                   return (
                     <button

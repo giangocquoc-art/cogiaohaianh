@@ -825,6 +825,15 @@ export function HomeView() {
               emoji: '🧑‍🤝‍🧑',
               action: () => setView('parentCorner'),
             },
+            {
+              icon: <Sparkles className="w-7 h-7" />,
+              title: 'Nhân Vật',
+              description: 'Nuôi nhân vật học tập tiến hóa cùng em',
+              gradient: 'from-amber-400 to-orange-500',
+              bgLight: 'bg-amber-50 dark:bg-amber-950/30',
+              emoji: '🥚',
+              action: () => setView('character'),
+            },
           ].map((feature, index) => (
             <motion.button
               key={feature.title}

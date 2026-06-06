@@ -100,7 +100,7 @@ function CircularProgress({ score, size = 160, strokeWidth = 10 }: { score: numb
         >
           {score.toFixed(1)}
         </motion.span>
-        <span className="text-sm text-muted-foreground mt-1">trên 10</span>
+        <span className="text-sm text-muted-foreground dark:text-amber-300 mt-1">trên 10</span>
       </div>
     </div>
   )
@@ -838,7 +838,7 @@ export function ResultView() {
                                       ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-semibold border-emerald-300 dark:border-emerald-700'
                                       : isThisUser && !isThisCorrect
                                         ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 line-through border-rose-300 dark:border-rose-700'
-                                        : 'text-muted-foreground border-gray-200'
+                                        : 'text-muted-foreground border-gray-200 dark:border-gray-700'
                                   }`}
                                 >
                                   <span className="font-bold mr-1">{optKey}.</span>
@@ -858,7 +858,7 @@ export function ResultView() {
                                 ? isCorrect
                                   ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
                                   : 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700'
-                                : 'text-muted-foreground border-gray-200'
+                                : 'text-muted-foreground dark:text-amber-300 border-gray-200 dark:border-gray-700'
                             }`}>
                               <span className="text-xs">✏️</span>
                               Trả lời của bạn: <span className="font-semibold">{userAnswer || '(chưa trả lời)'}</span>
@@ -1054,7 +1054,7 @@ export function ResultView() {
                               ? isCorrect
                                 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-400 dark:border-emerald-600'
                                 : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 border-rose-400 dark:border-rose-600'
-                              : 'text-muted-foreground border-gray-200'
+                              : 'text-muted-foreground dark:text-amber-300 border-gray-200 dark:border-gray-700'
                           }`}>
                             ✏️ Trả lời của bạn: <span className="font-semibold">{userAnswer || '(chưa trả lời)'}</span>
                           </div>

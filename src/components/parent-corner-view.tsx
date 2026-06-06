@@ -711,41 +711,113 @@ export function ParentCornerView() {
         </motion.div>
       )}
 
-      {/* Initial state - before any search */}
+      {/* Initial state - before any search: rich content */}
       {!loading && !searched && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-950/30 dark:to-emerald-950/30 border-2 border-teal-200 dark:border-teal-800 rounded-2xl p-8 text-center"
+          className="space-y-6"
         >
-          <p className="text-5xl mb-3">👨‍👩‍👧‍👦</p>
-          <p className="text-teal-800 dark:text-teal-200 font-semibold text-lg mb-1">
-            Theo dõi việc học của con!
-          </p>
-          <p className="text-teal-600 dark:text-teal-400 text-sm max-w-md mx-auto">
-            Nhập họ tên và tên lớp của con để xem tiến độ học tập, nhận lời khuyên cá nhân hóa từ Cô Giáo Hải Anh và những mẹo hữu ích giúp con học tốt hơn 🌟
-          </p>
-          <div className="flex justify-center gap-3 mt-4 text-2xl">
-            <motion.span
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-            >
-              📊
-            </motion.span>
-            <motion.span
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-            >
-              💡
-            </motion.span>
-            <motion.span
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-            >
-              🌱
-            </motion.span>
+          {/* Welcome Section */}
+          <div className="bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 dark:from-teal-950/30 dark:via-emerald-950/30 dark:to-cyan-950/30 border-2 border-teal-200 dark:border-teal-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-3 right-4 text-4xl opacity-15 animate-float">👩‍🏫</div>
+            <div className="absolute bottom-4 right-16 text-3xl opacity-15 animate-float" style={{ animationDelay: '0.5s' }}>🎒</div>
+            <div className="absolute top-6 right-28 text-2xl opacity-10 animate-float" style={{ animationDelay: '1s' }}>📚</div>
+
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="shrink-0 text-5xl sm:text-6xl">👨‍👩‍👧‍👦</div>
+              <div className="flex-1">
+                <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-teal-800 dark:text-teal-200 mb-2">
+                  Chào mừng ba mẹ đến Góc Phụ Huynh! 🌿
+                </h3>
+                <p className="text-teal-700 dark:text-teal-300 text-sm mb-4 leading-relaxed">
+                  Đây là nơi ba mẹ có thể theo dõi và đồng hành cùng con trên hành trình học tập. Hãy nhập tên và lớp của con ở trên để bắt đầu!
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300">
+                    <span className="text-lg">📊</span>
+                    <span>Xem tiến độ học tập của con</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300">
+                    <span className="text-lg">🤖</span>
+                    <span>Nhận lời khuyên từ AI của Cô Giáo Hải Anh</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300">
+                    <span className="text-lg">📅</span>
+                    <span>Theo dõi lịch học hàng tuần</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300">
+                    <span className="text-lg">💡</span>
+                    <span>Mẹo giúp con học tại nhà</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
+
+          {/* Quick Tips Section - always visible */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-400 to-pink-400 flex items-center justify-center shadow-sm">
+                <Lightbulb className="w-4 h-4 text-white" />
+              </div>
+              <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-teal-700 dark:text-teal-300">
+                Mẹo giúp con học tốt 💡
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { emoji: '🕐', title: 'Tạo thói quen học mỗi ngày', desc: 'Dành 15-20 phút mỗi ngày cho con học, thời gian ngắn nhưng đều đặn sẽ hiệu quả hơn học lâu nhưng không thường xuyên.' },
+                { emoji: '🤗', title: 'Khuyến khích thay vì chỉ trích', desc: 'Khi con làm sai, hãy kiên nhẫn giải thích thay vì la mắng. Lời khen ngợi giúp con tự tin và hào hứng học hơn.' },
+                { emoji: '🎮', title: 'Học qua trò chơi', desc: 'Kết hợp học với chơi giúp con tiếp thu kiến thức tự nhiên. Thử thách và bài luyện tập trên website được thiết kế như trò chơi!' },
+                { emoji: '📖', title: 'Đọc cùng con mỗi tối', desc: '10 phút đọc sách mỗi tối giúp con phát triển khả năng ngôn ngữ và tạo thói quen học tập tốt.' },
+              ].map((tip, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + idx * 0.1 }}
+                  className="bg-white dark:bg-card rounded-xl p-4 border-2 border-teal-100 dark:border-teal-900/50 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="text-3xl shrink-0">{tip.emoji}</span>
+                    <div>
+                      <h4 className="font-semibold text-foreground text-sm mb-1">{tip.title}</h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{tip.desc}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 dark:from-orange-950/30 dark:via-amber-950/30 dark:to-yellow-950/30 border-2 border-orange-200 dark:border-orange-800 rounded-2xl p-5"
+          >
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700 dark:text-orange-300 mb-3 text-center">
+              🌟 Cô Giáo Hải Anh - Học Tập Vui Vẻ 🌟
+            </h3>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-orange-600 dark:text-orange-300">27+</p>
+                <p className="text-xs text-orange-500 dark:text-orange-400 font-medium">Bài kiểm tra</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-300">100+</p>
+                <p className="text-xs text-emerald-500 dark:text-emerald-400 font-medium">Học sinh</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-300">5</p>
+                <p className="text-xs text-amber-500 dark:text-amber-400 font-medium">Lớp học</p>
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </div>

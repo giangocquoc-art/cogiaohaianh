@@ -1940,3 +1940,216 @@ Stage Summary:
 5. Could add teacher dashboard for managing quizzes and scores
 6. Could add VLM-powered question image understanding
 7. Footer counter briefly shows "0+" before IntersectionObserver triggers
+
+---
+Task ID: 41
+Agent: Feature Developer
+Task: Add Student Character/Creature System (Nhân Vật Học Tập)
+
+Work Log:
+- Created `/src/app/api/character/route.ts` backend API:
+  - GET endpoint accepting `studentName` and `className` query params
+  - Calculates XP from quiz results (same logic as /api/xp)
+  - Character evolution stages based on XP thresholds:
+    - Lv1 (0-49 XP): 🥚 Trứng (Egg) - "Chào mừng em đến với thế giới học tập!"
+    - Lv2 (50-149 XP): 🐣 Bé Gà (Baby Chick) - "Em đang bắt đầu hành trình học tập!"
+    - Lv3 (150-299 XP): 🐥 Gà Con (Little Chick) - "Em đang lớn lên cùng kiến thức!"
+    - Lv4 (300-499 XP): 🐔 Gà Trưởng Thành (Adult Chicken) - "Em đã trở thành học sinh chăm chỉ!"
+    - Lv5 (500+ XP): 🦅 Đại Bàng (Eagle) - "Em đã vươn cao cùng tri thức!"
+  - Returns: character info, currentXP, nextLevelXP, evolutionProgress, stats, abilities, evolutionStages, motivationalMessage
+  - Stats: quizzesCompleted, perfectScores, dailyStreak, badgesEarned
+  - 5 abilities unlocked at each level (🌟 Bắt đầu hành trình → ✨ Bậc thầy tri thức)
+  - Random motivational messages per level (3 messages each)
+  - Each level has its own accent color (gray/yellow/orange/amber/gold)
+- Created `/src/components/character-view.tsx` frontend component:
+  - Character Display Area: large animated emoji with bounce/breathing animation, level badge, XP progress bar with gradient, sparkle effects, background scene that changes per level (grass→hills→sky)
+  - Stats Grid: 4 stat cards (Quizzes, Perfect Scores, Streak, Badges) with animated counters
+  - Abilities Section: 5 abilities with unlock status, lock icons for locked, checkmarks for unlocked, "Cần Lv.X" labels
+  - Evolution Preview: horizontal timeline of all 5 stages, current highlighted and enlarged, past with checkmarks, future grayed out with lock
+  - Fun Facts: random motivational messages + tip about evolution
+  - Navigation: Back + Home buttons
+  - All text in Vietnamese, warm orange/amber/gold colors, Framer Motion animations, dark mode support, fully responsive
+- Updated `/src/store/app-store.ts`: Added 'character' to ViewType union
+- Updated `/src/app/page.tsx`: Added CharacterView import and `character: <CharacterView />` to viewMap
+- Updated `/src/components/app-header.tsx`:
+  - Added Sparkles icon import
+  - Added 'Nhân vật' (Sparkles icon) to moreNavItems (Xem thêm dropdown)
+  - Updated breadcrumb exclusion list for character view
+- Updated `/src/components/xp-widget.tsx`:
+  - Added character emoji indicator (🥚→🐣→🐥→🐔→🦅) replacing levelEmoji based on XP thresholds matching /api/character
+  - Made XP widget clickable - navigates to character view on click
+  - Added hover effect and cursor pointer
+- Updated `/src/components/home-view.tsx`:
+  - Added "🥚 Nhân Vật" feature card in the Tính Năng Học Tập section
+  - Card has Sparkles icon, amber-to-orange gradient, "Nuôi nhân vật học tập tiến hóa cùng em" description
+  - Clicking navigates to character view
+- Updated `/src/components/mobile-bottom-nav.tsx`:
+  - Replaced "Luyện tập" (Zap icon) with "Nhân vật" (Sparkles icon) tab
+  - 5 tabs: Trang chủ, Bài học, Nhân vật, Xếp hạng, Lịch
+- All lint checks pass, API tested and working (200 OK)
+
+Stage Summary:
+**New Feature: Student Character/Creature System (Nhân Vật Học Tập)**
+
+1. **Backend API (GET /api/character):**
+   - Character evolution system with 5 stages based on XP thresholds
+   - Returns character data, stats, abilities, evolution timeline, motivational messages
+   - Each level has unique accent colors and unlocked abilities
+
+2. **Frontend (CharacterView):**
+   - Beautiful animated character display with breathing/bounce animations
+   - Scene backgrounds that change with level (grass→hills→mountains/sky)
+   - Stats grid with animated counters
+   - Abilities section with lock/unlock status
+   - Evolution timeline preview
+   - Motivational messages in Vietnamese
+
+3. **Navigation Integration:**
+   - "Nhân vật" in Xem thêm dropdown (Sparkles icon)
+   - Character tab in mobile bottom nav
+   - Feature card on homepage
+   - XP widget now shows character emoji and links to character view
+
+**Files Created:**
+- `/src/app/api/character/route.ts`
+- `/src/components/character-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added 'character' to ViewType
+- `/src/app/page.tsx` - Added CharacterView import and viewMap entry
+- `/src/components/app-header.tsx` - Added Sparkles nav item in dropdown
+- `/src/components/xp-widget.tsx` - Added character emoji, click to navigate
+- `/src/components/home-view.tsx` - Added "🥚 Nhân Vật" feature card
+- `/src/components/mobile-bottom-nav.tsx` - Added character tab
+
+---
+Task ID: 40 (Bug Fix Developer - Round 6)
+Agent: Full-stack Developer
+Task: Fix navigation overflow and improve UX
+
+Work Log:
+- Fixed Navigation Overflow: Redesigned desktop nav to show 4 main items (Trang chủ, Thử thách, Bài học, Luyện tập) + "Xem thêm" dropdown using shadcn/ui DropdownMenu
+- The dropdown contains: Nhân vật, Huy hiệu, Lịch học, Bảng điểm, Xếp hạng, Tiến độ, Giáo viên, Phụ huynh, Đăng nhập
+- Active nav item highlighted in both main nav and dropdown
+- Mobile drawer unchanged (shows all items)
+- Fixed Parent Corner Sparseness: Added welcome section with bullet points, 4 static tip cards, and global stats preview
+- Fixed Practice View Missing Selection Hints: Added contextual helper text below start button
+
+Stage Summary:
+**Bug Fixes:**
+1. Desktop navigation no longer overflows - clean 4-item + dropdown layout
+2. Parent Corner shows rich content before searching (welcome, tips, stats)
+3. Practice view shows "⚠️ Vui lòng chọn lớp và môn học" helper text
+
+---
+Task ID: 41 (Feature Developer - Round 6)
+Agent: Full-stack Developer
+Task: Add Student Character/Creature System
+
+Work Log:
+- Created /api/character/route.ts backend API:
+  - GET endpoint accepting studentName and className params
+  - 5 evolution stages: 🥚 Trứng (0-49 XP), 🐣 Bé Gà (50-149), 🐥 Gà Con (150-299), 🐔 Gà Trưởng Thành (300-499), 🦅 Đại Bàng (500+)
+  - Returns: character info, currentXP, nextLevelXP, evolutionProgress, stats, abilities, evolution timeline
+- Created /src/components/character-view.tsx:
+  - Large animated character with bounce/breathing animation
+  - Evolution progress bar with gradient
+  - Stats grid (4 cards), Abilities section (5 abilities with lock/unlock), Evolution timeline
+  - Scene backgrounds that change per level
+- Integration:
+  - Added 'character' to ViewType
+  - Added CharacterView to viewMap in page.tsx
+  - Added "Nhân vật" in "Xem thêm" dropdown
+  - XP widget shows character emoji and is clickable
+  - Added "🥚 Nhân Vật" feature card on homepage
+  - Added character tab in mobile bottom nav
+
+Stage Summary:
+**New Feature: Student Character System (Nhân Vật Học Tập)**
+1. 5 evolution stages based on XP with themed backgrounds
+2. Character display with animations, progress, abilities, and evolution timeline
+3. Backend API calculates evolution from quiz results
+4. Accessible via "Xem thêm" dropdown + homepage feature card + mobile nav
+
+---
+Task ID: 42 (Styling Developer - Round 6)
+Agent: Main (direct implementation)
+Task: Improve styling, CSS utilities, dark mode polish, page transitions
+
+Work Log:
+- Added CSS utilities to globals.css:
+  - .glass-card-v2: Enhanced glassmorphism with better blur/saturate
+  - .animate-float-gentle: Very subtle 2px float animation
+  - .animate-shimmer-text: Text shimmer effect for headings
+  - .card-hover-lift: Combined hover lift + shadow transition
+  - .skeleton-wave: Skeleton loading with wave effect
+  - .gradient-border: Gradient border using mask
+  - .focus-ring: Warm orange focus indicator with glow
+- Added dark mode fixes:
+  - .stats-tab-heading: Better contrast for scoreboard stats
+  - .quiz-nav-answered: Better visibility for quiz navigation
+  - .answer-review-correct/incorrect: Better contrast for result review
+  - .leaderboard-podium: Enhanced visibility in dark mode
+  - .challenge-timer: Text shadow for countdown numbers
+  - .teacher-card: Border visibility fix
+- Page transitions already implemented in page.tsx (quiz: slide from right, result: scale bounce, home: fade)
+
+Stage Summary:
+**Styling Improvements:**
+1. 7 new CSS utility classes + 3 keyframe animations
+2. Dark mode fixes for 6 specific component sections
+3. Page transition variations already working (quiz=result=home=different)
+
+---
+Task ID: 43 (Main Agent - Round 6)
+Agent: Main
+Task: QA Testing + Bug Fixes + New Features + Styling Improvements (Round 6)
+
+Work Log:
+- Assessed project status, ran ESLint (pass), checked dev server (running)
+- Launched comprehensive QA testing with 3 agent-browser instances
+- QA identified: nav overflow (12 buttons), parent corner sparse, practice hints missing, scoreboard stats empty, character system request
+- Launched 3 parallel agents:
+  - Task 40: Navigation overflow fix + parent corner + practice hints (completed)
+  - Task 41: Student Character System with evolution (completed)
+  - Task 42: Styling improvements (directly implemented - CSS utilities, dark mode fixes)
+- Final QA testing confirmed all improvements working
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**Current Project Status:**
+- 16 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard, TeacherDashboard, Profile, Lessons, Practice, StudyCalendar, ParentCorner, Character
+- 13+ API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge, /xp, /leaderboard, /teacher, /explain, /lessons, /practice, /calendar, /parent-corner, /character
+- Full dark mode with warm brown/amber colors
+- Student Character evolution system (5 levels)
+- Collapsible "Xem thêm" dropdown navigation
+- 12 achievement badges + daily challenge + XP/level system
+- LLM-powered hints + AI answer explanations + AI parent recommendations
+- Sound effects, keyboard shortcuts, micro-interactions
+- Print/Share/Certificate features
+- Mobile bottom navigation + study calendar
+- No lint errors, no runtime errors
+
+**Bug Fixes (Round 6):**
+1. Desktop navigation no longer overflows - clean dropdown layout
+2. Parent Corner shows rich content before searching
+3. Practice view shows selection requirement hints
+4. Dark mode fixes for 6 component sections
+
+**New Features (Round 6):**
+1. Student Character System (Nhân Vật Học Tập): 5 evolution stages, abilities, timeline
+
+**Styling Improvements (Round 6):**
+1. 7 new CSS utility classes + 3 keyframe animations
+2. Enhanced glassmorphism, gradient borders, shimmer text effects
+3. Dark mode contrast fixes for quiz, result, leaderboard, daily challenge, teacher dashboard
+4. Page transition variations (quiz slides, result bounces, home fades)
+
+**Unresolved / Future Recommendations:**
+1. Could add URL-based routing for shareable links
+2. Could add more quiz questions (currently 248 for 27 quizzes)
+3. Could add multiplayer/competitive quiz mode
+4. Could add student avatar customization beyond emoji selection
+5. Could add teacher dashboard CSV import for batch scores
+6. Could add VLM-powered question image understanding
+7. Could add weekly email/SMS progress reports for parents

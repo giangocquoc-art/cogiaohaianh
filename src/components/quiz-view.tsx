@@ -699,7 +699,7 @@ export function QuizView() {
                   ? 'bg-orange-100 border-2 border-orange-500 text-orange-700 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:text-orange-300'
                   : isAnswered
                     ? 'bg-green-100 border-2 border-green-400 text-green-700 dark:bg-green-900/40 dark:border-green-600 dark:text-green-300'
-                    : 'bg-gray-50 border-2 border-gray-200 text-gray-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'bg-amber-50 border-2 border-amber-200 text-amber-600 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30'
               }`}
             >
               {isAnswered && idx !== currentQuestion ? '✓' : idx + 1}

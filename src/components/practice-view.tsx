@@ -412,6 +412,17 @@ export function PracticeView() {
                 </>
               )}
             </Button>
+            {/* Selection hint text */}
+            {!selectedGrade && !selectedSubject && (
+              <p className="text-center text-xs text-amber-600 dark:text-amber-400 mt-2">
+                ⚠️ Vui lòng chọn lớp và môn học để bắt đầu
+              </p>
+            )}
+            {selectedGrade && !selectedSubject && (
+              <p className="text-center text-xs text-amber-600 dark:text-amber-400 mt-2">
+                ✅ Đã chọn lớp · Vui lòng chọn môn học
+              </p>
+            )}
           </motion.div>
         </motion.div>
       </div>

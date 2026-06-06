@@ -193,8 +193,8 @@ export function DailyChallengeView() {
         {/* Fiery gradient background */}
         <div className="bg-gradient-to-br from-orange-500 via-red-500 to-amber-600 p-6 sm:p-8 relative">
           {/* Animated fire decorations */}
-          <div className="absolute top-2 left-4 text-4xl animate-float opacity-60">🔥</div>
-          <div className="absolute top-6 right-6 text-3xl animate-drift-right opacity-50" style={{ animationDelay: '0.5s' }}>🔥</div>
+          <div className="absolute top-2 left-4 text-4xl animate-float opacity-60 fire-emoji">🔥</div>
+          <div className="absolute top-6 right-6 text-3xl animate-drift-right opacity-50 fire-emoji" style={{ animationDelay: '0.5s' }}>🔥</div>
           <div className="absolute bottom-4 left-1/4 text-2xl animate-sparkle opacity-40" style={{ animationDelay: '1s' }}>✨</div>
           <div className="absolute bottom-8 right-1/3 text-2xl animate-float opacity-40" style={{ animationDelay: '0.3s' }}>⭐</div>
 
