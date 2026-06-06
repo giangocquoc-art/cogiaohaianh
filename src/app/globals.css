@@ -2458,6 +2458,111 @@ textarea:focus-visible {
   border-color: rgba(251, 146, 60, 0.3);
 }
 
+/* ===== TASK 32: CSS MICRO-INTERACTIONS & UTILITIES ===== */
+
+/* Hover lift - subtle translate up on hover */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark .hover-lift:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(251, 146, 60, 0.06);
+}
+
+/* Card shadow soft - consistent soft shadow for cards */
+.card-shadow-soft {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.card-shadow-soft:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-shadow-soft {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dark .card-shadow-soft:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 8px rgba(251, 146, 60, 0.05);
+}
+
+/* Gradient text - text with gradient background-clip */
+.gradient-text {
+  background: linear-gradient(135deg, #ea580c, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(135deg, #fb923c, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animate bounce subtle - subtle bounce, not aggressive */
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+/* Animate pulse soft - soft pulsing animation for attention */
+@keyframes pulse-soft-attention {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft-attention 3s ease-in-out infinite;
+}
+
+/* Focus ring - custom focus ring with warm orange color */
+.focus-ring:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+}
+
+/* Answer feedback animations for practice view */
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.02); box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+  50% { transform: scale(1); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-6px); }
+  30% { transform: translateX(5px); }
+  45% { transform: translateX(-4px); }
+  60% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+  90% { transform: translateX(1px); }
+}
+
+/* Footer motivational quote animation */
+@keyframes fadeSlide {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-quote-change {
+  animation: fadeSlide 0.5s ease-in-out;
+}
+
 /* Print styles for score report */
 @media print {
   /* Hide non-essential elements */

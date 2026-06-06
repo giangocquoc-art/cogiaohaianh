@@ -134,10 +134,10 @@ export function HomeView() {
 
   const { displayText: welcomeText, isTyping } = useTypingEffect('Chào mừng các em! 🎉', 70, 800)
 
-  const quizzesCounter = useAnimatedCounter(27, 1500)
-  const subjectsCounter = useAnimatedCounter(10, 1500)
-  const gradesCounter = useAnimatedCounter(5, 1000)
-  const studentsCounter = useAnimatedCounter(100, 2000)
+  const quizzesCounter = useAnimatedCounter(27, 1500, false)
+  const subjectsCounter = useAnimatedCounter(10, 1500, false)
+  const gradesCounter = useAnimatedCounter(5, 1000, false)
+  const studentsCounter = useAnimatedCounter(100, 2000, false)
 
   // Daily challenge state
   const [dailyChallenge, setDailyChallenge] = useState<{
@@ -340,10 +340,10 @@ export function HomeView() {
         <div className="particle-dot" style={{ top: '70%', left: '45%' }} />
 
         {/* Floating pencil/ruler emoji decorations */}
-        <div className="absolute top-8 left-12 text-3xl opacity-10 dark:opacity-8 animate-float pointer-events-none" style={{ animationDelay: '0.3s' }}>✏️</div>
-        <div className="absolute top-20 right-16 text-2xl opacity-10 dark:opacity-8 animate-drift-right pointer-events-none" style={{ animationDelay: '1.5s' }}>📏</div>
-        <div className="absolute bottom-16 right-24 text-2xl opacity-10 dark:opacity-8 animate-float pointer-events-none" style={{ animationDelay: '2s' }}>📐</div>
-        <div className="absolute bottom-28 left-20 text-xl opacity-10 dark:opacity-8 animate-drift-left pointer-events-none" style={{ animationDelay: '0.8s' }}>🖍️</div>
+        <div className="absolute top-8 left-12 text-3xl opacity-10 dark:opacity-40 animate-float pointer-events-none" style={{ animationDelay: '0.3s' }}>✏️</div>
+        <div className="absolute top-20 right-16 text-2xl opacity-10 dark:opacity-40 animate-drift-right pointer-events-none" style={{ animationDelay: '1.5s' }}>📏</div>
+        <div className="absolute bottom-16 right-24 text-2xl opacity-10 dark:opacity-40 animate-float pointer-events-none" style={{ animationDelay: '2s' }}>📐</div>
+        <div className="absolute bottom-28 left-20 text-xl opacity-10 dark:opacity-40 animate-drift-left pointer-events-none" style={{ animationDelay: '0.8s' }}>🖍️</div>
 
         {/* Wave SVG decoration at bottom */}
         <div className="absolute bottom-0 left-0 right-0 pointer-events-none opacity-30 dark:opacity-20">
@@ -407,12 +407,12 @@ export function HomeView() {
         </motion.div>
 
         {/* Slow-spinning background decoration */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-10 dark:opacity-8 animate-spin-slow">
+        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-10 dark:opacity-40 animate-spin-slow">
           <div className="w-full h-full rounded-full border-8 border-dashed border-orange-400" />
         </div>
 
         {/* School-themed decorative illustration area */}
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-1 opacity-20 dark:opacity-15 pointer-events-none select-none">
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-1 opacity-20 dark:opacity-40 pointer-events-none select-none">
           {schoolEmojis.map((emoji, i) => (
             <span
               key={i}
@@ -446,7 +446,7 @@ export function HomeView() {
 
           <div className="text-center sm:text-left flex-1">
             {/* Glassmorphism text area */}
-            <div className="bg-white/30 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-4 sm:p-6 -m-4 sm:-m-6">
+            <div className="bg-white/30 dark:bg-black/30 backdrop-blur-sm rounded-2xl p-4 sm:p-6 -m-4 sm:-m-6">
             {/* Welcome text with sparkles */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
               <span className="text-xl animate-sparkle">🌟</span>
@@ -470,7 +470,7 @@ export function HomeView() {
                     Chào {studentInfo.name}! 🎉
                   </h2>
                 </div>
-                <p className="text-orange-800 dark:text-orange-200 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
+                <p className="text-orange-800 dark:text-amber-100 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
                   Chúc em có những giờ học thật vui vẻ và thú vị!
                   Hãy chọn lớp để bắt đầu nhé!
                 </p>
@@ -481,7 +481,7 @@ export function HomeView() {
                   {welcomeText}
                   {isTyping && <span className="typing-cursor" />}
                 </h2>
-                <p className="text-orange-800 dark:text-orange-200 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
+                <p className="text-orange-800 dark:text-amber-100 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
                   Cô Giáo Hải Anh chúc các em có những giờ học thật vui vẻ và thú vị!
                   Hãy chọn lớp của các em để bắt đầu nhé!
                 </p>
@@ -492,9 +492,9 @@ export function HomeView() {
               <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400 animate-sparkle" />
               <span className="text-amber-700 dark:text-amber-300 font-semibold text-sm">Kiểm tra online</span>
               <span className="text-amber-400 dark:text-amber-500">•</span>
-              <span className="text-amber-700 dark:text-amber-300 font-semibold text-sm">Xem kết quả</span>
+              <span className="text-amber-700 dark:text-amber-200 font-semibold text-sm">Xem kết quả</span>
               <span className="text-amber-400 dark:text-amber-500">•</span>
-              <span className="text-amber-700 dark:text-amber-300 font-semibold text-sm">Học tập vui vẻ</span>
+              <span className="text-amber-700 dark:text-amber-200 font-semibold text-sm">Học tập vui vẻ</span>
               <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400 animate-sparkle" style={{ animationDelay: '0.5s' }} />
             </div>
           </div>
@@ -763,7 +763,7 @@ export function HomeView() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-2 lg:grid-cols-6 gap-4"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4"
         >
           {[
             {
@@ -815,6 +815,15 @@ export function HomeView() {
               gradient: 'from-teal-400 to-cyan-400',
               bgLight: 'bg-teal-50 dark:bg-teal-950/30',
               emoji: '🏆',
+            },
+            {
+              icon: <Users className="w-7 h-7" />,
+              title: 'Góc Phụ Huynh',
+              description: 'Xem tiến độ con và nhận lời khuyên từ Cô',
+              gradient: 'from-teal-500 to-emerald-500',
+              bgLight: 'bg-teal-50 dark:bg-teal-950/30',
+              emoji: '🧑‍🤝‍🧑',
+              action: () => setView('parentCorner'),
             },
           ].map((feature, index) => (
             <motion.button

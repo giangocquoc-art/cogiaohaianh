@@ -201,7 +201,7 @@ export function ProgressView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
+        className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-200 dark:border-emerald-700 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
       >
         {/* Decorative elements */}
         <div className="absolute top-2 left-3 text-2xl opacity-20 animate-bounce">📊</div>
@@ -219,7 +219,7 @@ export function ProgressView() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
+        className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-amber-800/40"
       >
         <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
           <Search className="w-4 h-4" />
@@ -329,7 +329,7 @@ export function ProgressView() {
             >
               <div className="text-2xl mb-1">📝</div>
               <p className="text-2xl font-bold text-amber-700">{stats.totalQuizzes}</p>
-              <p className="text-xs text-amber-600 font-medium">Bài đã làm</p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">Bài đã làm</p>
             </motion.div>
 
             <motion.div
@@ -355,7 +355,7 @@ export function ProgressView() {
               <p className={`text-2xl font-bold ${getScoreColor(stats.bestScore)}`}>
                 {stats.bestScore.toFixed(1)}
               </p>
-              <p className="text-xs text-orange-600 font-medium">Điểm cao nhất</p>
+              <p className="text-xs text-orange-600 dark:text-orange-400 font-medium">Điểm cao nhất</p>
             </motion.div>
 
             <motion.div
@@ -399,14 +399,14 @@ export function ProgressView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
+            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-amber-800/40"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 dark:text-emerald-300 mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
               Theo môn học 📚
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-xl p-4 text-center border bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 relative overflow-hidden">
+              <div className="rounded-xl p-4 text-center border bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-700 relative overflow-hidden">
                 <div className="absolute top-1 right-1 text-lg opacity-20">🔢</div>
                 <p className="text-2xl mb-1">🔢</p>
                 <p className="font-bold text-foreground">Toán</p>
@@ -450,7 +450,7 @@ export function ProgressView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
+            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-amber-800/40"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 dark:text-emerald-300 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
@@ -551,7 +551,7 @@ export function ProgressView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
+            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-amber-800/40"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 dark:text-emerald-300 mb-4 flex items-center gap-2">
               <Award className="w-5 h-5" />

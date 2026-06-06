@@ -442,6 +442,16 @@ export function QuizView() {
                 })}
               </div>
               <CircularTimer timeLeft={timeLeft} totalTime={totalTime} />
+              {/* Always-visible submit button */}
+              <Button
+                onClick={() => handleSubmit()}
+                disabled={submitting}
+                className="gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-md hover:shadow-lg transition-all shrink-0"
+              >
+                <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">{submitting ? 'Đang nộp...' : 'Nộp bài'}</span>
+                <span className="sm:hidden">{submitting ? '...' : 'Nộp'}</span>
+              </Button>
             </div>
           </div>
           <div className="flex items-center justify-between gap-2">

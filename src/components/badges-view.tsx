@@ -423,7 +423,7 @@ export function BadgesView() {
         <motion.p
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-sm text-muted-foreground dark:text-gray-400 text-center"
+          className="text-sm text-muted-foreground dark:text-amber-400 text-center"
         >
           {badgeCategories.find(c => c.id === activeCategory)?.description}
         </motion.p>
@@ -465,11 +465,11 @@ export function BadgesView() {
               {/* Badge emoji */}
               <div className="text-center mb-3 relative">
                 <motion.div
-                  className={`text-4xl sm:text-5xl ${isEarned ? '' : 'grayscale opacity-50'}`}
+                  className={`text-4xl sm:text-5xl ${isEarned ? '' : 'grayscale opacity-50 dark:grayscale dark:opacity-60'}`}
                   animate={isEarned ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                 >
-                  {isEarned ? badge.emoji : <Lock className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 lock-icon" />}
+                  {isEarned ? badge.emoji : <Lock className="w-10 h-10 mx-auto text-gray-500 dark:text-gray-400 lock-icon" />}
                 </motion.div>
                 {/* MỚI badge for recently earned */}
                 {isEarned && recentlyEarned.has(badge.id) && (
@@ -528,7 +528,7 @@ export function BadgesView() {
               ) : (
                 <div className="mt-2 flex items-center justify-center gap-1 opacity-40">
                   <Lock className="w-3 h-3 text-gray-400" />
-                  <span className="text-[10px] text-gray-400">Chưa mở khóa</span>
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">Chưa mở khóa</span>
                 </div>
               )}
             </motion.div>

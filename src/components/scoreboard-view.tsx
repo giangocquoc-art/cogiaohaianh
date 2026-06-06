@@ -448,7 +448,7 @@ export function ScoreboardView() {
                     )}
                   </p>
                   {allScores.length > pageSize && (
-                    <p className="text-xs text-muted-foreground dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground dark:text-amber-400">
                       Hiển thị {((currentPage - 1) * pageSize) + 1}–{Math.min(currentPage * pageSize, allScores.length)} / {allScores.length}
                     </p>
                   )}
@@ -482,7 +482,7 @@ export function ScoreboardView() {
                         >
                           <TableCell className="font-medium text-foreground">{entry.studentName}</TableCell>
                           <TableCell className="text-foreground">{entry.className}</TableCell>
-                          <TableCell className="hidden sm:table-cell text-muted-foreground dark:text-gray-400 text-xs">
+                          <TableCell className="hidden sm:table-cell text-muted-foreground dark:text-amber-400 text-xs">
                             {entry.schoolName || 'Chưa nhập'}
                           </TableCell>
                           <TableCell>
@@ -517,7 +517,7 @@ export function ScoreboardView() {
                               </span>
                             )}
                           </TableCell>
-                          <TableCell className="text-muted-foreground dark:text-gray-400 text-xs">{entry.date}</TableCell>
+                          <TableCell className="text-muted-foreground dark:text-amber-400 text-xs">{entry.date}</TableCell>
                         </TableRow>
                       )
                     })}

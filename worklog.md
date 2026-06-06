@@ -1631,3 +1631,312 @@ Stage Summary:
 - `/src/store/app-store.ts` - Added 'studyCalendar' to ViewType
 - `/src/app/page.tsx` - Added StudyCalendarView, MobileBottomNav, bottom padding
 - `/src/components/app-header.tsx` - Added CalendarDays import, "Lịch học" nav button, breadcrumb exclusion
+
+---
+Task ID: 30
+Agent: Bug Fix & UX Improvement Developer
+Task: Fix Profile Nav Button, Add Always-Visible Submit Button, Fix Stats Counter, Fix H1 Tags
+
+Work Log:
+- Read worklog.md and all relevant source files to understand project context
+- Fixed Profile Nav Button in app-header.tsx:
+  - Removed conditional spread operator pattern that caused React key issues and stale closure
+  - Profile nav item now always renders with stable key 'profile'
+  - When studentInfo exists: shows "Hồ sơ" label, navigates to profile view
+  - When no studentInfo: shows "Đăng nhập" label, still navigates to profile view (which has its own onboarding flow)
+- Added always-visible "Nộp bài" (Submit) button in quiz-view.tsx:
+  - Added persistent submit button in the sticky quiz header next to the timer
+  - Button is always visible regardless of which question the user is on
+  - Uses the same handleSubmit() function which shows confirmation dialog for unanswered questions
+  - Responsive design: shows "Nộp bài" on desktop, "Nộp" on mobile
+  - Shows loading state "Đang nộp..." / "..." while submitting
+  - Matches the existing green gradient styling of the original submit button
+  - Original submit button on last question is preserved for natural flow
+- Fixed Stats Section animated counter in home-view.tsx:
+  - Changed useAnimatedCounter calls to use startOnView: false
+  - Counters now start animating immediately on component mount instead of waiting for scroll into view
+  - This eliminates the "0" values that appeared before the stats section was scrolled into view
+- Verified H1 tag issue in home-view.tsx:
+  - Confirmed no h1 tags exist in home-view.tsx (all headings use h2/h3)
+  - Only h1 is in app-header.tsx for the site name "Cô Giáo Hải Anh" which is correct
+- All lint checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+**Bug Fixes:**
+1. Profile Nav Button: Always renders (no conditional spread), shows "Hồ sơ" or "Đăng nhập" based on studentInfo state
+2. Always-visible Submit Button: Persistent green "Nộp bài" button in quiz header next to timer
+3. Stats Counter: Starts immediately on mount (startOnView: false), no more "0" values
+4. H1 Tags: Verified home-view.tsx has no conflicting h1 tags (already uses h2/h3)
+
+---
+Task ID: 31
+Agent: Feature Developer
+Task: Add Góc Phụ Huynh (Parent's Corner) Feature
+
+Work Log:
+- Created `/src/app/api/parent-corner/route.ts` backend API:
+  - GET endpoint accepting `studentName` and `className` query params
+  - Queries `/api/progress` internally to get student results
+  - Calculates progressOverview: totalQuizzes, averageScore, bestScore, weakestSubject, strongestSubject, improvementTrend
+  - Generates AI recommendation using z-ai-web-dev-sdk LLM with Vietnamese prompt
+  - System prompt: Cô Giáo Hải Anh writing to parents, encouraging and constructive
+  - Falls back to static recommendation if AI call fails
+  - Calculates weeklyReport: array of last 7 days with date, quizCount, averageScore, subjects
+  - Returns 5 static parentTips for Vietnamese primary school parents
+  - Calculates subjectBreakdown: toan and nguVan with avgScore, quizCount, trend
+  - All text in Vietnamese
+- Created `/src/components/parent-corner-view.tsx` frontend component:
+  - Search form: student name + class name with Enter key support
+  - Progress Overview: 6 summary cards (total quizzes, average score, best score, trend, strongest subject, weakest subject)
+  - AI Recommendation Card: Beautiful card with Cô Giáo Hải Anh's personalized advice, "Đang phân tích..." loading state
+  - Subject Breakdown: Two cards (Toán + Ngữ văn) with scores, quiz counts, trends, and progress bars
+  - Weekly Report: Day-by-day summary for past 7 days with activity indicators and best day highlight
+  - Parent Tips: Expandable/collapsible cards with 5 practical study tips
+  - "💌 Gửi từ Cô Giáo Hải Anh" branding element in header and footer
+  - Warm emerald/teal color palette (different from student views)
+  - Dark mode with warm brown/amber tones
+  - Framer Motion animations throughout
+  - Fully responsive design
+  - All text in Vietnamese
+- Updated `/src/store/app-store.ts`: Added 'parentCorner' to ViewType
+- Updated `/src/app/page.tsx`: Added ParentCornerView import and viewMap entry
+- Updated `/src/components/app-header.tsx`:
+  - Added Users icon import
+  - Added "Phụ huynh" navigation button with Users icon
+  - Added parentCorner to breadcrumb exclusion condition
+- Updated `/src/components/home-view.tsx`:
+  - Added "🧑‍🤝‍🧑 Góc Phụ Huynh" feature card with Users icon and teal-to-emerald gradient
+  - Updated feature grid from 6 to 7 columns (lg:grid-cols-7)
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**New Feature: Góc Phụ Huynh (Parent's Corner)**
+1. Backend: GET /api/parent-corner route with AI-powered recommendations using z-ai-web-dev-sdk
+2. Frontend: ParentCornerView with search, progress overview, AI recommendation, subject breakdown, weekly report, parent tips
+3. Navigation: "Phụ huynh" button in header with Users icon
+4. Store: 'parentCorner' added to ViewType union
+5. Homepage: New "🧑‍🤝‍🧑 Góc Phụ Huynh" feature card
+6. Design: Warm emerald/teal colors for parents, dark mode with warm brown/amber tones
+7. Branding: "💌 Gửi từ Cô Giáo Hải Anh" element throughout
+
+**Files Created:**
+- `/src/app/api/parent-corner/route.ts`
+- `/src/components/parent-corner-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added parentCorner to ViewType
+- `/src/app/page.tsx` - Added ParentCornerView to viewMap
+- `/src/components/app-header.tsx` - Added Users icon and "Phụ huynh" nav button
+- `/src/components/home-view.tsx` - Added feature card and updated grid
+
+---
+Task ID: 32
+Agent: Styling Developer
+Task: Dark Mode Contrast Improvements, Hover States, Practice View Styling, CSS Micro-interactions, Footer Polish
+
+Work Log:
+- Fixed dark mode contrast issues across 4 view components:
+  - home-view.tsx: Changed sparkle/emoji opacity from `dark:opacity-8` to `dark:opacity-40` for decorative elements; improved text on gradient backgrounds from `dark:text-orange-200` to `dark:text-amber-100`; fixed glassmorphism container from `dark:bg-black/20` to `dark:bg-black/30`; changed sub-text from `dark:text-amber-300` to `dark:text-amber-200` for better visibility
+  - scoreboard-view.tsx: Replaced all `dark:text-gray-400` instances with `dark:text-amber-400` for warm dark mode palette consistency
+  - progress-view.tsx: Changed all `dark:border-border` to `dark:border-amber-800/40` for visible borders; replaced cold blue `bg-blue-50 dark:bg-blue-950/30` with warm orange `bg-orange-50 dark:bg-orange-950/30`; added dark mode text colors to stats labels; fixed `dark:border-emerald-800` to `dark:border-emerald-700` for better visibility
+  - badges-view.tsx: Changed locked badge icon color from `dark:text-gray-500` to `dark:text-gray-400`; swapped `text-gray-400 dark:text-gray-500` order for locked badge text; replaced `dark:text-gray-400` with `dark:text-amber-400` in category description; kept progress detail text visible with `dark:text-gray-400`
+- Added hover states for interactive elements:
+  - Footer quick links: Added `hover:text-orange-300 dark:hover:text-orange-400 transition-all duration-200`
+  - Social media links (Facebook, Email): Added `hover:scale-105 transition-all` for scale + color change
+  - Footer bottom text: Changed to `dark:text-amber-200/70` for better dark mode contrast
+- Improved practice view styling:
+  - Subject selection cards: Changed from flat `bg-orange-50` to gradient `bg-gradient-to-br from-orange-50 to-amber-50` (and pink→rose for literature)
+  - Answer feedback animations: Added `animate-[correctPulse_0.5s_ease-in-out]` for correct answers and `animate-[wrongShake_0.4s_ease-in-out]` for wrong answers
+  - Streak counter visual: Replaced text-only `🔥 + number` with styled pill badge including Flame icon + number + fire emoji in gradient background
+- Added CSS micro-interactions to globals.css:
+  - `.hover-lift`: translateY(-2px) on hover with shadow, including dark mode variant
+  - `.card-shadow-soft`: Consistent soft shadow for cards with dark mode variants
+  - `.gradient-text`: Text with gradient background-clip, lighter variant for dark mode
+  - `.animate-bounce-subtle`: Subtle 4px bounce (not aggressive like default)
+  - `.animate-pulse-soft`: Soft pulsing (scale 1.02, opacity 0.85) for gentle attention
+  - `.focus-ring`: Custom focus ring with warm orange color and glow
+  - `@keyframes correctPulse`: Green glow pulse for correct answer feedback
+  - `@keyframes wrongShake`: Horizontal shake animation for wrong answer feedback
+  - `@keyframes fadeSlide`: Footer quote change animation
+  - `.animate-quote-change`: Class for footer quote transitions
+- Improved footer styling:
+  - Added `hover:text-orange-300 dark:hover:text-orange-400` to all footer links
+  - Added `hover:scale-105 transition-all` to social media links
+  - Added `rel="noopener noreferrer"` to Facebook link (already present, confirmed)
+  - Added subtle fade-slide animation to motivational quotes
+  - Changed footer bottom text to warm amber tones in dark mode
+  - Added `relative overflow-hidden` to quote container
+- All lint checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+**Dark Mode Contrast Improvements:**
+1. home-view.tsx: Sparkle/emoji opacity increased from 8% to 40% in dark mode; text colors improved to amber-100 for better readability on gradient backgrounds
+2. scoreboard-view.tsx: Replaced cold gray-400 with warm amber-400 for all secondary text in dark mode
+3. progress-view.tsx: Replaced cold blue with warm orange for Math card; all borders changed to amber-800/40 for visibility; stats labels get dark mode color variants
+4. badges-view.tsx: Locked badge icons/text more visible; category descriptions use amber-400 in dark mode
+
+**Hover States Added:**
+1. Footer links: warm orange hover color with transition
+2. Social media links: scale-105 on hover with transition
+3. Footer bottom text: amber-200/70 in dark mode
+
+**Practice View Improvements:**
+1. Gradient backgrounds for subject selection cards (orange→amber, pink→rose)
+2. Answer feedback animations: correctPulse (green glow) and wrongShake (horizontal shake)
+3. Streak counter: styled pill with Flame icon, gradient background, fire emoji
+4. CSS keyframes for both animations added to globals.css
+
+**CSS Micro-interactions Added:**
+1. .hover-lift: translateY(-2px) with dark mode shadow
+2. .card-shadow-soft: Soft shadow with dark mode variants
+3. .gradient-text: Gradient background-clip with dark mode lighter variant
+4. .animate-bounce-subtle: Gentle 4px bounce
+5. .animate-pulse-soft: Soft scale/opacity pulse
+6. .focus-ring: Warm orange focus ring with glow
+7. @keyframes correctPulse + wrongShake + fadeSlide
+
+**Footer Polish:**
+1. Hover states for all links (warm orange, scale)
+2. Confirmed rel="noopener noreferrer" on Facebook link
+3. Fade-slide animation on motivational quotes
+4. Dark mode text uses warm amber tones
+
+---
+Task ID: 30 (Bug Fix Developer - Round 5)
+Agent: Full-stack Developer
+Task: Fix critical bugs and improve quiz UX
+
+Work Log:
+- Fixed Profile Nav Button in app-header.tsx: Changed from conditional spread operator to always-visible nav item. Shows "Đăng nhập" when no studentInfo, "Hồ sơ" when studentInfo exists. Both navigate to profile view.
+- Added Always-Visible "Nộp bài" Submit Button in quiz-view.tsx: Persistent green submit button in sticky quiz header, always visible regardless of question number. Shows confirmation dialog if unanswered questions exist.
+- Fixed Stats Section Counter in home-view.tsx: Changed useAnimatedCounter to start immediately on mount (startOnView: false) instead of waiting for scroll-into-view. No more "0" values.
+- Verified H1 Tags: No duplicate h1 found - home-view already uses h2/h3.
+
+Stage Summary:
+**Bug Fixes:**
+1. Profile nav button now always renders and works correctly
+2. Quiz submit button always visible in header (not just on last question)
+3. Stats counters animate immediately instead of showing "0"
+
+---
+Task ID: 31 (Feature Developer - Round 5)
+Agent: Full-stack Developer
+Task: Add Góc Phụ Huynh (Parent's Corner) feature
+
+Work Log:
+- Created /api/parent-corner/route.ts backend API:
+  - GET endpoint with studentName and className params
+  - Returns: progressOverview, aiRecommendation (z-ai-web-dev-sdk LLM), weeklyReport, parentTips, subjectBreakdown
+  - AI recommendation written as "Cô Giáo Hải Anh" addressing parents in Vietnamese
+- Created /src/components/parent-corner-view.tsx:
+  - Search form: student name + class name
+  - Progress Overview: 6 summary cards
+  - AI Recommendation Card with "Đang phân tích..." loading state
+  - Subject Breakdown: Toán + Ngữ văn cards with scores and trends
+  - Weekly Report: 7-day summary with activity indicators
+  - Parent Tips: 5 expandable tip cards
+  - "💌 Gửi từ Cô Giáo Hải Anh" branding
+  - Warm emerald/teal color scheme, dark mode with warm brown/amber
+- Updated app-store.ts: Added 'parentCorner' to ViewType
+- Updated page.tsx: Added ParentCornerView to viewMap
+- Updated app-header.tsx: Added "Phụ huynh" nav button with Users icon
+- Updated home-view.tsx: Added "🧑‍🤝‍🧑 Góc Phụ Huynh" feature card
+
+Stage Summary:
+**New Feature: Góc Phụ Huynh (Parent's Corner)**
+1. Backend: AI-powered study recommendations using z-ai-web-dev-sdk
+2. Frontend: Beautiful parent-friendly view with search, progress, AI advice, weekly report
+3. Navigation: "Phụ huynh" button in header + feature card on homepage
+4. Design: Warm emerald/teal colors, professional yet friendly
+
+---
+Task ID: 32 (Styling Developer - Round 5)
+Agent: Full-stack Developer
+Task: Improve styling, dark mode contrast, and micro-interactions
+
+Work Log:
+- Dark mode contrast improvements:
+  - home-view.tsx: Increased decorative opacity from dark:opacity-8 → dark:opacity-40, improved text colors
+  - scoreboard-view.tsx: Replaced cold dark:text-gray-400 with warm dark:text-amber-400
+  - progress-view.tsx: Changed dark:border-border to dark:border-amber-800/40, warm orange Math card
+  - badges-view.tsx: Fixed lock icon and text colors, better visibility
+- Added hover states:
+  - Footer links: hover:text-orange-300 with transition
+  - Social media links: hover:scale-105 with color change
+  - Footer bottom text: Warm amber tones in dark mode
+- Practice view styling improvements:
+  - Gradient backgrounds for grade/subject selection cards
+  - correctPulse and wrongShake CSS animations for answer feedback
+  - Redesigned streak counter with Flame icon + gradient background
+- Added CSS micro-interactions to globals.css:
+  - .hover-lift, .card-shadow-soft, .gradient-text, .animate-bounce-subtle, .animate-pulse-soft, .focus-ring
+  - @keyframes correctPulse, wrongShake, fadeSlide
+- Footer styling polish:
+  - Hover states with warm orange transitions
+  - Scale effect on social media hover
+  - Confirmed rel="noopener noreferrer" on Facebook link
+  - Subtle fade-slide animation on motivational quotes
+
+Stage Summary:
+**Styling Improvements:**
+1. Dark mode contrast fixed across 4 view components (warm amber instead of cold gray)
+2. Hover states added to all interactive elements in footer
+3. Practice view: gradient cards, answer feedback animations, streak counter
+4. 6 new CSS utility classes + 3 new keyframe animations
+5. Footer: better hover states, link security, animated quotes
+
+---
+Task ID: 33 (Main Agent - Round 5)
+Agent: Main
+Task: QA Testing + Bug Fixes + New Features + Styling Improvements (Round 5)
+
+Work Log:
+- Reviewed /home/z/my-project/worklog.md to assess project status
+- Ran ESLint - all checks pass
+- Launched comprehensive QA testing with agent-browser across all 15+ views
+- QA identified critical and medium bugs plus styling improvements
+- Launched 3 parallel agents:
+  - Task 30: Bug fixes (profile nav, quiz submit, stats counter)
+  - Task 31: New Góc Phụ Huynh feature with AI recommendations
+  - Task 32: Styling improvements (dark mode, hover states, CSS utilities)
+- Final QA testing confirmed all fixes and new features working
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**Current Project Status:**
+- 15 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard, TeacherDashboard, Profile, Lessons, Practice, StudyCalendar, ParentCorner
+- 12+ API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge, /xp, /leaderboard, /teacher, /explain, /lessons, /practice, /calendar, /parent-corner
+- Full dark mode with warm colors
+- 12 achievement badges + daily challenge + XP/level system
+- LLM-powered hints + AI answer explanations + AI parent recommendations
+- Sound effects, keyboard shortcuts, micro-interactions
+- Print/Share/Certificate features
+- Mobile bottom navigation + study calendar
+- No lint errors, no runtime errors
+
+**Bug Fixes (Round 5):**
+1. Profile nav button now always visible ("Đăng nhập" or "Hồ sơ")
+2. Quiz "Nộp bài" submit button always visible in header
+3. Stats section counters start immediately (no more zeros)
+4. Dark mode contrast improved across 4 view components
+
+**New Features (Round 5):**
+1. Góc Phụ Huynh (Parent's Corner): AI-powered study recommendations, progress overview, weekly report, parent tips
+
+**Styling Improvements (Round 5):**
+1. Dark mode contrast: warm amber tones replacing cold gray
+2. Hover states added to footer and interactive elements
+3. Practice view: gradient cards, answer animations, streak counter
+4. 6 new CSS utility classes + 3 keyframe animations
+5. Footer polish: hover effects, link security, animated quotes
+
+**Unresolved / Future Recommendations:**
+1. Could add URL-based routing for shareable links
+2. Could add more quiz questions (currently 248 for 27 quizzes)
+3. Could add multiplayer/competitive quiz mode
+4. Could add student avatar customization in profile view
+5. Could add teacher dashboard for managing quizzes and scores
+6. Could add VLM-powered question image understanding
+7. Footer counter briefly shows "0+" before IntersectionObserver triggers

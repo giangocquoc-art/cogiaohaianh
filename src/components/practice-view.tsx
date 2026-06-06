@@ -322,8 +322,8 @@ export function PracticeView() {
             </h3>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { key: 'toan', label: 'Toán', emoji: '🔢', color: 'from-orange-400 to-amber-400', bgSelected: 'bg-orange-50 dark:bg-orange-950/30 border-orange-400 dark:border-orange-500' },
-                { key: 'ngu-van', label: 'Ngữ văn', emoji: '📖', color: 'from-pink-400 to-rose-400', bgSelected: 'bg-pink-50 dark:bg-pink-950/30 border-pink-400 dark:border-pink-500' },
+                { key: 'toan', label: 'Toán', emoji: '🔢', color: 'from-orange-400 to-amber-400', bgSelected: 'bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border-orange-400 dark:border-orange-500' },
+                { key: 'ngu-van', label: 'Ngữ văn', emoji: '📖', color: 'from-pink-400 to-rose-400', bgSelected: 'bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 border-pink-400 dark:border-pink-500' },
               ].map((subject) => (
                 <motion.button
                   key={subject.key}
@@ -454,10 +454,11 @@ export function PracticeView() {
                 key={currentStreak}
                 initial={{ scale: 0.5 }}
                 animate={{ scale: 1 }}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 rounded-full px-3 py-1.5"
               >
-                <span className="text-lg" style={{ fontSize: `${Math.min(1 + currentStreak * 0.15, 2)}rem` }}>🔥</span>
+                <Flame className="w-4 h-4 text-orange-500" />
                 <span className="font-bold text-orange-600 dark:text-orange-400 text-sm">{currentStreak}</span>
+                <span className="text-orange-500 text-xs">🔥</span>
               </motion.div>
             )}
 
@@ -539,9 +540,9 @@ export function PracticeView() {
                         disabled={isAnswered}
                         className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${
                           showCorrect
-                            ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-400 dark:border-emerald-500 shadow-md'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-400 dark:border-emerald-500 shadow-md animate-[correctPulse_0.5s_ease-in-out]'
                             : showWrong
-                            ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-400 dark:border-rose-500 shadow-md'
+                            ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-400 dark:border-rose-500 shadow-md animate-[wrongShake_0.4s_ease-in-out]'
                             : isSelected && !isAnswered
                             ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-400 dark:border-orange-500 shadow-md'
                             : 'bg-white dark:bg-card border-gray-200 dark:border-border hover:border-orange-300 dark:hover:border-orange-700'

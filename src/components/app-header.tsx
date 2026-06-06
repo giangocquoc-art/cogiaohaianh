@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User, Zap, BookMarked, CalendarDays } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList, User, Zap, BookMarked, CalendarDays, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -67,7 +67,8 @@ export function AppHeader() {
     { view: 'leaderboard' as const, icon: Crown, label: 'Xếp hạng', action: () => useAppStore.getState().setView('leaderboard') },
     { view: 'progress' as const, icon: BarChart3, label: 'Tiến độ', action: () => useAppStore.getState().setView('progress') },
     { view: 'teacherDashboard' as const, icon: ClipboardList, label: 'Giáo viên', action: () => useAppStore.getState().setView('teacherDashboard') },
-    ...(studentInfo ? [{ view: 'profile' as const, icon: User, label: 'Hồ sơ', action: () => useAppStore.getState().setView('profile') }] : []),
+    { view: 'parentCorner' as const, icon: Users, label: 'Phụ huynh', action: () => useAppStore.getState().setView('parentCorner') },
+    { view: 'profile' as const, icon: User, label: studentInfo ? 'Hồ sơ' : 'Đăng nhập', action: () => useAppStore.getState().setView('profile') },
   ]
 
   return (
@@ -242,7 +243,7 @@ export function AppHeader() {
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && currentView !== 'practice' && currentView !== 'lessons' && currentView !== 'studyCalendar' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && currentView !== 'profile' && currentView !== 'practice' && currentView !== 'lessons' && currentView !== 'studyCalendar' && currentView !== 'parentCorner' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}

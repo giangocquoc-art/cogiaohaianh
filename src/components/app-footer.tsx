@@ -190,7 +190,7 @@ export function AppFooter() {
                 <button
                   key={link.label}
                   onClick={link.action}
-                  className="flex items-center gap-2 text-white/80 hover:text-white text-sm hover:translate-x-1 transition-all duration-200 link-underline"
+                  className="flex items-center gap-2 text-white/80 hover:text-orange-300 dark:hover:text-orange-400 text-sm hover:translate-x-1 transition-all duration-200 link-underline"
                 >
                   {link.icon}
                   <span>{link.label}</span>
@@ -207,14 +207,14 @@ export function AppFooter() {
                 href="https://www.facebook.com/hattieu.tran.1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 rounded-full px-4 py-2 transition-colors text-sm w-fit"
+                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 hover:scale-105 rounded-full px-4 py-2 transition-all text-sm w-fit"
               >
                 <Facebook className="w-4 h-4" />
                 <span>Facebook</span>
               </a>
               <a
                 href="mailto:cohaianh@gmail.com"
-                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 rounded-full px-4 py-2 transition-colors text-sm w-fit"
+                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 hover:scale-105 rounded-full px-4 py-2 transition-all text-sm w-fit"
               >
                 <Mail className="w-4 h-4" />
                 <span>Email</span>
@@ -231,15 +231,15 @@ export function AppFooter() {
           </div>
 
           {/* Motivational quote */}
-          <div className="mt-4 py-3 px-4 bg-white/10 rounded-2xl text-center">
-            <p className="text-white/90 text-sm italic font-medium min-h-[1.5em] transition-all duration-500">
+          <div className="mt-4 py-3 px-4 bg-white/10 rounded-2xl text-center relative overflow-hidden">
+            <p className="text-white/90 text-sm italic font-medium min-h-[1.5em] transition-all duration-500 animate-[fadeSlide_0.5s_ease-in-out]">
               &ldquo;{motivationalQuotes[quoteIndex]}&rdquo;
             </p>
           </div>
 
           {/* Divider */}
           <div className="border-t border-white/20 mt-4 pt-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-white/70 text-xs">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-white/70 dark:text-amber-200/70 text-xs">
               <p className="flex items-center gap-1">
                 Made with <Heart className="w-3 h-3 text-red-300 fill-red-300 animate-pulse-soft" /> Cô Giáo Hải Anh
               </p>
