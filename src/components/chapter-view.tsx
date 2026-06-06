@@ -2,9 +2,10 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, ArrowRight, Loader2, ChevronDown, Lightbulb } from 'lucide-react'
+import { Clock, ArrowRight, Loader2, ChevronDown, Lightbulb, CheckCircle2, BookOpen, GraduationCap, Pencil, School } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
+import { playClickSound } from '@/lib/sounds'
 
 interface QuizInfo {
   id: string
@@ -84,6 +85,7 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Các số đến 100',
       'Đọc, viết, so sánh số đến 100',
       'Phân tích số hàng chục, hàng đơn vị',
+      'Sắp xếp số theo thứ tự tăng, giảm',
     ],
   },
   '2-toan-chuong-2': {
@@ -96,6 +98,7 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Phép cộng có nhớ trong phạm vi 100',
       'Cộng nhẩm',
       'Giải toán có lời văn',
+      'Tính chất giao hoán của phép cộng',
     ],
   },
   '2-toan-chuong-3': {
@@ -108,6 +111,7 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Phép trừ có nhớ trong phạm vi 100',
       'Trừ nhẩm',
       'Kiểm tra kết quả bằng phép cộng',
+      'Mối quan hệ giữa phép cộng và phép trừ',
     ],
   },
   // Lớp 3 Toán
@@ -121,6 +125,7 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Các số đến 1000',
       'Phân tích số: hàng trăm, chục, đơn vị',
       'So sánh số đến 1000',
+      'Sắp xếp số lớn và tìm số giữa',
     ],
   },
   // Lớp 1 Ngữ văn
@@ -134,6 +139,7 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Nhận diện các chữ cái',
       'Ghép chữ thành tiếng',
       'Đọc tiếng, từ ngữ đơn giản',
+      'Luyện phát âm đúng các âm khó',
     ],
   },
   '1-ngu-van-chuong-2': {
@@ -146,6 +152,7 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Nhận biết vần và tiếng',
       'Đánh vần tiếng',
       'Đọc trơn từ và câu ngắn',
+      'Phân biệt âm đầu và vần',
     ],
   },
   '1-ngu-van-chuong-3': {
@@ -158,13 +165,262 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
       'Tập viết chữ thường',
       'Nét chữ đúng quy định',
       'Viết từ, câu đơn giản',
+      'Giữ vở sạch đẹp, viết đúng dòng',
+    ],
+  },
+  // Lớp 2 Ngữ văn
+  '2-ngu-van-chuong-1': {
+    tips: [
+      'Đọc chậm rãi từng câu, gạch chân từ mới để tra nghĩa sau.',
+      'Sau khi đọc xong, tự kể lại nội dung bằng lời của mình.',
+      'Để ý các từ ngữ miêu tả trong bài: màu sắc, hình dáng, âm thanh.',
+    ],
+    keyPoints: [
+      'Đọc hiểu văn bản ngắn (5-7 câu)',
+      'Xác định nhân vật và sự việc chính',
+      'Trả lời câu hỏi về nội dung bài đọc',
+      'Nhận biết từ ngữ chỉ sự vật, hoạt động',
+    ],
+  },
+  '2-ngu-van-chuong-2': {
+    tips: [
+      'Danh từ chỉ người, vật, sự vật. Động từ chỉ hoạt động, trạng thái.',
+      'Tìm thêm từ đồng nghĩa và từ trái nghĩa để làm giàu vốn từ.',
+      'Mỗi ngày học 3-5 từ mới và đặt câu với từ đó.',
+    ],
+    keyPoints: [
+      'Nhận biết danh từ và động từ',
+      'Từ chỉ sự vật, hoạt động, đặc điểm',
+      'Mở rộng vốn từ theo chủ đề',
+      'Đặt câu với từ đã học',
+    ],
+  },
+  '2-ngu-van-chuong-3': {
+    tips: [
+      'Viết câu theo mẫu: Ai làm gì? Ai thế nào? Cái gì thế nào?',
+      'Nối các câu liên quan thành đoạn văn ngắn (3-4 câu).',
+      'Nhớ viết hoa chữ cái đầu câu và đặt dấu chấm hết câu.',
+    ],
+    keyPoints: [
+      'Viết câu đúng cấu trúc cơ bản',
+      'Nối câu thành đoạn văn ngắn',
+      'Viết hoa đầu câu, dấu chấm hết câu',
+      'Viết đoạn văn tả người, vật quen thuộc',
+    ],
+  },
+  // Lớp 3 Ngữ văn
+  '3-ngu-van-chuong-1': {
+    tips: [
+      'Đọc kỹ bài, gạch chân câu hỏi rồi tìm câu trả lời trong bài.',
+      'Phân biệt ý chính và ý phụ: ý chính là nội dung quan trọng nhất.',
+      'Tóm tắt bài đọc bằng 2-3 câu ngắn gọn.',
+    ],
+    keyPoints: [
+      'Đọc hiểu văn bản dài hơn (8-12 câu)',
+      'Tìm ý chính và ý phụ trong bài',
+      'Nhận biết hình ảnh so sánh, nhân hóa',
+      'Nói được cảm xúc sau khi đọc bài',
+    ],
+  },
+  '3-ngu-van-chuong-2': {
+    tips: [
+      'Tính từ miêu tả đặc điểm: to, nhỏ, xinh, đẹp,... Đặt câu miêu tả đồ vật xung quanh.',
+      'Nhận biết câu kể Ai làm gì? Ai thế nào? Cái gì thế nào?',
+      'Tìm chủ ngữ và vị ngữ trong câu để hiểu câu rõ hơn.',
+    ],
+    keyPoints: [
+      'Nhận biết và sử dụng tính từ',
+      'Các kiểu câu kể cơ bản',
+      'Chủ ngữ và vị ngữ',
+      'Câu kể Ai làm gì? Ai thế nào?',
+    ],
+  },
+  '3-ngu-van-chuong-3': {
+    tips: [
+      'Viết đoạn văn theo trình tự: mở đoạn → nội dung chính → kết đoạn.',
+      'Mỗi đoạn văn nên có 4-6 câu, xoay quanh một ý chính.',
+      'Sử dụng từ nối: đầu tiên, sau đó, cuối cùng,... để liên kết câu.',
+    ],
+    keyPoints: [
+      'Viết đoạn văn tả người, vật, cảnh',
+      'Cấu trúc đoạn văn: mở, thân, kết',
+      'Dùng từ ngữ sinh động, hình ảnh',
+      'Kiểm tra lỗi chính tả và dấu câu',
+    ],
+  },
+  // Lớp 4 Toán
+  '4-toan-chuong-1': {
+    tips: [
+      'Số đến 100000 gồm hàng trăm nghìn, chục nghìn, nghìn, trăm, chục, đơn vị.',
+      'VD: 52347 = 5 chục nghìn + 2 nghìn + 3 trăm + 4 chục + 7 đơn vị.',
+      'Tập đọc số theo nhóm 3 chữ số từ phải sang trái để dễ đọc số lớn.',
+    ],
+    keyPoints: [
+      'Các số đến 100000',
+      'Đọc, viết và so sánh số đến 100000',
+      'Phân tích số theo hàng: trăm nghìn, chục nghìn, nghìn',
+      'Sắp xếp số từ bé đến lớn và ngược lại',
+    ],
+  },
+  '4-toan-chuong-2': {
+    tips: [
+      'Cộng trừ các số lớn: thực hiện từ hàng đơn vị đến hàng cao nhất.',
+      'Khi cộng có nhớ, nhớ sang hàng bên trái. Khi trừ không đủ, mượn từ hàng bên trái.',
+      'Luôn ước lượng kết quả trước khi tính: 48000 + 32000 ≈ 80000.',
+    ],
+    keyPoints: [
+      'Phép cộng các số đến 100000',
+      'Phép trừ các số đến 100000',
+      'Cộng trừ có nhớ qua nhiều hàng',
+      'Giải toán có lời văn với số lớn',
+    ],
+  },
+  '4-toan-chuong-3': {
+    tips: [
+      'Nhân số nhiều chữ số với số một chữ số: nhân từ hàng đơn vị, nhớ sang hàng bên.',
+      'Chia số nhiều chữ số cho số một chữ số: ước lượng trước rồi chia từng bước.',
+      'Kiểm tra: nhân → thử lại bằng chia, và ngược lại.',
+    ],
+    keyPoints: [
+      'Phép nhân số nhiều chữ số với số một chữ số',
+      'Phép chia số nhiều chữ số cho số một chữ số',
+      'Nhân chia có dư và không dư',
+      'Giải toán có lời văn về nhân và chia',
+    ],
+  },
+  // Lớp 4 Ngữ văn
+  '4-ngu-van-chuong-1': {
+    tips: [
+      'Đọc bài 2 lần: lần đầu hiểu ý chính, lần thứ hai ghi chú chi tiết.',
+      'Tìm các chi tiết quan trọng: nhân vật, thời gian, địa điểm, sự việc.',
+      'Rút ra bài học hoặc thông điệp từ bài đọc.',
+    ],
+    keyPoints: [
+      'Đọc hiểu văn bản kể chuyện, miêu tả',
+      'Nhận biết chi tiết quan trọng và phụ',
+      'Xác định chủ đề và thông điệp bài đọc',
+      'Phân tích nhân vật qua hành động, lời nói',
+    ],
+  },
+  '4-ngu-van-chuong-2': {
+    tips: [
+      'Danh từ chỉ đơn vị: con, cái, chiếc, bông,... Ghép đúng danh từ với đơn vị.',
+      'Tính từ chỉ đặc điểm và so sánh: cao hơn, đẹp nhất, nhanh như gió.',
+      'Quan hệ từ: vì... nên, nếu... thì, tuy... nhưng - giúp nối câu logic.',
+    ],
+    keyPoints: [
+      'Danh từ chỉ đơn vị và cách sử dụng',
+      'Tính từ so sánh hơn và nhất',
+      'Quan hệ từ và cách nối câu',
+      'Câu ghép và các vế câu',
+    ],
+  },
+  '4-ngu-van-chuong-3': {
+    tips: [
+      'Bài miêu tả cần có: giới thiệu → tả chi tiết → cảm nghĩ. Tả từ tổng thể đến chi tiết.',
+      'Dùng từ gợi hình, gợi cảm: lấp lánh, rực rỡ, êm ái,... để bài viết sinh động.',
+      'Tả đồ vật: hình dáng → màu sắc → công dụng. Tả cây: thân → lá → hoa → quả.',
+    ],
+    keyPoints: [
+      'Viết bài văn miêu tả đồ vật, cây cối',
+      'Dàn bài miêu tả: mở bài, thân bài, kết bài',
+      'Sử dụng từ ngữ gợi hình, so sánh, nhân hóa',
+      'Biết cách quan sát và trình bày theo thứ tự',
+    ],
+  },
+  // Lớp 5 Toán
+  '5-toan-chuong-1': {
+    tips: [
+      'Phân số có tử số và mẫu số. Tử số trên, mẫu số dưới. VD: 3/4.',
+      'Số thập phân viết bằng dấu phẩy: 0,5 = 5/10 = 1/2.',
+      'Đổi phân số thành số thập phân: chia tử cho mẫu. VD: 3/4 = 0,75.',
+    ],
+    keyPoints: [
+      'Nhận biết phân số và số thập phân',
+      'Đổi phân số thành số thập phân và ngược lại',
+      'So sánh phân số và số thập phân',
+      'Đọc, viết số thập phân đúng cách',
+    ],
+  },
+  '5-toan-chuong-2': {
+    tips: [
+      'Cộng trừ phân số: quy đồng mẫu số trước, rồi cộng trừ tử số.',
+      'Nhân phân số: nhân tử với tử, mẫu với mẫu. Rút gọn kết quả.',
+      'Chia phân số: đảo ngược phân số sau rồi nhân. VD: 3/4 ÷ 2/5 = 3/4 × 5/2 = 15/8.',
+    ],
+    keyPoints: [
+      'Cộng và trừ phân số (quy đồng mẫu số)',
+      'Nhân phân số và rút gọn',
+      'Chia phân số (nhân với phân số đảo)',
+      'Giải toán có lời văn với phân số',
+    ],
+  },
+  '5-toan-chuong-3': {
+    tips: [
+      'Đơn vị đo độ dài: km, m, dm, cm, mm. Nhớ: 1km = 1000m, 1m = 10dm.',
+      'Đơn vị đo khối lượng: tấn, tạ, yến, kg, g. Nhớ: 1tấn = 10tạ, 1tạ = 10yến.',
+      'Đổi đơn vị: đơn vị lớn nhân 10/100/1000, đơn vị nhỏ chia 10/100/1000.',
+    ],
+    keyPoints: [
+      'Các đơn vị đo độ dài và bảng đơn vị',
+      'Các đơn vị đo khối lượng và bảng đơn vị',
+      'Đổi đơn vị đo đại lượng',
+      'Tính chu vi và diện tích hình cơ bản',
+    ],
+  },
+  // Lớp 5 Ngữ văn
+  '5-ngu-van-chuong-1': {
+    tips: [
+      'Đọc bài văn nghị luận: tìm luận điểm chính và các luận chứng hỗ trợ.',
+      'Phân biệt văn bản kể chuyện, miêu tả và nghị luận qua cách trình bày.',
+      'Ghi chép ý chính bằng sơ đồ tư duy để dễ nhớ nội dung bài dài.',
+    ],
+    keyPoints: [
+      'Đọc hiểu văn bản nghị luận cơ bản',
+      'Nhận biết luận điểm và luận chứng',
+      'Phân tích cách dẫn chứng và lập luận',
+      'Tóm tắt nội dung văn bản phức tạp',
+    ],
+  },
+  '5-ngu-van-chuong-2': {
+    tips: [
+      'Nghĩa của từ: nghĩa đen (nghĩa gốc) và nghĩa bóng (nghĩa chuyển). VD: "đường" = con đường / con đường học tập.',
+      'Từ nhiều nghĩa: một từ có nhiều nghĩa tùy ngữ cảnh. Xem câu để hiểu đúng nghĩa.',
+      'Thành ngữ là cụm từ cố định có nghĩa bóng: "mưa như trút nước", "nhẹ như lông hồng".',
+    ],
+    keyPoints: [
+      'Nghĩa đen và nghĩa bóng của từ',
+      'Từ nhiều nghĩa và cách xác định',
+      'Thành ngữ và cách hiểu nghĩa',
+      'Mở rộng vốn từ theo chủ đề',
+    ],
+  },
+  '5-ngu-van-chuong-3': {
+    tips: [
+      'Bài nghị luận cần: mở bài (nêu vấn đề) → thân bài (lập luận) → kết bài (khẳng định).',
+      'Mỗi luận điểm cần có dẫn chứng cụ thể: sự thật, con số, ví dụ thực tế.',
+      'Dùng từ nối logic: thứ nhất, thứ hai, ngoài ra, tóm lại,... để bài viết chặt chẽ.',
+    ],
+    keyPoints: [
+      'Viết bài văn nghị luận cơ bản',
+      'Dàn bài nghị luận: mở, thân, kết',
+      'Cách đưa dẫn chứng và lập luận',
+      'Sử dụng từ nối và liên kết câu',
     ],
   },
 }
 
+// Difficulty levels per chapter
+const chapterDifficulty: Record<number, { label: string; class: string; emoji: string }> = {
+  1: { label: 'Dễ', class: 'difficulty-easy', emoji: '🟢' },
+  2: { label: 'Trung bình', class: 'difficulty-medium', emoji: '🟡' },
+  3: { label: 'Trung bình', class: 'difficulty-medium', emoji: '🟡' },
+  4: { label: 'Khó', class: 'difficulty-hard', emoji: '🔴' },
+  5: { label: 'Khó', class: 'difficulty-hard', emoji: '🔴' },
+}
+
 function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
   const [isOpen, setIsOpen] = useState(false)
-  // Build the key for studyTips map - chapter is like "chuong-1", we need "1-toan-chuong-1"
   const chapterNum = quiz.chapter.replace('chuong-', '')
   const tipKey = `${quiz.grade}-${quiz.subject}-chuong-${chapterNum}`
   const tipsData = studyTips[tipKey]
@@ -244,6 +500,7 @@ export function ChapterView() {
   const [formClass, setFormClass] = useState(studentInfo?.className || '')
   const [formSchool, setFormSchool] = useState(studentInfo?.schoolName || '')
   const [pendingQuizId, setPendingQuizId] = useState<string | null>(null)
+  const [formStep, setFormStep] = useState(1) // 1: name, 2: class/school
 
   useEffect(() => {
     if (!selectedGrade || !selectedSubject) return
@@ -269,6 +526,7 @@ export function ChapterView() {
 
   const handleStartQuiz = (quizId: string) => {
     if (!formName || !formClass) {
+      setFormStep(1)
       setPendingQuizId(quizId)
       setShowStudentForm(true)
       return
@@ -310,6 +568,11 @@ export function ChapterView() {
     show: { opacity: 1, y: 0 },
   }
 
+  // Calculate progress (mock based on studentInfo having data)
+  const completedCount = 0 // Would need API to check actual completions
+  const totalChapters = quizzes.length
+  const progressPercent = totalChapters > 0 ? Math.round((completedCount / totalChapters) * 100) : 0
+
   return (
     <div className="space-y-6">
       {/* Student info form modal */}
@@ -324,56 +587,117 @@ export function ChapterView() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl"
+            className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden"
           >
-            <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-orange-700 mb-4 text-center">
-              Nhập thông tin của bạn ✏️
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1">
-                  Họ và tên <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Nhập họ và tên..."
-                  className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base"
-                />
+            {/* Decorative top strip */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400" />
+
+            {/* Step indicator */}
+            <div className="step-indicator mb-6 px-4">
+              <div className={`step-dot ${formStep >= 1 ? (formStep > 1 ? 'completed' : 'active') : 'inactive'}`}>
+                {formStep > 1 ? '✓' : '👤'}
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1">
-                  Lớp <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formClass}
-                  onChange={(e) => setFormClass(e.target.value)}
-                  placeholder="VD: 1A, 2B..."
-                  className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base"
-                />
+              <div className={`step-line ${formStep > 1 ? 'completed' : ''}`} />
+              <div className={`step-dot ${formStep >= 2 ? 'active' : 'inactive'}`}>
+                🏫
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1">
-                  Trường
-                </label>
-                <input
-                  type="text"
-                  value={formSchool}
-                  onChange={(e) => setFormSchool(e.target.value)}
-                  placeholder="Nhập tên trường..."
-                  className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base"
-                />
-              </div>
-              <Button
-                onClick={handleFormSubmit}
-                disabled={!formName.trim() || !formClass.trim()}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 text-base rounded-xl"
-              >
-                Bắt đầu làm bài →
-              </Button>
             </div>
+
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-orange-700 mb-4 text-center">
+              {formStep === 1 ? 'Nhập thông tin của bạn ✏️' : 'Thông tin lớp học 🏫'}
+            </h3>
+
+            <AnimatePresence mode="wait">
+              {formStep === 1 ? (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="block text-sm font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
+                      <Pencil className="w-3.5 h-3.5 text-orange-500" />
+                      Họ và tên <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      placeholder="Nhập họ và tên..."
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base transition-colors"
+                      autoFocus
+                    />
+                  </div>
+                  <Button
+                    onClick={() => {
+                      if (formName.trim()) setFormStep(2)
+                    }}
+                    disabled={!formName.trim()}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 text-base rounded-xl"
+                  >
+                    Tiếp theo →
+                  </Button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="block text-sm font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
+                      <GraduationCap className="w-3.5 h-3.5 text-orange-500" />
+                      Lớp <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formClass}
+                      onChange={(e) => setFormClass(e.target.value)}
+                      placeholder="VD: 1A, 2B..."
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base transition-colors"
+                      autoFocus
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
+                      <School className="w-3.5 h-3.5 text-orange-500" />
+                      Trường
+                    </label>
+                    <input
+                      type="text"
+                      value={formSchool}
+                      onChange={(e) => setFormSchool(e.target.value)}
+                      placeholder="Nhập tên trường..."
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base transition-colors"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => setFormStep(1)}
+                      className="flex-1 py-3 text-base rounded-xl"
+                    >
+                      ← Quay lại
+                    </Button>
+                    <Button
+                      onClick={handleFormSubmit}
+                      disabled={!formName.trim() || !formClass.trim()}
+                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 text-base rounded-xl"
+                    >
+                      Bắt đầu →
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Fun decorative elements */}
+            <div className="absolute -bottom-2 -right-2 text-4xl opacity-10 select-none pointer-events-none">✏️</div>
+            <div className="absolute -top-1 -left-1 text-3xl opacity-10 select-none pointer-events-none">📚</div>
           </motion.div>
         </motion.div>
       )}
@@ -382,13 +706,50 @@ export function ChapterView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} border-2 border-current/10 rounded-2xl p-4 sm:p-6 text-center`}
+        className={`${gc.bg} border-2 border-current/10 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
       >
-        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl ${gc.text}`}>
+        {/* Decorative elements */}
+        <div className="absolute top-2 right-4 text-lg opacity-15 animate-float">📖</div>
+        <div className="absolute bottom-2 left-4 text-lg opacity-15 animate-float" style={{ animationDelay: '0.5s' }}>✏️</div>
+
+        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl ${gc.text} relative z-10`}>
           {subjectEmoji} {subjectName} - Lớp {selectedGrade}
         </h2>
-        <p className={`${gc.text} opacity-70 mt-1 text-sm`}>Chọn chương để làm bài kiểm tra</p>
+        <p className={`${gc.text} opacity-70 mt-1 text-sm relative z-10`}>Chọn chương để làm bài kiểm tra</p>
       </motion.div>
+
+      {/* Chapter Progress Bar */}
+      {!loading && quizzes.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl p-4 shadow-sm border"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-orange-500" />
+              Tiến độ chương
+            </span>
+            <span className="text-sm text-muted-foreground">
+              <span className="font-bold text-emerald-600">{completedCount}</span> / {totalChapters} chương
+            </span>
+          </div>
+          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="progress-bar-gradient h-full"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mt-1.5">
+            {completedCount === 0
+              ? '📝 Chưa làm bài nào. Hãy bắt đầu nhé!'
+              : completedCount === totalChapters
+                ? '🎉 Đã hoàn thành tất cả chương! Tuyệt vời!'
+                : `💪 Đã hoàn thành ${completedCount}/${totalChapters} chương. Tiếp tục nào!`
+            }
+          </p>
+        </motion.div>
+      )}
 
       {/* Student quick info (if already entered) */}
       {studentInfo && (
@@ -405,7 +766,10 @@ export function ChapterView() {
       {/* Loading state */}
       {loading && (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <Loader2 className="w-10 h-10 text-orange-400 animate-spin" />
+          <div className="fun-loading">
+            <span className="pencil-icon">✏️</span>
+            <span className="book-icon">📚</span>
+          </div>
           <p className="text-muted-foreground">Đang tải danh sách bài kiểm tra...</p>
         </div>
       )}
@@ -439,50 +803,69 @@ export function ChapterView() {
           animate="show"
           className="space-y-4"
         >
-          {quizzes.map((quiz, index) => (
-            <motion.div
-              key={quiz.id}
-              variants={item}
-              whileHover={{ scale: 1.01, x: 4 }}
-              className="bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                      Chương {index + 1}
-                    </span>
-                    {quiz.duration > 0 && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Clock className="w-3 h-3" />
-                        {quiz.duration} phút
+          {quizzes.map((quiz, index) => {
+            const diff = chapterDifficulty[(index % 5) + 1] || chapterDifficulty[1]
+            return (
+              <motion.div
+                key={quiz.id}
+                variants={item}
+                whileHover={{ scale: 1.01, x: 4 }}
+                className="bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
+              >
+                {/* Subtle left accent */}
+                <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-orange-400 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                        Chương {index + 1}
                       </span>
-                    )}
-                    {quiz._count?.questions && (
-                      <span className="text-xs text-muted-foreground">
-                        📝 {quiz._count.questions} câu
+
+                      {/* Difficulty badge */}
+                      <span className={`${diff.class} text-xs px-2 py-0.5 rounded-full font-semibold`}>
+                        {diff.emoji} {diff.label}
                       </span>
-                    )}
+
+                      {quiz.duration > 0 && (
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Clock className="w-3 h-3" />
+                          ~{quiz.duration} phút
+                        </span>
+                      )}
+                      {quiz._count?.questions && (
+                        <span className="text-xs text-muted-foreground">
+                          📝 {quiz._count.questions} câu
+                        </span>
+                      )}
+
+                      {/* Completed badge placeholder */}
+                      {/* When student has submitted results, show: */}
+                      {/* <span className="completed-badge">✓ Đã làm</span> */}
+                    </div>
+                    <h3 className="font-semibold text-lg text-foreground">
+                      {quiz.chapterName}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mt-0.5">
+                      {quiz.title}
+                    </p>
+                    {/* Study tips section */}
+                    <StudyTipsSection quiz={quiz} />
                   </div>
-                  <h3 className="font-semibold text-lg text-foreground">
-                    {quiz.chapterName}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mt-0.5">
-                    {quiz.title}
-                  </p>
-                  {/* Study tips section */}
-                  <StudyTipsSection quiz={quiz} />
+                  <Button
+                    onClick={() => {
+                      playClickSound()
+                      handleStartQuiz(quiz.id)
+                    }}
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-xl text-base shrink-0 gap-2 shadow-md hover-glow"
+                  >
+                    Kiểm tra online
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
                 </div>
-                <Button
-                  onClick={() => handleStartQuiz(quiz.id)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-xl text-base shrink-0 gap-2 shadow-md"
-                >
-                  Kiểm tra online
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            )
+          })}
         </motion.div>
       )}
     </div>

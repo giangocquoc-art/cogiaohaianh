@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ViewType = 'home' | 'subjects' | 'chapters' | 'quiz' | 'result' | 'scoreboard'
+export type ViewType = 'home' | 'subjects' | 'chapters' | 'quiz' | 'result' | 'scoreboard' | 'progress'
 
 export interface StudentInfo {
   name: string

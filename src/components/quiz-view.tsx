@@ -2,11 +2,12 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, ChevronLeft, ChevronRight, Send, AlertCircle, Pencil, Check } from 'lucide-react'
+import { Clock, ChevronLeft, ChevronRight, Send, AlertCircle, Pencil, Check, Lightbulb, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useToast } from '@/hooks/use-toast'
+import { playClickSound } from '@/lib/sounds'
 
 interface Question {
   id: string
@@ -22,7 +23,15 @@ interface QuizData {
   id: string
   title: string
   duration: number
+  grade: number
+  subject: string
   questions: Question[]
+}
+
+interface HintState {
+  hintsUsed: number
+  hints: string[]
+  loading: boolean
 }
 
 function CircularTimer({ timeLeft, totalTime }: { timeLeft: number; totalTime: number }) {
@@ -93,6 +102,7 @@ export function QuizView() {
   const [totalTime, setTotalTime] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [hintStates, setHintStates] = useState<Record<string, HintState>>({})
   const questionAreaRef = useRef<HTMLDivElement>(null)
 
   // Fetch quiz data
@@ -140,8 +150,9 @@ export function QuizView() {
     return () => clearInterval(timer)
   }, [quiz, timeLeft > 0])
 
-  // Scroll to top when changing questions
+  // Scroll to top when changing questions & play click sound
   useEffect(() => {
+    playClickSound()
     if (questionAreaRef.current) {
       questionAreaRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
@@ -154,6 +165,56 @@ export function QuizView() {
       return JSON.parse(optionsStr)
     } catch {
       return []
+    }
+  }
+
+  const handleRequestHint = async () => {
+    if (!quiz || !q) return
+    const hintState = hintStates[q.id] || { hintsUsed: 0, hints: [], loading: false }
+    if (hintState.hintsUsed >= 2 || hintState.loading) return
+
+    setHintStates((prev) => ({
+      ...prev,
+      [q.id]: { ...hintState, loading: true },
+    }))
+
+    try {
+      const res = await fetch('/api/hint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionText: q.questionText,
+          questionType: q.questionType,
+          grade: quiz.grade,
+          subject: quiz.subject,
+          hintNumber: hintState.hintsUsed + 1,
+        }),
+      })
+
+      if (!res.ok) throw new Error('Failed to get hint')
+      const data = await res.json()
+
+      setHintStates((prev) => {
+        const current = prev[q.id] || { hintsUsed: 0, hints: [], loading: false }
+        return {
+          ...prev,
+          [q.id]: {
+            hintsUsed: current.hintsUsed + 1,
+            hints: [...current.hints, data.hint],
+            loading: false,
+          },
+        }
+      })
+    } catch {
+      toast({
+        title: 'Không thể lấy gợi ý',
+        description: 'Con hãy thử lại sau nhé!',
+        variant: 'destructive',
+      })
+      setHintStates((prev) => ({
+        ...prev,
+        [q.id]: { ...hintState, loading: false },
+      }))
     }
   }
 
@@ -360,10 +421,64 @@ export function QuizView() {
                 {currentQuestion + 1}/{questions.length}
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-semibold text-foreground leading-relaxed">
-              {q.questionText}
-            </h3>
+            <div className="flex items-start gap-2">
+              <h3 className="text-xl sm:text-2xl font-semibold text-foreground leading-relaxed flex-1">
+                {q.questionText}
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRequestHint}
+                disabled={hintStates[q.id]?.loading || (hintStates[q.id]?.hintsUsed ?? 0) >= 2}
+                className={`shrink-0 gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                  (hintStates[q.id]?.hintsUsed ?? 0) >= 2
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : hintStates[q.id]?.loading
+                      ? 'bg-amber-50 text-amber-400'
+                      : 'bg-amber-100 text-amber-700 hover:bg-amber-200 active:scale-95'
+                }`}
+                title={(hintStates[q.id]?.hintsUsed ?? 0) >= 2 ? 'Đã hết gợi ý cho câu này' : 'Nhận gợi ý từ cô giáo'}
+              >
+                {hintStates[q.id]?.loading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Lightbulb className="w-3.5 h-3.5" />
+                )}
+                <span>
+                  {(hintStates[q.id]?.hintsUsed ?? 0) >= 2
+                    ? 'Hết gợi ý'
+                    : `Gợi ý (${(hintStates[q.id]?.hintsUsed ?? 0) + 1}/2)`}
+                </span>
+              </Button>
+            </div>
           </div>
+
+          {/* Hint cards */}
+          {hintStates[q.id] && hintStates[q.id].hints.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-6 space-y-2 overflow-hidden"
+            >
+              {hintStates[q.id].hints.map((hint, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-start gap-3 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border border-amber-200 rounded-xl p-4"
+                >
+                  <span className="text-xl shrink-0 mt-0.5">💡</span>
+                  <div className="flex-1">
+                    <span className="text-xs font-semibold text-amber-600 block mb-1">
+                      Gợi ý {idx + 1}
+                    </span>
+                    <p className="text-sm text-amber-900 leading-relaxed">{hint}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
 
           {/* Multiple choice */}
           {q.questionType === 'multiple_choice' && options.length > 0 && (
@@ -376,9 +491,10 @@ export function QuizView() {
                     key={idx}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() =>
+                    onClick={() => {
+                      playClickSound()
                       setAnswers((prev) => ({ ...prev, [q.id]: optionKey }))
-                    }
+                    }}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
                       isSelected
                         ? 'border-orange-400 bg-orange-50 shadow-md'
@@ -450,7 +566,10 @@ export function QuizView() {
             return (
               <button
                 key={idx}
-                onClick={() => setCurrentQuestion(idx)}
+                onClick={() => {
+                  playClickSound()
+                  setCurrentQuestion(idx)
+                }}
                 className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-semibold transition-all relative ${
                   idx === currentQuestion
                     ? 'bg-orange-500 text-white shadow-md'

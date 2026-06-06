@@ -64,6 +64,7 @@ export function AppFooter() {
                     src="/images/mascot.png"
                     alt="Cô Giáo Hải Anh"
                     fill
+                    sizes="56px"
                     className="object-contain p-1"
                   />
                 </div>

@@ -2,10 +2,18 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion } from 'framer-motion'
-import { CheckCircle, XCircle, RotateCcw, Home, ClipboardList } from 'lucide-react'
+import { CheckCircle, XCircle, RotateCcw, Home, ClipboardList, Volume2, VolumeX, Printer, Share2, Award } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Confetti } from '@/components/confetti'
+import { playCorrectSound, playCompleteSound, getSoundMuted, toggleSoundMuted } from '@/lib/sounds'
+import { useToast } from '@/hooks/use-toast'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface Question {
   id: string
@@ -146,9 +154,31 @@ function BouncingEmoji({ emoji, delay = 0 }: { emoji: string; delay?: number }) 
 }
 
 export function ResultView() {
-  const { quizResult, selectedQuizId, goBack, goHome, startQuiz, studentInfo } = useAppStore()
+  const { quizResult, selectedQuizId, goBack, goHome, startQuiz, studentInfo, selectedGrade, selectedSubject } = useAppStore()
   const [quiz, setQuiz] = useState<QuizInfo | null>(null)
   const [showReview, setShowReview] = useState(false)
+  const [soundMuted, setSoundMuted] = useState(getSoundMuted)
+  const [showCertificate, setShowCertificate] = useState(false)
+  const { toast } = useToast()
+
+  // Play sound when result loads based on score
+  useEffect(() => {
+    if (!quizResult) return
+    const score = quizResult.score
+    const timer = setTimeout(() => {
+      if (score >= 7) {
+        playCompleteSound()
+      } else if (score >= 5) {
+        playCorrectSound()
+      }
+    }, 800)
+    return () => clearTimeout(timer)
+  }, [quizResult])
+
+  const handleToggleSound = () => {
+    const newMuted = toggleSoundMuted()
+    setSoundMuted(newMuted)
+  }
 
   useEffect(() => {
     if (!selectedQuizId) return
@@ -167,6 +197,111 @@ export function ResultView() {
 
     fetchQuiz()
   }, [selectedQuizId])
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins} phút ${secs} giây`
+  }
+
+  const getSubjectName = () => {
+    return selectedSubject === 'toan' ? 'Toán' : 'Ngữ văn'
+  }
+
+  const getGradeName = () => {
+    return selectedGrade ? `Lớp ${selectedGrade}` : ''
+  }
+
+  const getCompletionDate = () => {
+    return new Date().toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
+  }
+
+  const getMotivationalMessage = (s: number) => {
+    if (s >= 9) return 'Xuất sắc! Bạn đã đạt thành tích rất cao!'
+    if (s >= 7) return 'Giỏi lắm! Bạn làm bài rất tốt!'
+    if (s >= 5) return 'Khá tốt! Hãy cố gắng thêm nhé!'
+    return 'Đừng nản lòng! Hãy ôn tập và thử lại!'
+  }
+
+  // Handle print - must be before early return
+  const handlePrint = useCallback(() => {
+    window.print()
+  }, [])
+
+  // Handle share - must be before early return
+  const handleShare = useCallback(async () => {
+    const qResult = quizResult
+    if (!qResult) return
+
+    const score = qResult.score
+    const totalQuestions = Object.keys(qResult.answers).length
+    let correctCount = 0
+    if (quiz) {
+      quiz.questions.forEach((q) => {
+        const userAnswer = qResult.answers[q.id]?.trim()
+        if (userAnswer && userAnswer.toLowerCase() === q.correctAnswer.trim().toLowerCase()) {
+          correctCount++
+        }
+      })
+    }
+
+    const getMessageText = (s: number) => {
+      if (s >= 9) return 'Xuất sắc!'
+      if (s >= 7) return 'Giỏi lắm!'
+      if (s >= 5) return 'Khá tốt!'
+      return 'Cố gắng hơn nhé!'
+    }
+
+    const getMessageEmoji = (s: number) => {
+      if (s >= 9) return '🌟'
+      if (s >= 7) return '⭐'
+      if (s >= 5) return '👍'
+      return '💪'
+    }
+
+    const shareText = [
+      `📝 Kết quả kiểm tra - Cô Giáo Hải Anh`,
+      `👤 ${studentInfo?.name || 'Học sinh'} - ${studentInfo?.className || ''}`,
+      studentInfo?.schoolName ? `🏫 ${studentInfo.schoolName}` : '',
+      `📚 ${quiz?.title || 'Kiểm tra'} (${getSubjectName()})`,
+      `⭐ Điểm: ${score.toFixed(1)}/10`,
+      `✅ ${correctCount}/${totalQuestions} câu đúng`,
+      `${getMessageEmoji(score)} ${getMessageText(score)}`,
+      `🔗 cogiaohaianh.io`,
+    ].filter(Boolean).join('\n')
+
+    // Try Web Share API first
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Kết quả kiểm tra - Cô Giáo Hải Anh',
+          text: shareText,
+        })
+        return
+      } catch {
+        // User cancelled or error, fall back to clipboard
+      }
+    }
+
+    // Fallback to clipboard
+    try {
+      await navigator.clipboard.writeText(shareText)
+      toast({
+        title: '✅ Đã sao chép kết quả!',
+        description: 'Kết quả đã được sao chép vào clipboard',
+      })
+    } catch {
+      toast({
+        title: '❌ Không thể sao chép',
+        description: 'Vui lòng thử lại',
+        variant: 'destructive',
+      })
+    }
+  }, [quizResult, quiz, studentInfo, toast, selectedSubject])
 
   if (!quizResult) return null
 
@@ -196,12 +331,6 @@ export function ResultView() {
 
   const msg = getMessage(score)
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins} phút ${secs} giây`
-  }
-
   const parseOptions = (optionsStr: string): string[] => {
     try {
       return JSON.parse(optionsStr)
@@ -223,289 +352,586 @@ export function ResultView() {
     }
   }
 
+  // Get star count for certificate
+  const getStarCount = () => {
+    if (score >= 9) return 5
+    if (score >= 7) return 4
+    if (score >= 5) return 3
+    if (score >= 3) return 2
+    return 1
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Sound toggle button */}
+      <button
+        onClick={handleToggleSound}
+        className="no-print fixed top-20 right-3 z-50 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm shadow-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+        title={soundMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
+      >
+        {soundMuted ? (
+          <VolumeX className="w-4 h-4 text-gray-500" />
+        ) : (
+          <Volume2 className="w-4 h-4 text-orange-500" />
+        )}
+      </button>
       {/* Confetti for high scores */}
       {score >= 7 && <Confetti score={score} />}
 
-      {/* Score card with circular progress */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className={`${msg.bg} rounded-3xl p-6 sm:p-8 text-center shadow-lg border-2 ${msg.border} relative overflow-hidden`}
-      >
-        <FloatingStars score={score} />
-
+      {/* Interactive result view (hidden in print) */}
+      <div className="result-interactive">
+        {/* Score card with circular progress */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: 'spring' }}
-          className="text-5xl sm:text-6xl mb-2"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          className={`${msg.bg} rounded-3xl p-6 sm:p-8 text-center shadow-lg border-2 ${msg.border} relative overflow-hidden`}
         >
-          {getGradeEmoji()}
-        </motion.div>
+          <FloatingStars score={score} />
 
-        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl ${msg.color} mb-4`}>
-          {msg.emoji} {msg.text}
-        </h2>
-
-        {/* Circular progress with score */}
-        <div className="flex justify-center mb-6">
-          <CircularProgress score={score} />
-        </div>
-
-        {/* Correct/Incorrect count - prominent display */}
-        <div className="flex items-center justify-center gap-4 sm:gap-6">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 1, type: 'spring' }}
-            className="bg-white rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
+            transition={{ delay: 0.2, type: 'spring' }}
+            className="text-5xl sm:text-6xl mb-2"
           >
-            <CheckCircle className="w-5 h-5 text-emerald-500" />
-            <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700">
-              {correctCount}/{totalQuestions}
-            </span>
-            <span className="text-sm text-emerald-600">câu đúng</span>
+            {getGradeEmoji()}
           </motion.div>
 
-          {incorrectCount > 0 && (
+          <h2 className={`font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl ${msg.color} mb-4`}>
+            {msg.emoji} {msg.text}
+          </h2>
+
+          {/* Circular progress with score */}
+          <div className="flex justify-center mb-6">
+            <CircularProgress score={score} />
+          </div>
+
+          {/* Correct/Incorrect count - prominent display */}
+          <div className="flex items-center justify-center gap-4 sm:gap-6">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 1.2, type: 'spring' }}
+              transition={{ delay: 1, type: 'spring' }}
               className="bg-white rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
             >
-              <XCircle className="w-5 h-5 text-rose-400" />
-              <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-rose-600">
-                {incorrectCount}
+              <CheckCircle className="w-5 h-5 text-emerald-500" />
+              <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700">
+                {correctCount}/{totalQuestions}
               </span>
-              <span className="text-sm text-rose-500">câu sai</span>
+              <span className="text-sm text-emerald-600">câu đúng</span>
             </motion.div>
-          )}
-        </div>
 
-        {/* Time & question count */}
-        <div className="flex items-center justify-center gap-4 mt-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">⏱️ {quizResult.timeTaken ? formatTime(quizResult.timeTaken) : 'N/A'}</span>
-          <span className="flex items-center gap-1">📝 {totalQuestions} câu hỏi</span>
-        </div>
+            {incorrectCount > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 1.2, type: 'spring' }}
+                className="bg-white rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
+              >
+                <XCircle className="w-5 h-5 text-rose-400" />
+                <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-rose-600">
+                  {incorrectCount}
+                </span>
+                <span className="text-sm text-rose-500">câu sai</span>
+              </motion.div>
+            )}
+          </div>
 
-        {/* Bouncing emojis for encouragement */}
-        <div className="flex justify-center gap-2 mt-4">
-          {score >= 9 ? (
-            <>
-              <BouncingEmoji emoji="🎉" delay={1.5} />
-              <BouncingEmoji emoji="🎊" delay={1.7} />
-              <BouncingEmoji emoji="🏆" delay={1.9} />
-              <BouncingEmoji emoji="⭐" delay={2.1} />
-            </>
-          ) : score >= 7 ? (
-            <>
-              <BouncingEmoji emoji="🌟" delay={1.5} />
-              <BouncingEmoji emoji="👏" delay={1.7} />
-              <BouncingEmoji emoji="⭐" delay={1.9} />
-            </>
-          ) : score >= 5 ? (
-            <>
-              <BouncingEmoji emoji="👍" delay={1.5} />
-              <BouncingEmoji emoji="💪" delay={1.7} />
-            </>
-          ) : (
-            <BouncingEmoji emoji="💪" delay={1.5} />
-          )}
-        </div>
-      </motion.div>
+          {/* Time & question count */}
+          <div className="flex items-center justify-center gap-4 mt-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">⏱️ {quizResult.timeTaken ? formatTime(quizResult.timeTaken) : 'N/A'}</span>
+            <span className="flex items-center gap-1">📝 {totalQuestions} câu hỏi</span>
+          </div>
 
-      {/* Action buttons */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex flex-col sm:flex-row gap-3 justify-center"
-      >
-        <Button
-          onClick={() => setShowReview(!showReview)}
-          variant="outline"
-          className="gap-2 text-base py-3 border-2"
-        >
-          <ClipboardList className="w-4 h-4" />
-          {showReview ? 'Ẩn đáp án' : 'Xem đáp án'}
-        </Button>
-        <Button
-          onClick={handleRetry}
-          disabled={!studentInfo || !selectedQuizId}
-          className="gap-2 bg-orange-500 hover:bg-orange-600 text-white text-base py-3"
-        >
-          <RotateCcw className="w-4 h-4" />
-          Làm lại bài
-        </Button>
-        <Button
-          onClick={goBack}
-          variant="outline"
-          className="gap-2 text-base py-3 border-2"
-        >
-          Quay lại chương
-        </Button>
-        <Button
-          onClick={goHome}
-          variant="outline"
-          className="gap-2 text-base py-3 border-2"
-        >
-          <Home className="w-4 h-4" />
-          Trang chủ
-        </Button>
-      </motion.div>
+          {/* Bouncing emojis for encouragement */}
+          <div className="flex justify-center gap-2 mt-4">
+            {score >= 9 ? (
+              <>
+                <BouncingEmoji emoji="🎉" delay={1.5} />
+                <BouncingEmoji emoji="🎊" delay={1.7} />
+                <BouncingEmoji emoji="🏆" delay={1.9} />
+                <BouncingEmoji emoji="⭐" delay={2.1} />
+              </>
+            ) : score >= 7 ? (
+              <>
+                <BouncingEmoji emoji="🌟" delay={1.5} />
+                <BouncingEmoji emoji="👏" delay={1.7} />
+                <BouncingEmoji emoji="⭐" delay={1.9} />
+              </>
+            ) : score >= 5 ? (
+              <>
+                <BouncingEmoji emoji="👍" delay={1.5} />
+                <BouncingEmoji emoji="💪" delay={1.7} />
+              </>
+            ) : (
+              <BouncingEmoji emoji="💪" delay={1.5} />
+            )}
+          </div>
+        </motion.div>
 
-      {/* Answer review */}
-      {showReview && quiz && (
+        {/* Action buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
+          transition={{ delay: 0.5 }}
+          className="no-print flex flex-col sm:flex-row gap-3 justify-center flex-wrap"
         >
-          <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-foreground flex items-center gap-2">
-            📝 Chi tiết đáp án
-          </h3>
-          {[...quiz.questions]
-            .sort((a, b) => a.orderIndex - b.orderIndex)
-            .map((q, idx) => {
-              const userAnswer = quizResult.answers[q.id] || ''
-              const isCorrect = userAnswer.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase()
-              const options = q.questionType === 'multiple_choice' ? parseOptions(q.options) : []
-
-              return (
-                <motion.div
-                  key={q.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className={`rounded-2xl p-4 sm:p-5 border-2 transition-all ${
-                    isCorrect
-                      ? 'bg-emerald-50 border-emerald-300 shadow-sm'
-                      : 'bg-rose-50 border-rose-300 shadow-sm'
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    {/* Status indicator */}
-                    <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                      isCorrect ? 'bg-emerald-500' : 'bg-rose-500'
-                    }`}>
-                      {isCorrect ? (
-                        <CheckCircle className="w-5 h-5 text-white" />
-                      ) : (
-                        <XCircle className="w-5 h-5 text-white" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          isCorrect ? 'bg-emerald-200 text-emerald-700' : 'bg-rose-200 text-rose-700'
-                        }`}>
-                          Câu {idx + 1}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {q.questionType === 'multiple_choice' ? '📌 Trắc nghiệm' : '✏️ Điền đáp án'}
-                        </span>
-                      </div>
-                      <p className="font-semibold text-foreground text-base">
-                        {q.questionText}
-                      </p>
-
-                      {q.questionType === 'multiple_choice' && options.length > 0 && (
-                        <div className="mt-3 space-y-1.5">
-                          {options.map((opt, oi) => {
-                            const optKey = String.fromCharCode(65 + oi)
-                            const isThisCorrect = optKey === q.correctAnswer
-                            const isThisUser = optKey === userAnswer
-                            return (
-                              <div
-                                key={oi}
-                                className={`text-sm px-3 py-2 rounded-xl border ${
-                                  isThisCorrect
-                                    ? 'bg-emerald-100 text-emerald-700 font-semibold border-emerald-300'
-                                    : isThisUser && !isThisCorrect
-                                      ? 'bg-rose-100 text-rose-700 line-through border-rose-300'
-                                      : 'text-muted-foreground border-gray-200'
-                                }`}
-                              >
-                                <span className="font-bold mr-1">{optKey}.</span>
-                                {opt.replace(/^[A-D]\.\s*/, '')}
-                                {isThisCorrect && ' ✓'}
-                                {isThisUser && !isThisCorrect && ' ✗'}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      )}
-
-                      {q.questionType === 'fill_blank' && (
-                        <div className="mt-3 space-y-1.5">
-                          <div className={`inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border ${
-                            userAnswer
-                              ? isCorrect
-                                ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
-                                : 'bg-rose-100 text-rose-700 border-rose-300'
-                              : 'text-muted-foreground border-gray-200'
-                          }`}>
-                            <span className="text-xs">✏️</span>
-                            Trả lời của bạn: <span className="font-semibold">{userAnswer || '(chưa trả lời)'}</span>
-                          </div>
-                          {!isCorrect && (
-                            <div className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border bg-emerald-100 text-emerald-700 border-emerald-300">
-                              <span className="text-xs">✅</span>
-                              Đáp án đúng: <span className="font-semibold">{q.correctAnswer}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {!isCorrect && q.questionType === 'multiple_choice' && (
-                        <div className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300">
-                          ✅ Đáp án đúng: {q.correctAnswer}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              )
-            })}
+          <Button
+            onClick={() => setShowReview(!showReview)}
+            variant="outline"
+            className="gap-2 text-base py-3 border-2"
+          >
+            <ClipboardList className="w-4 h-4" />
+            {showReview ? 'Ẩn đáp án' : 'Xem đáp án'}
+          </Button>
+          <Button
+            onClick={handleRetry}
+            disabled={!studentInfo || !selectedQuizId}
+            className="gap-2 bg-orange-500 hover:bg-orange-600 text-white text-base py-3"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Làm lại bài
+          </Button>
+          <Button
+            onClick={() => setShowCertificate(true)}
+            variant="outline"
+            className="gap-2 text-base py-3 border-2 border-amber-300 text-amber-700 hover:bg-amber-50"
+          >
+            <Award className="w-4 h-4" />
+            Xem chứng nhận
+          </Button>
+          <Button
+            onClick={handleShare}
+            variant="outline"
+            className="gap-2 text-base py-3 border-2"
+          >
+            <Share2 className="w-4 h-4" />
+            Chia sẻ
+          </Button>
+          <Button
+            onClick={handlePrint}
+            variant="outline"
+            className="gap-2 text-base py-3 border-2"
+          >
+            <Printer className="w-4 h-4" />
+            In kết quả
+          </Button>
+          <Button
+            onClick={goBack}
+            variant="outline"
+            className="gap-2 text-base py-3 border-2"
+          >
+            Quay lại chương
+          </Button>
+          <Button
+            onClick={goHome}
+            variant="outline"
+            className="gap-2 text-base py-3 border-2"
+          >
+            <Home className="w-4 h-4" />
+            Trang chủ
+          </Button>
         </motion.div>
-      )}
 
-      {/* Achievement section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="rounded-3xl overflow-hidden shadow-md"
-      >
-        <div className={`${
-          score >= 9
-            ? 'bg-gradient-to-r from-amber-100 to-yellow-100'
-            : score >= 7
-              ? 'bg-gradient-to-r from-emerald-100 to-teal-100'
-              : score >= 5
-                ? 'bg-gradient-to-r from-orange-100 to-amber-100'
-                : 'bg-gradient-to-r from-rose-100 to-pink-100'
-        } p-6 text-center`}>
-          <div className="text-3xl mb-2">
-            {score >= 9 ? '🎉🎊🌟🏆' : score >= 7 ? '🌟⭐👏' : score >= 5 ? '👍✨💪' : '💪📚❤️'}
-          </div>
-          <p className={`font-semibold ${
-            score >= 9 ? 'text-amber-800' : score >= 7 ? 'text-emerald-800' : score >= 5 ? 'text-orange-800' : 'text-rose-800'
-          }`}>
-            {score >= 9
-              ? 'Bạn thật xuất sắc! Hãy tiếp tục phát huy nhé!'
+        {/* Answer review */}
+        {showReview && quiz && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-foreground flex items-center gap-2">
+              📝 Chi tiết đáp án
+            </h3>
+            {[...quiz.questions]
+              .sort((a, b) => a.orderIndex - b.orderIndex)
+              .map((q, idx) => {
+                const userAnswer = quizResult.answers[q.id] || ''
+                const isCorrect = userAnswer.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase()
+                const options = q.questionType === 'multiple_choice' ? parseOptions(q.options) : []
+
+                return (
+                  <motion.div
+                    key={q.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className={`rounded-2xl p-4 sm:p-5 border-2 transition-all ${
+                      isCorrect
+                        ? 'bg-emerald-50 border-emerald-300 shadow-sm'
+                        : 'bg-rose-50 border-rose-300 shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      {/* Status indicator */}
+                      <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                        isCorrect ? 'bg-emerald-500' : 'bg-rose-500'
+                      }`}>
+                        {isCorrect ? (
+                          <CheckCircle className="w-5 h-5 text-white" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-white" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                            isCorrect ? 'bg-emerald-200 text-emerald-700' : 'bg-rose-200 text-rose-700'
+                          }`}>
+                            Câu {idx + 1}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {q.questionType === 'multiple_choice' ? '📌 Trắc nghiệm' : '✏️ Điền đáp án'}
+                          </span>
+                        </div>
+                        <p className="font-semibold text-foreground text-base">
+                          {q.questionText}
+                        </p>
+
+                        {q.questionType === 'multiple_choice' && options.length > 0 && (
+                          <div className="mt-3 space-y-1.5">
+                            {options.map((opt, oi) => {
+                              const optKey = String.fromCharCode(65 + oi)
+                              const isThisCorrect = optKey === q.correctAnswer
+                              const isThisUser = optKey === userAnswer
+                              return (
+                                <div
+                                  key={oi}
+                                  className={`text-sm px-3 py-2 rounded-xl border ${
+                                    isThisCorrect
+                                      ? 'bg-emerald-100 text-emerald-700 font-semibold border-emerald-300'
+                                      : isThisUser && !isThisCorrect
+                                        ? 'bg-rose-100 text-rose-700 line-through border-rose-300'
+                                        : 'text-muted-foreground border-gray-200'
+                                  }`}
+                                >
+                                  <span className="font-bold mr-1">{optKey}.</span>
+                                  {opt.replace(/^[A-D]\.\s*/, '')}
+                                  {isThisCorrect && ' ✓'}
+                                  {isThisUser && !isThisCorrect && ' ✗'}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )}
+
+                        {q.questionType === 'fill_blank' && (
+                          <div className="mt-3 space-y-1.5">
+                            <div className={`inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border ${
+                              userAnswer
+                                ? isCorrect
+                                  ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
+                                  : 'bg-rose-100 text-rose-700 border-rose-300'
+                                : 'text-muted-foreground border-gray-200'
+                            }`}>
+                              <span className="text-xs">✏️</span>
+                              Trả lời của bạn: <span className="font-semibold">{userAnswer || '(chưa trả lời)'}</span>
+                            </div>
+                            {!isCorrect && (
+                              <div className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border bg-emerald-100 text-emerald-700 border-emerald-300">
+                                <span className="text-xs">✅</span>
+                                Đáp án đúng: <span className="font-semibold">{q.correctAnswer}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {!isCorrect && q.questionType === 'multiple_choice' && (
+                          <div className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300">
+                            ✅ Đáp án đúng: {q.correctAnswer}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                )
+              })}
+          </motion.div>
+        )}
+
+        {/* Achievement section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="rounded-3xl overflow-hidden shadow-md"
+        >
+          <div className={`${
+            score >= 9
+              ? 'bg-gradient-to-r from-amber-100 to-yellow-100'
               : score >= 7
-                ? 'Bạn làm rất tốt! Cố gắng thêm chút nữa nhé!'
+                ? 'bg-gradient-to-r from-emerald-100 to-teal-100'
                 : score >= 5
-                  ? 'Kết quả khá tốt! Ôn tập thêm để tốt hơn nhé!'
-                  : 'Đừng buồn nhé! Hãy ôn tập lại và thử lại!'}
+                  ? 'bg-gradient-to-r from-orange-100 to-amber-100'
+                  : 'bg-gradient-to-r from-rose-100 to-pink-100'
+          } p-6 text-center`}>
+            <div className="text-3xl mb-2">
+              {score >= 9 ? '🎉🎊🌟🏆' : score >= 7 ? '🌟⭐👏' : score >= 5 ? '👍✨💪' : '💪📚❤️'}
+            </div>
+            <p className={`font-semibold ${
+              score >= 9 ? 'text-amber-800' : score >= 7 ? 'text-emerald-800' : score >= 5 ? 'text-orange-800' : 'text-rose-800'
+            }`}>
+              {score >= 9
+                ? 'Bạn thật xuất sắc! Hãy tiếp tục phát huy nhé!'
+                : score >= 7
+                  ? 'Bạn làm rất tốt! Cố gắng thêm chút nữa nhé!'
+                  : score >= 5
+                    ? 'Kết quả khá tốt! Ôn tập thêm để tốt hơn nhé!'
+                    : 'Đừng buồn nhé! Hãy ôn tập lại và thử lại!'}
+            </p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Print-only report card (hidden on screen, shown in print) */}
+      <div className="print-report hidden">
+        {/* Header */}
+        <div className="print-header text-center">
+          <h1 style={{ fontSize: '20pt', fontWeight: 800, marginBottom: '4pt' }}>
+            Cô Giáo Hải Anh 📚
+          </h1>
+          <p style={{ fontSize: '10pt', color: '#666' }}>
+            Nền tảng học tập trực tuyến dành cho học sinh tiểu học
           </p>
+          <h2 style={{ fontSize: '14pt', fontWeight: 700, marginTop: '10pt' }}>
+            PHIẾU KẾT QUẢ KIỂM TRA
+          </h2>
         </div>
-      </motion.div>
+
+        {/* Student info */}
+        <div className="print-info" style={{ marginTop: '15pt' }}>
+          <table style={{ width: '100%', fontSize: '11pt' }}>
+            <tbody>
+              <tr>
+                <td style={{ padding: '3pt 0', width: '30%' }}><strong>Học sinh:</strong></td>
+                <td style={{ padding: '3pt 0' }}>{studentInfo?.name || 'N/A'}</td>
+                <td style={{ padding: '3pt 0', width: '20%' }}><strong>Lớp:</strong></td>
+                <td style={{ padding: '3pt 0' }}>{studentInfo?.className || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '3pt 0' }}><strong>Trường:</strong></td>
+                <td style={{ padding: '3pt 0' }}>{studentInfo?.schoolName || 'N/A'}</td>
+                <td style={{ padding: '3pt 0' }}><strong>Môn:</strong></td>
+                <td style={{ padding: '3pt 0' }}>{getSubjectName()}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '3pt 0' }}><strong>Bài kiểm tra:</strong></td>
+                <td style={{ padding: '3pt 0' }} colSpan={3}>{quiz?.title || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '3pt 0' }}><strong>Khối lớp:</strong></td>
+                <td style={{ padding: '3pt 0' }}>{getGradeName()}</td>
+                <td style={{ padding: '3pt 0' }}><strong>Ngày:</strong></td>
+                <td style={{ padding: '3pt 0' }}>{getCompletionDate()}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Score section */}
+        <div className="print-score-section" style={{ textAlign: 'center', margin: '20pt 0', padding: '15pt', border: '2pt solid #333', borderRadius: '8pt' }}>
+          <div className="print-score" style={{ fontSize: '36pt', fontWeight: 800 }}>
+            {score.toFixed(1)} / 10
+          </div>
+          <div style={{ fontSize: '11pt', marginTop: '6pt' }}>
+            ✅ {correctCount} câu đúng / {incorrectCount} câu sai / {totalQuestions} câu hỏi
+          </div>
+          <div style={{ fontSize: '11pt', marginTop: '4pt' }}>
+            ⏱️ Thời gian: {quizResult.timeTaken ? formatTime(quizResult.timeTaken) : 'N/A'}
+          </div>
+          <div style={{ fontSize: '12pt', marginTop: '8pt', fontWeight: 600 }}>
+            {msg.emoji} {getMotivationalMessage(score)}
+          </div>
+        </div>
+
+        {/* Answer review table */}
+        {quiz && (
+          <table className="print-table">
+            <thead>
+              <tr>
+                <th style={{ width: '8%' }}>Câu</th>
+                <th style={{ width: '37%' }}>Câu hỏi</th>
+                <th style={{ width: '18%' }}>Trả lời</th>
+                <th style={{ width: '18%' }}>Đáp án</th>
+                <th style={{ width: '10%', textAlign: 'center' }}>Kết quả</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...quiz.questions]
+                .sort((a, b) => a.orderIndex - b.orderIndex)
+                .map((q, idx) => {
+                  const userAnswer = quizResult.answers[q.id] || ''
+                  const isCorrect = userAnswer.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase()
+                  return (
+                    <tr key={q.id}>
+                      <td>{idx + 1}</td>
+                      <td>{q.questionText}</td>
+                      <td>{userAnswer || '(chưa trả lời)'}</td>
+                      <td>{q.correctAnswer}</td>
+                      <td style={{ textAlign: 'center', fontWeight: 700, color: isCorrect ? '#059669' : '#dc2626' }}>
+                        {isCorrect ? '✓' : '✗'}
+                      </td>
+                    </tr>
+                  )
+                })}
+            </tbody>
+          </table>
+        )}
+
+        {/* Footer */}
+        <div className="print-footer" style={{ textAlign: 'center' }}>
+          <p>cogiaohaianh.io · facebook.com/hattieu.tran.1</p>
+          <p style={{ marginTop: '4pt', fontSize: '8pt' }}>© {new Date().getFullYear()} Cô Giáo Hải Anh. All rights reserved.</p>
+        </div>
+      </div>
+
+      {/* Certificate Dialog */}
+      <Dialog open={showCertificate} onOpenChange={setShowCertificate}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="sr-only">Chứng nhận kết quả</DialogTitle>
+          </DialogHeader>
+
+          {/* Certificate Card */}
+          <div className="print-certificate relative bg-gradient-to-br from-amber-50 via-white to-orange-50 border-4 border-double border-amber-400 rounded-xl p-6 sm:p-10">
+            {/* Decorative corners */}
+            <div className="absolute top-3 left-3 text-amber-300 text-2xl">❋</div>
+            <div className="absolute top-3 right-3 text-amber-300 text-2xl">❋</div>
+            <div className="absolute bottom-3 left-3 text-amber-300 text-2xl">❋</div>
+            <div className="absolute bottom-3 right-3 text-amber-300 text-2xl">❋</div>
+
+            {/* Decorative top border */}
+            <div className="flex justify-center mb-2 gap-2 text-xl">
+              {'✿ ❀ ✿ ❀ ✿'.split(' ').map((flower, i) => (
+                <span key={i} className="text-amber-400">{flower}</span>
+              ))}
+            </div>
+
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h2 className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-600 mb-1">
+                Cô Giáo Hải Anh 📚
+              </h2>
+              <h1 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-amber-800 font-bold tracking-wide">
+                CHỨNG NHẬN KẾT QUẢ
+              </h1>
+              <div className="flex justify-center mt-2">
+                <div className="h-1 w-32 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full" />
+              </div>
+            </div>
+
+            {/* Student name */}
+            <div className="text-center mb-6">
+              <p className="text-muted-foreground text-sm mb-1">Chứng nhận này dành cho</p>
+              <h3 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-orange-700 font-bold">
+                {studentInfo?.name || 'Học sinh'}
+              </h3>
+              <p className="text-muted-foreground text-sm mt-1">
+                {studentInfo?.className ? `Lớp ${studentInfo.className}` : ''}
+                {studentInfo?.schoolName ? ` · ${studentInfo.schoolName}` : ''}
+              </p>
+            </div>
+
+            {/* Quiz details */}
+            <div className="text-center mb-6">
+              <p className="text-muted-foreground text-sm">Đã hoàn thành bài kiểm tra</p>
+              <p className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground font-semibold mt-1">
+                {quiz?.title || 'Kiểm tra'}
+              </p>
+              <p className="text-muted-foreground text-sm mt-0.5">
+                Môn {getSubjectName()} · {getGradeName()}
+              </p>
+            </div>
+
+            {/* Score */}
+            <div className="text-center mb-6">
+              <div className="inline-flex flex-col items-center bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl px-8 py-5 border-2 border-amber-300 shadow-md">
+                <span className="text-sm text-amber-700 font-semibold mb-1">ĐIỂM SỐ</span>
+                <span className="font-[family-name:var(--font-patrick-hand)] text-5xl sm:text-6xl text-amber-800 font-bold leading-none">
+                  {score.toFixed(1)}
+                </span>
+                <span className="text-sm text-amber-600 mt-1">trên 10</span>
+
+                {/* Stars */}
+                <div className="flex gap-1 mt-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className="text-2xl">
+                      {i < getStarCount() ? '⭐' : '☆'}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Stats row */}
+            <div className="flex justify-center gap-6 mb-6 text-sm">
+              <div className="text-center">
+                <div className="font-bold text-emerald-600">{correctCount}/{totalQuestions}</div>
+                <div className="text-muted-foreground">Câu đúng</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-rose-600">{incorrectCount}</div>
+                <div className="text-muted-foreground">Câu sai</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-foreground">
+                  {quizResult.timeTaken ? formatTime(quizResult.timeTaken) : 'N/A'}
+                </div>
+                <div className="text-muted-foreground">Thời gian</div>
+              </div>
+            </div>
+
+            {/* Motivational message */}
+            <div className="text-center mb-8">
+              <p className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground">
+                {msg.emoji} {getMotivationalMessage(score)}
+              </p>
+            </div>
+
+            {/* Signature area */}
+            <div className="flex justify-between items-end mt-8 pt-4 border-t border-amber-200">
+              <div className="text-left">
+                <p className="text-xs text-muted-foreground">Ngày hoàn thành</p>
+                <p className="font-semibold text-sm">{getCompletionDate()}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-6">Giáo viên</p>
+                <p className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700 font-bold">
+                  Cô Giáo Hải Anh ✍️
+                </p>
+              </div>
+            </div>
+
+            {/* Decorative bottom border */}
+            <div className="flex justify-center mt-4 gap-2 text-xl">
+              {'✿ ❀ ✿ ❀ ✿'.split(' ').map((flower, i) => (
+                <span key={i} className="text-amber-400">{flower}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Certificate action buttons */}
+          <div className="flex flex-col sm:flex-row gap-2 justify-center no-print mt-2">
+            <Button
+              onClick={handlePrint}
+              variant="outline"
+              className="gap-2"
+            >
+              <Printer className="w-4 h-4" />
+              In chứng nhận
+            </Button>
+            <Button
+              onClick={handleShare}
+              variant="outline"
+              className="gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Chia sẻ
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

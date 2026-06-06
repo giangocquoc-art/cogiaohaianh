@@ -9,6 +9,7 @@ import { ChapterView } from '@/components/chapter-view'
 import { QuizView } from '@/components/quiz-view'
 import { ResultView } from '@/components/result-view'
 import { ScoreboardView } from '@/components/scoreboard-view'
+import { ProgressView } from '@/components/progress-view'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 
@@ -22,6 +23,7 @@ function ViewRenderer() {
     quiz: <QuizView />,
     result: <ResultView />,
     scoreboard: <ScoreboardView />,
+    progress: <ProgressView />,
   }
 
   return (
@@ -31,7 +33,8 @@ function ViewRenderer() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        style={{ minHeight: '200px' }}
       >
         {viewMap[currentView] || <HomeView />}
       </motion.div>

@@ -336,3 +336,586 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ===== NEW ANIMATIONS & STYLES ===== */
+
+/* Custom selection color (orange-tinted) */
+::selection {
+  background: rgba(251, 146, 60, 0.3);
+  color: inherit;
+}
+
+::-moz-selection {
+  background: rgba(251, 146, 60, 0.3);
+  color: inherit;
+}
+
+/* Focus-visible styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+/* Spinning pencil loading animation */
+@keyframes pencil-spin {
+  0% { transform: rotate(0deg) translateX(0); }
+  25% { transform: rotate(90deg) translateX(3px); }
+  50% { transform: rotate(180deg) translateX(0); }
+  75% { transform: rotate(270deg) translateX(-3px); }
+  100% { transform: rotate(360deg) translateX(0); }
+}
+
+@keyframes pencil-write {
+  0%, 100% { transform: translateY(0) rotate(-30deg); }
+  50% { transform: translateY(-4px) rotate(-30deg); }
+}
+
+@keyframes book-flip {
+  0%, 100% { transform: rotateY(0deg); }
+  50% { transform: rotateY(15deg); }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0) scale(1); opacity: 0.7; }
+  50% { transform: translateY(-20px) scale(1.1); opacity: 0.3; }
+  100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
+}
+
+@keyframes podium-rise {
+  0% { transform: scaleY(0); transform-origin: bottom; }
+  60% { transform: scaleY(1.05); transform-origin: bottom; }
+  100% { transform: scaleY(1); transform-origin: bottom; }
+}
+
+@keyframes success-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(251, 146, 60, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(251, 146, 60, 0.6), 0 0 40px rgba(251, 146, 60, 0.2); }
+}
+
+@keyframes color-cycle {
+  0%, 100% { filter: hue-rotate(0deg); }
+  33% { filter: hue-rotate(15deg); }
+  66% { filter: hue-rotate(-15deg); }
+}
+
+.animate-pencil-spin {
+  animation: pencil-spin 2s ease-in-out infinite;
+}
+
+.animate-pencil-write {
+  animation: pencil-write 1.5s ease-in-out infinite;
+}
+
+.animate-book-flip {
+  animation: book-flip 3s ease-in-out infinite;
+}
+
+.animate-ticker-scroll {
+  animation: ticker-scroll 20s linear infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-float-up {
+  animation: float-up 3s ease-in-out infinite;
+}
+
+.animate-podium-rise {
+  animation: podium-rise 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-success-pop {
+  animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-color-cycle {
+  animation: color-cycle 10s ease-in-out infinite;
+}
+
+/* Page transition classes */
+.page-enter {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+}
+
+/* Hover effects for all interactive elements */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(251, 146, 60, 0.4), 0 4px 15px rgba(251, 146, 60, 0.2);
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+/* Card hover glow effect */
+.card-glow {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0), rgba(245, 158, 11, 0));
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+.card-glow:hover::before {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.3), rgba(245, 158, 11, 0.3));
+}
+
+.card-glow:hover {
+  box-shadow: 0 8px 30px rgba(251, 146, 60, 0.2);
+}
+
+/* Fun loading spinner with pencil */
+.fun-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.fun-loading .pencil-icon {
+  font-size: 28px;
+  animation: pencil-write 1.5s ease-in-out infinite;
+}
+
+.fun-loading .book-icon {
+  font-size: 22px;
+  animation: book-flip 2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+/* Ticker/marquee styles */
+.ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-content {
+  display: inline-block;
+  animation: ticker-scroll 25s linear infinite;
+}
+
+.ticker-content:hover {
+  animation-play-state: paused;
+}
+
+/* Floating decoration helper */
+.floating-decoration {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Active navigation indicator */
+.nav-active {
+  position: relative;
+}
+
+.nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 3px;
+  background: white;
+  border-radius: 3px 3px 0 0;
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Podium styles */
+.podium-gold {
+  background: linear-gradient(180deg, #fbbf24, #f59e0b);
+  color: #78350f;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+}
+
+.podium-silver {
+  background: linear-gradient(180deg, #d1d5db, #9ca3af);
+  color: #1f2937;
+  box-shadow: 0 4px 20px rgba(156, 163, 175, 0.3);
+}
+
+.podium-bronze {
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  color: #78350f;
+  box-shadow: 0 4px 20px rgba(217, 119, 6, 0.3);
+}
+
+/* Score color helpers */
+.score-excellent {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #78350f;
+}
+
+.score-good {
+  background: linear-gradient(135deg, #34d399, #10b981);
+  color: #064e3b;
+}
+
+.score-average {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: #7c2d12;
+}
+
+.score-poor {
+  background: linear-gradient(135deg, #fb7185, #f43f5e);
+  color: #881337;
+}
+
+/* Difficulty badges */
+.difficulty-easy {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.difficulty-medium {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.difficulty-hard {
+  background: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fda4af;
+}
+
+/* Progress bar gradient */
+.progress-bar-gradient {
+  background: linear-gradient(90deg, #f97316, #f59e0b, #fbbf24);
+  background-size: 200% 100%;
+  animation: gradient-shift 3s ease infinite;
+  border-radius: 9999px;
+  transition: width 0.6s ease;
+}
+
+/* Subject decorative floating symbols */
+.math-symbol {
+  font-size: 1.2rem;
+  opacity: 0.15;
+  position: absolute;
+  pointer-events: none;
+  animation: float 4s ease-in-out infinite;
+}
+
+.literature-symbol {
+  font-size: 1.2rem;
+  opacity: 0.15;
+  position: absolute;
+  pointer-events: none;
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Completed chapter badge */
+.completed-badge {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Timeline styles for score history */
+.timeline-line {
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #f97316, #f59e0b, #fbbf24);
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 2px #f97316;
+}
+
+/* Mobile drawer */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 60;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 80vw;
+  background: white;
+  z-index: 70;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer-panel.open {
+  transform: translateX(0);
+}
+
+/* Step indicator for forms */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  background: linear-gradient(135deg, #f97316, #f59e0b);
+  color: white;
+  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.4);
+}
+
+.step-dot.completed {
+  background: #10b981;
+  color: white;
+}
+
+.step-dot.inactive {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+.step-line {
+  height: 2px;
+  flex: 1;
+  background: #e5e7eb;
+  transition: background 0.3s ease;
+}
+
+.step-line.completed {
+  background: #10b981;
+}
+
+/* Print styles for score report */
+@media print {
+  /* Hide non-essential elements */
+  header,
+  footer,
+  nav,
+  .no-print,
+  .sound-toggle,
+  button:not(.print-keep),
+  .animate-float,
+  .animate-wiggle,
+  .animate-pulse-soft,
+  .animate-sparkle,
+  .animate-drift-left,
+  .animate-drift-right,
+  .animate-breathing {
+    display: none !important;
+  }
+
+  /* Reset body styles */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Remove shadows and borders from main container */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Show the print report card */
+  .print-report {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 20pt !important;
+    background: white !important;
+    border: 2pt solid #333 !important;
+    page-break-inside: avoid;
+  }
+
+  .print-report * {
+    color: black !important;
+  }
+
+  .print-report .print-header {
+    border-bottom: 2pt solid #333 !important;
+    padding-bottom: 10pt !important;
+    margin-bottom: 15pt !important;
+  }
+
+  .print-report .print-score {
+    font-size: 36pt !important;
+    font-weight: 800 !important;
+  }
+
+  .print-report .print-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 15pt !important;
+  }
+
+  .print-report .print-table th,
+  .print-report .print-table td {
+    border: 1pt solid #999 !important;
+    padding: 6pt 8pt !important;
+    text-align: left !important;
+    font-size: 10pt !important;
+  }
+
+  .print-report .print-table th {
+    background: #f0f0f0 !important;
+    font-weight: 700 !important;
+  }
+
+  .print-report .print-footer {
+    border-top: 1pt solid #999 !important;
+    margin-top: 20pt !important;
+    padding-top: 10pt !important;
+    font-size: 9pt !important;
+    color: #666 !important;
+  }
+
+  /* Hide the interactive result view elements */
+  .result-interactive {
+    display: none !important;
+  }
+
+  /* Certificate print styles */
+  .print-certificate {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    border: 3pt double #333 !important;
+    padding: 30pt !important;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure no page breaks inside important sections */
+  .print-report .print-info,
+  .print-report .print-score-section {
+    page-break-inside: avoid;
+  }
+
+  /* Set page margins */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+}

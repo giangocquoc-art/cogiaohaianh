@@ -3,15 +3,15 @@
 import { useAppStore } from '@/store/app-store'
 import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
-import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck } from 'lucide-react'
+import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 
 const gradeColors = [
-  { bg: 'bg-rose-100', border: 'border-rose-300', text: 'text-rose-700', hover: 'hover:bg-rose-200', accent: 'bg-rose-500', gradient: 'from-rose-400 to-pink-500' },
-  { bg: 'bg-orange-100', border: 'border-orange-300', text: 'text-orange-700', hover: 'hover:bg-orange-200', accent: 'bg-orange-500', gradient: 'from-orange-400 to-amber-500' },
-  { bg: 'bg-amber-100', border: 'border-amber-300', text: 'text-amber-700', hover: 'hover:bg-amber-200', accent: 'bg-amber-500', gradient: 'from-amber-400 to-yellow-500' },
-  { bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-700', hover: 'hover:bg-emerald-200', accent: 'bg-emerald-500', gradient: 'from-emerald-400 to-green-500' },
-  { bg: 'bg-teal-100', border: 'border-teal-300', text: 'text-teal-700', hover: 'hover:bg-teal-200', accent: 'bg-teal-500', gradient: 'from-teal-400 to-cyan-500' },
+  { bg: 'bg-rose-100', border: 'border-rose-300', text: 'text-rose-700', hover: 'hover:bg-rose-200', accent: 'bg-rose-500', gradient: 'from-rose-400 to-pink-500', gradientSubtle: 'from-rose-50 to-pink-50', glow: 'hover:shadow-rose-200/50' },
+  { bg: 'bg-orange-100', border: 'border-orange-300', text: 'text-orange-700', hover: 'hover:bg-orange-200', accent: 'bg-orange-500', gradient: 'from-orange-400 to-amber-500', gradientSubtle: 'from-orange-50 to-amber-50', glow: 'hover:shadow-orange-200/50' },
+  { bg: 'bg-amber-100', border: 'border-amber-300', text: 'text-amber-700', hover: 'hover:bg-amber-200', accent: 'bg-amber-500', gradient: 'from-amber-400 to-yellow-500', gradientSubtle: 'from-amber-50 to-yellow-50', glow: 'hover:shadow-amber-200/50' },
+  { bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-700', hover: 'hover:bg-emerald-200', accent: 'bg-emerald-500', gradient: 'from-emerald-400 to-green-500', gradientSubtle: 'from-emerald-50 to-green-50', glow: 'hover:shadow-emerald-200/50' },
+  { bg: 'bg-teal-100', border: 'border-teal-300', text: 'text-teal-700', hover: 'hover:bg-teal-200', accent: 'bg-teal-500', gradient: 'from-teal-400 to-cyan-500', gradientSubtle: 'from-teal-50 to-cyan-50', glow: 'hover:shadow-teal-200/50' },
 ]
 
 const gradeEmojis = ['🌸', '🍊', '🌻', '🌿', '🐬']
@@ -71,6 +71,28 @@ function useAnimatedCounter(target: number, duration: number = 2000, startOnView
   return { count, ref }
 }
 
+/* Scrolling announcement ticker messages */
+const tickerMessages = [
+  '🎉 Chào mừng năm học mới!',
+  '📝 Đã có 27+ bài kiểm tra online',
+  '🌟 Làm bài kiểm tra để xem kết quả ngay!',
+  '🏆 Xem bảng điểm và thành tích!',
+  '📚 Ôn tập Toán và Ngữ văn lớp 1-5',
+  '⏱️ Có tính giờ khi làm bài!',
+  '✨ Gợi ý AI giúp học sinh hiểu bài tốt hơn!',
+]
+
+/* Popular quizzes data */
+const popularQuizzes = [
+  { grade: 1, subject: 'toan', chapterName: 'Số từ 1 đến 10', icon: '🔢', emoji: '🌸', color: 'from-rose-400 to-pink-500', bgLight: 'bg-rose-50', textColor: 'text-rose-700' },
+  { grade: 3, subject: 'toan', chapterName: 'Bảng cửu chương', icon: '✖️', emoji: '🌻', color: 'from-amber-400 to-yellow-500', bgLight: 'bg-amber-50', textColor: 'text-amber-700' },
+  { grade: 2, subject: 'toan', chapterName: 'Phép cộng có nhớ', icon: '➕', emoji: '🍊', color: 'from-orange-400 to-amber-500', bgLight: 'bg-orange-50', textColor: 'text-orange-700' },
+  { grade: 1, subject: 'ngu-van', chapterName: 'Tập đọc - Ghép chữ', icon: '📖', emoji: '🌸', color: 'from-pink-400 to-rose-500', bgLight: 'bg-pink-50', textColor: 'text-pink-700' },
+]
+
+/* School-themed emoji composition for hero decoration */
+const schoolEmojis = ['📐', '📏', '✂️', '🖍️', '🎒', '🍎', '📝', '✏️', '📌', '💡']
+
 export function HomeView() {
   const { selectGrade } = useAppStore()
 
@@ -81,6 +103,34 @@ export function HomeView() {
 
   return (
     <div className="space-y-8">
+      {/* ===== SCROLLING ANNOUNCEMENT BANNER ===== */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 py-2.5 shadow-md"
+      >
+        {/* Shimmer overlay */}
+        <div className="absolute inset-0 animate-shimmer pointer-events-none" />
+        <div className="ticker-container">
+          <div className="ticker-content">
+            {tickerMessages.map((msg, i) => (
+              <span key={i} className="inline-block text-white font-semibold text-sm px-6">
+                {msg}
+                <span className="ml-6 text-white/50">●</span>
+              </span>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {tickerMessages.map((msg, i) => (
+              <span key={`dup-${i}`} className="inline-block text-white font-semibold text-sm px-6">
+                {msg}
+                <span className="ml-6 text-white/50">●</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
       {/* ===== HERO SECTION ===== */}
       <motion.section
         initial={{ opacity: 0, y: -20 }}
@@ -108,6 +158,19 @@ export function HomeView() {
           <div className="w-full h-full rounded-full border-8 border-dashed border-orange-400" />
         </div>
 
+        {/* School-themed decorative illustration area */}
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-1 opacity-20 pointer-events-none select-none">
+          {schoolEmojis.map((emoji, i) => (
+            <span
+              key={i}
+              className="text-2xl sm:text-3xl animate-float"
+              style={{ animationDelay: `${i * 0.3}s` }}
+            >
+              {emoji}
+            </span>
+          ))}
+        </div>
+
         <div className="relative flex flex-col sm:flex-row items-center gap-6">
           {/* Teacher image with breathing animation */}
           <div className="relative w-36 h-36 sm:w-48 sm:h-48 shrink-0">
@@ -116,6 +179,7 @@ export function HomeView() {
               src="/images/teacher-hero.png"
               alt="Cô Giáo Hải Anh"
               fill
+              sizes="(max-width: 640px) 144px, 192px"
               className="object-contain drop-shadow-lg animate-breathing"
               priority
             />
@@ -152,6 +216,62 @@ export function HomeView() {
         </div>
       </motion.section>
 
+      {/* ===== POPULAR QUIZZES SECTION ===== */}
+      <section>
+        <div className="flex items-center gap-2 mb-5">
+          <Flame className="w-6 h-6 text-orange-500" />
+          <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
+            Bài Kiểm Tra Phổ Biến
+          </h2>
+          <span className="text-xl animate-sparkle">🔥</span>
+        </div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          {popularQuizzes.map((quiz, index) => (
+            <motion.button
+              key={index}
+              variants={item}
+              whileHover={{ scale: 1.04, y: -4 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => selectGrade(quiz.grade)}
+              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-white border-2 border-gray-100 hover:border-orange-200 shadow-sm hover:shadow-lg transition-all text-left p-4 sm:p-5 card-glow"
+            >
+              {/* Gradient accent top strip */}
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${quiz.color}`} />
+
+              {/* Grade badge */}
+              <div className="flex items-center justify-between mb-3">
+                <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-gradient-to-r ${quiz.color} text-white shadow-sm`}>
+                  {quiz.emoji} Lớp {quiz.grade}
+                </span>
+                <span className="text-2xl">{quiz.icon}</span>
+              </div>
+
+              {/* Subject */}
+              <span className="text-xs text-muted-foreground font-medium">
+                {quiz.subject === 'toan' ? '🔢 Toán' : '📖 Ngữ văn'}
+              </span>
+
+              {/* Chapter name */}
+              <h3 className={`font-[family-name:var(--font-patrick-hand)] text-lg mt-1 ${quiz.textColor} leading-tight`}>
+                {quiz.chapterName}
+              </h3>
+
+              {/* CTA */}
+              <div className="flex items-center gap-1 mt-3 text-orange-500 text-xs font-semibold group-hover:text-orange-600 transition-colors">
+                <span>Làm bài</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </motion.button>
+          ))}
+        </motion.div>
+      </section>
+
       {/* ===== GRADE CARDS SECTION ===== */}
       <section>
         <div className="flex items-center gap-2 mb-5">
@@ -181,14 +301,20 @@ export function HomeView() {
                 whileHover={{ scale: 1.07, y: -6 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => selectGrade(grade)}
-                className={`${colors.bg} ${colors.border} border-2 ${colors.hover} rounded-2xl p-5 sm:p-7 flex flex-col items-center gap-2 transition-all shadow-md hover:shadow-xl cursor-pointer group relative overflow-hidden`}
+                className={`${colors.bg} ${colors.border} border-2 ${colors.hover} rounded-2xl p-5 sm:p-7 flex flex-col items-center gap-2 transition-all shadow-md hover:shadow-xl cursor-pointer group relative overflow-hidden card-glow ${colors.glow}`}
               >
+                {/* Subtle gradient background */}
+                <div className={`absolute inset-0 bg-gradient-to-b ${colors.gradientSubtle} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+
                 {/* Gradient overlay on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-t ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
 
+                {/* Hover glow ring */}
+                <div className={`absolute -inset-1 rounded-2xl bg-gradient-to-r ${colors.gradient} opacity-0 group-hover:opacity-15 blur-md transition-opacity duration-300`} />
+
                 {/* Popular badge for Lớp 1 */}
                 {grade === 1 && (
-                  <div className="absolute -top-0 -right-0 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg rounded-tr-xl shadow-sm">
+                  <div className="absolute -top-0 -right-0 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg rounded-tr-xl shadow-sm z-10">
                     🔥 Phổ biến
                   </div>
                 )}
@@ -282,10 +408,13 @@ export function HomeView() {
               key={feature.title}
               variants={item}
               whileHover={{ y: -5, scale: 1.02 }}
-              className={`${feature.bgLight} border border-white/50 rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden group cursor-default`}
+              className={`${feature.bgLight} border border-white/50 rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden group cursor-default hover-lift`}
             >
               {/* Gradient background accent */}
               <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl ${feature.gradient} opacity-10 rounded-bl-full group-hover:opacity-20 transition-opacity`} />
+
+              {/* Shimmer on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity animate-shimmer pointer-events-none" />
 
               <div className="relative z-10">
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} text-white shadow-md mb-3`}>
@@ -311,7 +440,7 @@ export function HomeView() {
         transition={{ duration: 0.5 }}
         className="rounded-3xl overflow-hidden shadow-lg"
       >
-        <div className="relative bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 p-6 sm:p-8">
+        <div className="relative bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 p-6 sm:p-8 animate-gradient-shift">
           {/* Decorative pattern */}
           <div className="absolute inset-0 pattern-dots opacity-20" />
 
@@ -325,7 +454,7 @@ export function HomeView() {
               <div
                 key={stat.label}
                 ref={stat.ref}
-                className="flex flex-col items-center gap-1 bg-white/15 glass-card rounded-2xl py-4 px-3"
+                className="flex flex-col items-center gap-1 bg-white/15 glass-card rounded-2xl py-4 px-3 hover:bg-white/25 transition-colors"
               >
                 <div className={`${stat.color} mb-1`}>{stat.icon}</div>
                 <span className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-white font-bold drop-shadow-sm">
@@ -364,6 +493,7 @@ export function HomeView() {
               src="/images/mascot.png"
               alt="Linh vật"
               fill
+              sizes="(max-width: 640px) 112px, 160px"
               className="object-contain animate-float"
             />
           </div>
@@ -406,7 +536,7 @@ export function HomeView() {
               ].map((feature, i) => (
                 <span
                   key={feature.text}
-                  className="bg-emerald-100 text-emerald-700 text-sm px-3 py-1.5 rounded-full font-medium flex items-center gap-1.5 hover:bg-emerald-200 transition-colors animate-slide-up"
+                  className="bg-emerald-100 text-emerald-700 text-sm px-3 py-1.5 rounded-full font-medium flex items-center gap-1.5 hover:bg-emerald-200 transition-colors animate-slide-up hover-scale"
                   style={{ animationDelay: `${0.3 + i * 0.1}s` }}
                 >
                   <span>{feature.icon}</span>
@@ -437,6 +567,7 @@ export function HomeView() {
                 src="/images/achievement.png"
                 alt="Thành tích học tập"
                 fill
+                sizes="(max-width: 640px) 100vw, 192px"
                 className="object-contain"
               />
             </div>
