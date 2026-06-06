@@ -1,9 +1,10 @@
 'use client'
 
-import { Heart, Facebook, Mail, Home, BookOpen, Trophy, Sparkles } from 'lucide-react'
+import { Heart, Facebook, Mail, Home, BookOpen, Trophy, Sparkles, ArrowUp, Users } from 'lucide-react'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAppStore } from '@/store/app-store'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const motivationalQuotes = [
   'Học hỏi là hành trình không bao giờ kết thúc 🌈',
@@ -19,7 +20,11 @@ const motivationalQuotes = [
 export function AppFooter() {
   const { setView, goHome } = useAppStore()
   const [quoteIndex, setQuoteIndex] = useState(0)
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const [studentCount, setStudentCount] = useState(0)
+  const countRef = useRef<HTMLSpanElement>(null)
 
+  // Rotating motivational quotes
   useEffect(() => {
     const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % motivationalQuotes.length)
@@ -27,9 +32,100 @@ export function AppFooter() {
     return () => clearInterval(interval)
   }, [])
 
+  // Back to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Animated social proof counter
+  useEffect(() => {
+    const target = 100
+    let start = 0
+    const duration = 2000
+    let startTime: number | null = null
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const progress = Math.min((timestamp - startTime) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setStudentCount(Math.floor(eased * target))
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      } else {
+        setStudentCount(target)
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          requestAnimationFrame(animate)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.3 }
+    )
+
+    if (countRef.current) {
+      observer.observe(countRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <footer className="mt-auto relative">
-      {/* Decorative wave SVG separator at top */}
+      {/* Decorative pencil/ruler SVG border at top */}
+      <div className="w-full overflow-hidden leading-[0]">
+        <svg
+          viewBox="0 0 1200 30"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-[20px] sm:h-[25px]"
+          preserveAspectRatio="none"
+        >
+          {/* Ruler marks */}
+          {Array.from({ length: 60 }).map((_, i) => (
+            <line
+              key={`ruler-${i}`}
+              x1={i * 20}
+              y1={i % 5 === 0 ? 0 : 10}
+              x2={i * 20}
+              y2={30}
+              stroke="#f97316"
+              strokeWidth={i % 5 === 0 ? 2 : 1}
+              opacity={0.3}
+            />
+          ))}
+          {/* Pencil silhouette */}
+          <g transform="translate(100, 5) scale(0.8)" opacity="0.2">
+            <rect x="0" y="5" width="40" height="10" rx="1" fill="#f59e0b" />
+            <polygon points="40,5 50,10 40,15" fill="#fbbf24" />
+            <rect x="-5" y="5" width="5" height="10" rx="1" fill="#fb923c" />
+          </g>
+          {/* Another pencil */}
+          <g transform="translate(500, 8) scale(0.6)" opacity="0.15">
+            <rect x="0" y="5" width="40" height="10" rx="1" fill="#f59e0b" />
+            <polygon points="40,5 50,10 40,15" fill="#fbbf24" />
+            <rect x="-5" y="5" width="5" height="10" rx="1" fill="#fb923c" />
+          </g>
+          {/* Book silhouette */}
+          <g transform="translate(900, 3) scale(0.7)" opacity="0.15">
+            <rect x="0" y="0" width="30" height="22" rx="2" fill="#f97316" />
+            <rect x="2" y="2" width="26" height="18" rx="1" fill="#fbbf24" />
+            <line x1="15" y1="2" x2="15" y2="20" stroke="#f97316" strokeWidth="1" />
+          </g>
+        </svg>
+      </div>
+
+      {/* Wave separator */}
       <div className="w-full overflow-hidden leading-[0]">
         <svg
           viewBox="0 0 1440 60"
@@ -94,7 +190,7 @@ export function AppFooter() {
                 <button
                   key={link.label}
                   onClick={link.action}
-                  className="flex items-center gap-2 text-white/80 hover:text-white text-sm hover:translate-x-1 transition-all duration-200"
+                  className="flex items-center gap-2 text-white/80 hover:text-white text-sm hover:translate-x-1 transition-all duration-200 link-underline"
                 >
                   {link.icon}
                   <span>{link.label}</span>
@@ -126,8 +222,16 @@ export function AppFooter() {
             </div>
           </div>
 
+          {/* Social proof counter */}
+          <div className="mt-5 flex items-center justify-center gap-2">
+            <Users className="w-4 h-4 text-white/60" />
+            <span className="text-white/80 text-sm">
+              Đã giúp <span ref={countRef} className="font-bold text-white text-base">{studentCount}+</span> học sinh trên toàn quốc 🌍
+            </span>
+          </div>
+
           {/* Motivational quote */}
-          <div className="mt-5 py-3 px-4 bg-white/10 rounded-2xl text-center">
+          <div className="mt-4 py-3 px-4 bg-white/10 rounded-2xl text-center">
             <p className="text-white/90 text-sm italic font-medium min-h-[1.5em] transition-all duration-500">
               &ldquo;{motivationalQuotes[quoteIndex]}&rdquo;
             </p>
@@ -149,6 +253,24 @@ export function AppFooter() {
           </div>
         </div>
       </div>
+
+      {/* Back to top button */}
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            onClick={scrollToTop}
+            className="back-to-top"
+            aria-label="Lên đầu trang"
+            title="Lên đầu trang"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </footer>
   )
 }

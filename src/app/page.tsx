@@ -10,8 +10,11 @@ import { QuizView } from '@/components/quiz-view'
 import { ResultView } from '@/components/result-view'
 import { ScoreboardView } from '@/components/scoreboard-view'
 import { ProgressView } from '@/components/progress-view'
+import { DailyChallengeView } from '@/components/daily-challenge-view'
+import { BadgesView } from '@/components/badges-view'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
+import { initTheme } from '@/lib/theme'
 
 function ViewRenderer() {
   const currentView = useAppStore((s) => s.currentView)
@@ -24,6 +27,8 @@ function ViewRenderer() {
     result: <ResultView />,
     scoreboard: <ScoreboardView />,
     progress: <ProgressView />,
+    dailyChallenge: <DailyChallengeView />,
+    badges: <BadgesView />,
   }
 
   return (
@@ -43,7 +48,7 @@ function ViewRenderer() {
 }
 
 export default function Home() {
-  const setView = useAppStore((s) => s.setView)
+  const currentView = useAppStore((s) => s.currentView)
 
   // Seed data on first load
   useEffect(() => {
@@ -56,6 +61,16 @@ export default function Home() {
     }
     seedData()
   }, [])
+
+  // Initialize theme on mount (before first render paint)
+  useEffect(() => {
+    initTheme()
+  }, [])
+
+  // Smooth scroll to top on view change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentView])
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

@@ -201,7 +201,7 @@ export function ProgressView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
+        className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
       >
         {/* Decorative elements */}
         <div className="absolute top-2 left-3 text-2xl opacity-20 animate-bounce">📊</div>
@@ -219,7 +219,7 @@ export function ProgressView() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white rounded-2xl p-5 shadow-sm border"
+        className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
       >
         <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
           <Search className="w-4 h-4" />
@@ -310,7 +310,7 @@ export function ProgressView() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-r from-emerald-100 to-teal-100 rounded-2xl p-4 text-center border border-emerald-200"
+            className="bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:to-teal-950/30 rounded-2xl p-4 text-center border border-emerald-200 dark:border-emerald-800"
           >
             <p className="text-emerald-700 text-sm font-medium">Tiến độ học tập của</p>
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-emerald-800 mt-1">
@@ -325,7 +325,7 @@ export function ProgressView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 text-center"
+              className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 text-center"
             >
               <div className="text-2xl mb-1">📝</div>
               <p className="text-2xl font-bold text-amber-700">{stats.totalQuizzes}</p>
@@ -336,7 +336,7 @@ export function ProgressView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 text-center"
+              className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center"
             >
               <div className="text-2xl mb-1">📈</div>
               <p className={`text-2xl font-bold ${getScoreColor(stats.averageScore)}`}>
@@ -349,7 +349,7 @@ export function ProgressView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-4 text-center"
+              className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200 dark:border-orange-800 rounded-2xl p-4 text-center"
             >
               <div className="text-2xl mb-1">🌟</div>
               <p className={`text-2xl font-bold ${getScoreColor(stats.bestScore)}`}>
@@ -364,10 +364,10 @@ export function ProgressView() {
               transition={{ delay: 0.3 }}
               className={`rounded-2xl p-4 text-center border ${
                 stats.trend === 'up'
-                  ? 'bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200'
+                  ? 'bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border-emerald-200 dark:border-emerald-800'
                   : stats.trend === 'down'
-                    ? 'bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200'
-                    : 'bg-gradient-to-br from-sky-50 to-blue-50 border-sky-200'
+                    ? 'bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border-rose-200 dark:border-rose-800'
+                    : 'bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-950/30 dark:to-blue-950/30 border-sky-200 dark:border-sky-800'
               }`}
             >
               <div className="text-2xl mb-1">
@@ -399,7 +399,7 @@ export function ProgressView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
-            className="bg-white rounded-2xl p-5 shadow-sm border"
+            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
@@ -440,7 +440,7 @@ export function ProgressView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white rounded-2xl p-5 shadow-sm border"
+            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
@@ -541,7 +541,7 @@ export function ProgressView() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="bg-white rounded-2xl p-5 shadow-sm border"
+            className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 mb-4 flex items-center gap-2">
               <Award className="w-5 h-5" />
@@ -581,11 +581,11 @@ export function ProgressView() {
                           {result.quiz?.title || 'Bài kiểm tra'}
                         </p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          <span className="inline-flex items-center gap-1 text-xs bg-white/80 px-2 py-0.5 rounded-full font-medium">
+                          <span className="inline-flex items-center gap-1 text-xs bg-white/80 dark:bg-white/10 px-2 py-0.5 rounded-full font-medium">
                             {subjectIcon} {subjectLabel}
                           </span>
                           {result.quiz?.grade && (
-                            <span className="inline-flex items-center gap-1 text-xs bg-white/80 px-2 py-0.5 rounded-full font-medium">
+                            <span className="inline-flex items-center gap-1 text-xs bg-white/80 dark:bg-white/10 px-2 py-0.5 rounded-full font-medium">
                               🏫 Lớp {result.quiz.grade}
                             </span>
                           )}
@@ -634,12 +634,12 @@ export function ProgressView() {
           >
             <div className={`${
               stats.averageScore >= 9
-                ? 'bg-gradient-to-r from-amber-100 to-yellow-100'
+                ? 'bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-950/30 dark:to-yellow-950/30'
                 : stats.averageScore >= 7
-                  ? 'bg-gradient-to-r from-emerald-100 to-teal-100'
+                  ? 'bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:to-teal-950/30'
                   : stats.averageScore >= 5
-                    ? 'bg-gradient-to-r from-orange-100 to-amber-100'
-                    : 'bg-gradient-to-r from-rose-100 to-pink-100'
+                    ? 'bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-950/30 dark:to-amber-950/30'
+                    : 'bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-950/30 dark:to-pink-950/30'
             } p-6 text-center`}
             >
               <div className="text-3xl mb-2">
@@ -687,7 +687,7 @@ export function ProgressView() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-8 text-center"
+          className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-8 text-center"
         >
           <p className="text-5xl mb-3">🌱</p>
           <p className="text-emerald-800 font-semibold text-lg mb-1">

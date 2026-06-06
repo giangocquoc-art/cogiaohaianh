@@ -296,7 +296,7 @@ export function ScoreboardView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
+        className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
       >
         <div className="absolute top-2 left-4 text-lg opacity-10 animate-float">🏆</div>
         <div className="absolute bottom-2 right-4 text-lg opacity-10 animate-float" style={{ animationDelay: '0.5s' }}>📊</div>
@@ -313,7 +313,7 @@ export function ScoreboardView() {
           onClick={() => setActiveTab('view')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-sm transition-all ${
             activeTab === 'view'
-              ? 'bg-white shadow-md text-orange-700'
+              ? 'bg-white dark:bg-card shadow-md text-orange-700 dark:text-orange-300'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -325,7 +325,7 @@ export function ScoreboardView() {
           onClick={() => setActiveTab('enter')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-sm transition-all ${
             activeTab === 'enter'
-              ? 'bg-white shadow-md text-orange-700'
+              ? 'bg-white dark:bg-card shadow-md text-orange-700 dark:text-orange-300'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -337,7 +337,7 @@ export function ScoreboardView() {
           onClick={() => setActiveTab('stats')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-sm transition-all ${
             activeTab === 'stats'
-              ? 'bg-white shadow-md text-orange-700'
+              ? 'bg-white dark:bg-card shadow-md text-orange-700 dark:text-orange-300'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -355,7 +355,7 @@ export function ScoreboardView() {
           className="space-y-4"
         >
           {/* Filters */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm border">
+          <div className="bg-white dark:bg-card rounded-2xl p-4 shadow-sm border dark:border-border">
             <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
               <Search className="w-4 h-4" />
               Lọc kết quả 🔍
@@ -366,7 +366,7 @@ export function ScoreboardView() {
                 <select
                   value={viewGrade}
                   onChange={(e) => setViewGrade(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-card"
                 >
                   {[1, 2, 3, 4, 5].map((g) => (
                     <option key={g} value={g}>Lớp {g}</option>
@@ -378,7 +378,7 @@ export function ScoreboardView() {
                 <select
                   value={viewSubject}
                   onChange={(e) => setViewSubject(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-card"
                 >
                   <option value="toan">Toán</option>
                   <option value="ngu-van">Ngữ văn</option>
@@ -417,7 +417,7 @@ export function ScoreboardView() {
               <p className="text-amber-700 font-medium">Chưa có điểm nào. Hãy thay đổi bộ lọc hoặc nhập điểm mới.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+            <div className="bg-white dark:bg-card rounded-2xl shadow-sm border dark:border-border overflow-hidden">
               <div className="px-4 py-3 bg-gradient-to-r from-orange-50 to-amber-50 border-b">
                 <p className="text-sm text-orange-700 font-medium">
                   📋 Có <span className="font-bold">{allScores.length}</span> kết quả
@@ -503,7 +503,7 @@ export function ScoreboardView() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl p-6 shadow-sm border relative overflow-hidden"
+          className="bg-white dark:bg-card rounded-2xl p-6 shadow-sm border dark:border-border relative overflow-hidden"
         >
           {/* Success animation overlay */}
           <AnimatePresence>
@@ -567,7 +567,7 @@ export function ScoreboardView() {
               <select
                 value={formGrade}
                 onChange={(e) => setFormGrade(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-card"
               >
                 {[1, 2, 3, 4, 5].map((g) => (
                   <option key={g} value={g}>Lớp {g}</option>
@@ -579,7 +579,7 @@ export function ScoreboardView() {
               <select
                 value={formSubject}
                 onChange={(e) => setFormSubject(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm bg-white"
+                className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-card"
               >
                 <option value="toan">Toán</option>
                 <option value="ngu-van">Ngữ văn</option>
@@ -652,42 +652,42 @@ export function ScoreboardView() {
             <>
               {/* Stats cards with animated counters */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 text-center hover-lift">
                   <div className="text-2xl mb-1">📝</div>
                   <p className="text-2xl font-bold text-amber-700">
                     <AnimatedNumber target={stats.totalResults} />
                   </p>
                   <p className="text-xs text-amber-600 font-medium">Tổng bài làm</p>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift">
                   <div className="text-2xl mb-1">📈</div>
                   <p className="text-2xl font-bold text-emerald-700">
                     <AnimatedNumber target={stats.averageScore} />
                   </p>
                   <p className="text-xs text-emerald-600 font-medium">Điểm trung bình</p>
                 </div>
-                <div className="bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-200 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 text-center hover-lift">
                   <div className="text-2xl mb-1">🌟</div>
                   <p className="text-2xl font-bold text-rose-700">
                     <AnimatedNumber target={stats.highestScore} />
                   </p>
                   <p className="text-xs text-rose-600 font-medium">Điểm cao nhất</p>
                 </div>
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border border-teal-200 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 border border-teal-200 dark:border-teal-800 rounded-2xl p-4 text-center hover-lift">
                   <div className="text-2xl mb-1">👥</div>
                   <p className="text-2xl font-bold text-teal-700">
                     <AnimatedNumber target={stats.uniqueStudents} />
                   </p>
                   <p className="text-xs text-teal-600 font-medium">Học sinh</p>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift">
                   <div className="text-2xl mb-1">🟢</div>
                   <p className="text-2xl font-bold text-emerald-700">
                     <AnimatedNumber target={stats.onlineCount} />
                   </p>
                   <p className="text-xs text-emerald-600 font-medium">Làm online</p>
                 </div>
-                <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 text-center hover-lift">
                   <div className="text-2xl mb-1">✏️</div>
                   <p className="text-2xl font-bold text-violet-700">
                     <AnimatedNumber target={stats.manualCount} />
@@ -698,7 +698,7 @@ export function ScoreboardView() {
 
               {/* Top 3 Podium */}
               {topStudents.length > 0 && (
-                <div className="bg-white rounded-2xl p-5 shadow-sm border">
+                <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
                   <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
                     <Trophy className="w-5 h-5" />
                     Top 3 Học sinh 🏆
@@ -773,7 +773,7 @@ export function ScoreboardView() {
                   onClick={() => setStatsViewMode('charts')}
                   className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-semibold text-sm transition-all ${
                     statsViewMode === 'charts'
-                      ? 'bg-white shadow-md text-orange-700'
+                      ? 'bg-white dark:bg-card shadow-md text-orange-700 dark:text-orange-300'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -784,7 +784,7 @@ export function ScoreboardView() {
                   onClick={() => setStatsViewMode('timeline')}
                   className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-semibold text-sm transition-all ${
                     statsViewMode === 'timeline'
-                      ? 'bg-white shadow-md text-orange-700'
+                      ? 'bg-white dark:bg-card shadow-md text-orange-700 dark:text-orange-300'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -796,7 +796,7 @@ export function ScoreboardView() {
               {statsViewMode === 'charts' ? (
                 <>
                   {/* Score distribution chart */}
-                  <div className="bg-white rounded-2xl p-5 shadow-sm border">
+                  <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
                     <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
                       <BarChart3 className="w-5 h-5" />
                       Phân bố điểm 📊
@@ -847,7 +847,7 @@ export function ScoreboardView() {
                   </div>
 
                   {/* Full top students list */}
-                  <div className="bg-white rounded-2xl p-5 shadow-sm border">
+                  <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
                     <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
                       <Star className="w-5 h-5" />
                       Học sinh xuất sắc 🏆
@@ -912,7 +912,7 @@ export function ScoreboardView() {
                   </div>
 
                   {/* Subject breakdown */}
-                  <div className="bg-white rounded-2xl p-5 shadow-sm border">
+                  <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
                     <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
                       <TrendingUp className="w-5 h-5" />
                       Theo môn học 📚
@@ -963,7 +963,7 @@ export function ScoreboardView() {
                 </>
               ) : (
                 /* Timeline View - Lịch sử điểm */
-                <div className="bg-white rounded-2xl p-5 shadow-sm border">
+                <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
                   <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
                     <History className="w-5 h-5" />
                     Lịch sử điểm 📅

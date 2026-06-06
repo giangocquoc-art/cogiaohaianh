@@ -1,16 +1,29 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { getTheme, toggleTheme, initTheme, type Theme } from '@/lib/theme'
 
 export function AppHeader() {
   const { currentView, goBack, goHome, selectedGrade } = useAppStore()
   const [scrolled, setScrolled] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [theme, setThemeState] = useState<Theme>('light')
+
+  // Initialize theme on mount
+  useEffect(() => {
+    initTheme()
+    setThemeState(getTheme())
+  }, [])
+
+  const handleToggleTheme = () => {
+    const newTheme = toggleTheme()
+    setThemeState(newTheme)
+  }
 
   const gradeLabel = selectedGrade ? `Lớp ${selectedGrade}` : ''
   const isStudying = currentView === 'quiz'
@@ -42,6 +55,8 @@ export function AppHeader() {
 
   const navItems = [
     { view: 'home' as const, icon: Home, label: 'Trang chủ', action: goHome },
+    { view: 'dailyChallenge' as const, icon: Flame, label: 'Thử thách', action: () => useAppStore.getState().setView('dailyChallenge') },
+    { view: 'badges' as const, icon: Award, label: 'Huy hiệu', action: () => useAppStore.getState().setView('badges') },
     { view: 'scoreboard' as const, icon: Trophy, label: 'Bảng điểm', action: () => useAppStore.getState().setView('scoreboard') },
     { view: 'progress' as const, icon: BarChart3, label: 'Tiến độ', action: () => useAppStore.getState().setView('progress') },
   ]
@@ -138,6 +153,39 @@ export function AppHeader() {
                 })}
               </nav>
 
+              {/* Theme toggle button */}
+              <motion.button
+                onClick={handleToggleTheme}
+                className="flex items-center justify-center w-10 h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
+                aria-label={theme === 'dark' ? 'Chuyển sáng' : 'Chuyển tối'}
+                title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
+                whileTap={{ scale: 0.9 }}
+              >
+                <AnimatePresence mode="wait">
+                  {theme === 'dark' ? (
+                    <motion.div
+                      key="sun"
+                      initial={{ rotate: -90, scale: 0 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      exit={{ rotate: 90, scale: 0 }}
+                      transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
+                    >
+                      <Sun className="w-5 h-5" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="moon"
+                      initial={{ rotate: 90, scale: 0 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      exit={{ rotate: -90, scale: 0 }}
+                      transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
+                    >
+                      <Moon className="w-5 h-5" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+
               {/* Mobile hamburger menu */}
               <button
                 onClick={() => setDrawerOpen(true)}
@@ -150,7 +198,7 @@ export function AppHeader() {
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -209,7 +257,7 @@ export function AppHeader() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white z-[70] shadow-2xl overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white dark:bg-[#1a1208] z-[70] shadow-2xl overflow-y-auto"
             >
               {/* Drawer header */}
               <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 p-5">
@@ -268,8 +316,8 @@ export function AppHeader() {
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left ${
                         isActive
-                          ? 'bg-orange-50 text-orange-700 font-semibold'
-                          : 'text-foreground hover:bg-orange-50'
+                          ? 'bg-orange-50 text-orange-700 font-semibold dark:bg-orange-900/30 dark:text-orange-300'
+                          : 'text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20'
                       }`}
                     >
                       <navItem.icon className={`w-5 h-5 ${isActive ? 'text-orange-500' : 'text-muted-foreground'}`} />
@@ -283,10 +331,19 @@ export function AppHeader() {
               </div>
 
               {/* Drawer footer */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gradient-to-r from-orange-50 to-amber-50">
-                <div className="flex items-center gap-2 text-sm text-orange-600">
-                  <GraduationCap className="w-5 h-5" />
-                  <span className="font-medium">Lớp 1 → Lớp 5</span>
+              <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 dark:border-orange-900/30">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
+                    <GraduationCap className="w-5 h-5" />
+                    <span className="font-medium">Lớp 1 → Lớp 5</span>
+                  </div>
+                  <button
+                    onClick={handleToggleTheme}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:hover:bg-orange-900/50 transition-colors"
+                  >
+                    {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                    {theme === 'dark' ? 'Sáng' : 'Tối'}
+                  </button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Kiểm tra Toán & Ngữ văn 📚</p>
               </div>

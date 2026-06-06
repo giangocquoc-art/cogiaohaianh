@@ -466,6 +466,219 @@ Stage Summary:
 1. Certificate Dialog may need additional testing in production browsers
 2. Could add more quiz questions (currently 248 for 27 quizzes)
 3. Could add batch score import for teachers (CSV upload)
-4. Could add dark mode support
+4. Could add dark mode support ✅ (Done in Task 16+17)
 5. Could add more subjects beyond Toán and Ngữ văn
 6. Could add parent notification system for low scores
+
+---
+Task ID: 16 + 17
+Agent: Main Developer
+Task: Add Dark Mode Theme + Improve Styling with More Details
+
+Work Log:
+- Updated globals.css with warm dark theme colors (deep warm brown/charcoal, not cold blue/gray)
+- Added smooth theme transition class (.theme-transition)
+- Added micro-interaction CSS classes: .btn-press, .card-hover, .input-focus, .link-underline, .skeleton-shimmer, .kbd-hint, .typing-cursor, .back-to-top
+- Added extensive dark mode overrides for all CSS utility classes (scrollbar, patterns, glass-card, difficulty badges, scores, podium, etc.)
+- Created /src/lib/theme.ts utility with getTheme(), setTheme(), toggleTheme(), initTheme()
+- Added animated Sun/Moon theme toggle to app-header.tsx with framer-motion rotate+scale animation
+- Added theme toggle in mobile drawer footer
+- Updated all 8 view components with dark: variants (warm brown/amber tones, NOT cold blue/gray)
+- Updated page.tsx with smooth scroll-to-top on view change and theme initialization
+- Added typing effect for hero welcome message using custom useTypingEffect hook
+- Added decorative school building SVG silhouette in hero background (2 buildings, trees, flag)
+- Added parallax effect on floating decorations when scrolling (useScroll + useTransform)
+- Added question difficulty indicator (star rating: 1★ Dễ, 2★ Trung bình, 3★ Khó) in quiz view
+- Added progress ring bar in quiz header (fills as questions answered)
+- Added keyboard shortcuts (1-4 for A-D, Enter/Arrow keys) in quiz view
+- Added keyboard shortcut hints display
+- Added mini-map of answered/unanswered questions in quiz sticky header
+- Added back-to-top smooth scroll button in footer (animated with framer-motion)
+- Added animated social proof counter (100+ students helped) in footer
+- Added decorative pencil/ruler SVG border at top of footer
+- Fixed TypeScript errors: useEffect conditional call in quiz-view, earnedDate in badges.ts
+
+Stage Summary:
+**Feature 1 - Dark Mode:**
+1. Warm dark theme with deep brown/amber tones (NOT cold blue/gray)
+2. Theme utility with localStorage persistence and smooth transitions
+3. Animated Sun/Moon toggle in header and drawer
+4. All 8 views updated with dark: variants
+5. CSS overrides for all custom classes in dark mode
+
+**Feature 2 - Styling Improvements:**
+1. 8 new micro-interaction CSS classes
+2. Smooth scroll-to-top on view change
+3. Hero: typing effect, school SVG, parallax decorations
+4. Quiz: difficulty indicator, progress ring, keyboard shortcuts, mini-map
+5. Footer: back-to-top, social proof counter, pencil/ruler border
+6. All interactive elements maintain 44px touch targets
+7. All lint and TypeScript checks pass
+
+---
+Task ID: 15
+Agent: Feature Developer
+Task: Add Daily Challenge + Badges/Achievements System
+
+Work Log:
+- Created `/api/daily-challenge/route.ts` backend API:
+  - GET endpoint that returns today's challenge info
+  - Uses current date (Vietnam timezone UTC+7) as seed to deterministically select a quiz
+  - Custom hashDate function converts date string to a deterministic index
+  - Accepts optional `studentName` and `className` query params
+  - Returns: quizId, title, subject, grade, chapter, chapterName, duration, questionCount, date, bonusPoints (+1), completed (boolean), streak (consecutive days)
+  - Calculates streak by checking consecutive past days for completed daily challenges
+  - Uses `_count` aggregation for question count
+- Created `/src/lib/badges.ts` badge utility:
+  - Defined Badge interface with id, name, description, emoji, earned, earnedDate, progress
+  - Defined QuizResultForBadge interface for badge evaluation input
+  - 12 badge definitions with evaluate functions:
+    1. 🌟 "Chuyên gia Toán" - Score 9+ on 3 Math quizzes
+    2. 📖 "Nhà văn nhí" - Score 9+ on 3 Ngữ văn quizzes
+    3. 🔥 "Thử thách hàng ngày" - Complete 1 daily challenge (via localStorage)
+    4. ⚡ "Tốc độ" - Complete a quiz in under 5 minutes
+    5. 🎯 "Hoàn hảo" - Get 10/10 on any quiz
+    6. 🏆 "Học sinh xuất sắc" - Average score >= 8.0 across 5+ quizzes
+    7. 🌈 "Đa năng" - Complete quizzes in both Toán and Ngữ văn
+    8. 📚 "Chăm chỉ" - Complete 10 quizzes total
+    9. 💪 "Không bỏ cuộc" - Complete 3 quizzes even when scoring <5
+    10. 🚀 "Thăng tiến" - Improve score by 2+ points between attempts
+    11. ⭐ "Bắt đầu" - Complete your first quiz
+    12. 🎒 "Học sinh mới" - Enter your info for the first time
+  - evaluateBadges() function computes all badges from results
+  - getNewBadges() compares previous and current badges to find newly earned
+  - saveBadgesToStorage() / loadBadgesFromStorage() for localStorage persistence
+  - markDailyChallengeCompleted() for daily challenge badge tracking
+- Created `/src/components/daily-challenge-view.tsx`:
+  - CountdownTimer component with hours/minutes/seconds countdown to next day
+  - StreakCalendar component showing weekly streak with fire emoji indicators
+  - Fiery/warm theme with orange-red gradients, fire emojis, star decorations
+  - Shows quiz info (subject, grade, chapterName, duration, questionCount, bonusPoints)
+  - "Bắt đầu thử thách" button that starts the quiz via startQuiz()
+  - After completing: shows "🔥 Thử thách hoàn thành!" badge with streak info
+  - Tips section with advice for daily challenges
+  - Marks daily challenge in localStorage via markDailyChallengeCompleted()
+- Created `/src/components/badges-view.tsx`:
+  - Summary header with Trophy icon, earned count, progress bar, and quick stats
+  - Badge grid with 12 badges in 2-3-4 column responsive layout
+  - Earned badges: colorful with gradient backgrounds, glow effects, shimmer overlay
+  - Locked badges: grayed out with Lock icon and progress bars
+  - Each badge shows: emoji, name, description, progress percentage
+  - Staggered entrance animation with framer-motion
+  - No student info notice with redirect to home
+  - Fetches results from /api/progress and evaluates badges
+- Updated `/src/store/app-store.ts`: Added 'dailyChallenge' and 'badges' to ViewType
+- Updated `/src/app/page.tsx`: Added DailyChallengeView and BadgesView imports and viewMap entries
+- Updated `/src/components/home-view.tsx`:
+  - Added "🔥 Thử Thách Hàng Ngày" card section between announcement ticker and hero section
+  - Card shows: today's challenge (subject, grade, chapterName), streak count, countdown timer, bonus points indicator
+  - Completed challenge shows "✓ Đã xong" badge
+  - Clicking navigates to dailyChallenge view
+  - Fetches challenge data from /api/daily-challenge on mount
+- Updated `/src/components/result-view.tsx`:
+  - Added badge evaluation after quiz submission
+  - Fetches all student results and evaluates badges
+  - Compares with previously earned badges to find new ones
+  - Shows "🆕 Huy hiệu mới!" notification with badge cards
+  - Small badge indicator near score circle
+  - "Xem tất cả huy hiệu →" link to badges view
+  - Auto-hides notification after 8 seconds
+  - Saves earned badges to localStorage
+- Updated `/src/components/app-header.tsx`:
+  - Added Flame and Award icons to imports
+  - Added "Thử thách" (Flame icon) navigation button
+  - Added "Huy hiệu" (Award icon) navigation button
+  - Updated breadcrumb condition to exclude dailyChallenge and badges views
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**New Features: Daily Challenge + Badges/Achievements System**
+
+1. **Daily Challenge (Thử Thách Hàng Ngày):**
+   - Backend: GET /api/daily-challenge route with date-seeded quiz selection
+   - Frontend: DailyChallengeView with countdown timer, streak calendar, fiery theme
+   - Homepage: Prominent daily challenge card with countdown, streak, subject info
+   - Navigation: "Thử thách" button in header with Flame icon
+   - +1 bonus point indicator for daily challenges
+   - Streak tracking across consecutive days
+
+2. **Badges/Achievements (Huy Hiệu Thành Tích):**
+   - Badge utility: 12 badges with evaluation logic from existing data
+   - Frontend: BadgesView with colorful grid, progress bars, glow effects
+   - Navigation: "Huy hiệu" button in header with Award icon
+   - Result view: New badge notification with "🆕 Huy hiệu mới!" popup
+   - Badge indicator near score circle
+   - localStorage persistence for earned badges
+
+**Files Created:**
+- `/src/app/api/daily-challenge/route.ts`
+- `/src/lib/badges.ts`
+- `/src/components/daily-challenge-view.tsx`
+- `/src/components/badges-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added ViewTypes
+- `/src/app/page.tsx` - Added viewMap entries
+- `/src/components/home-view.tsx` - Added daily challenge card
+- `/src/components/result-view.tsx` - Added badge notifications
+- `/src/components/app-header.tsx` - Added navigation buttons
+
+---
+Task ID: 19 (Main Agent - Round 2)
+Agent: Main
+Task: QA Testing + Bug Fix + Daily Challenge/Badges/Dark Mode/Styling Polish
+
+Work Log:
+- Reviewed worklog.md and project files to understand current state
+- Tested full website with agent-browser across all 8+ views
+- Verified all existing features working: Homepage, Subject, Chapter, Quiz, Result, Scoreboard, Progress
+- Tested LLM hint feature: confirmed AI-generated hints work correctly
+- Tested certificate dialog: confirmed decorative certificate shows correctly
+- Found and fixed Dialog accessibility warning (missing DialogDescription)
+- Launched 2 parallel agents for major new features:
+  - Task 15: Daily Challenge + Badges/Achievements system (completed)
+  - Task 16+17: Dark Mode + Styling improvements (completed)
+- Verified all new features working via agent-browser testing
+- Confirmed lint passes with no errors
+- No runtime errors after page reload
+
+Stage Summary:
+**Bug Fixes:**
+1. Fixed Dialog accessibility warning (added DialogDescription to certificate dialog)
+
+**New Features Delivered (2 agents, all completed):**
+1. Daily Challenge (Thử Thách Hàng Ngày):
+   - Backend API with date-seeded quiz selection, streak tracking, +1 bonus
+   - Frontend with countdown timer, streak calendar, fiery theme
+   - Homepage card with countdown, subject info, streak display
+2. Badges/Achievements (Huy Hiệu Thành Tích):
+   - 12 badges with evaluation logic from existing data
+   - Colorful grid view with progress bars, glow effects
+   - Badge notifications in result view with "🆕 Huy hiệu mới!" popup
+3. Dark Mode Theme:
+   - Warm dark colors (brown/amber, NOT cold blue/gray)
+   - Animated Sun/Moon toggle with localStorage persistence
+   - All 8 views updated with dark: variants
+4. Styling Improvements:
+   - 8 micro-interaction CSS classes
+   - Hero: typing effect, school SVG, parallax decorations
+   - Quiz: difficulty indicator, progress ring, keyboard shortcuts, mini-map
+   - Footer: back-to-top, social proof counter, pencil/ruler border
+
+**Current Project Status:**
+- 10 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges
+- 8 API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge
+- Full dark mode support with warm colors
+- 12 achievement badges + daily challenge system
+- Keyboard shortcuts, micro-interactions, parallax effects
+- No lint errors, no runtime errors
+
+**Unresolved / Future Recommendations:**
+1. Could add more quiz questions (currently 248 for 27 quizzes)
+2. Could add batch score import for teachers (CSV upload)
+3. Could add more subjects beyond Toán and Ngữ văn
+4. Could add parent notification system for low scores
+5. Could add leaderboard across all students (privacy considerations)
+6. Could add gamification elements: XP points, levels, avatar customization
+7. Could add teacher dashboard for managing quizzes and scores
+8. Could add VLM-powered question image understanding

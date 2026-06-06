@@ -8,9 +8,11 @@ import { useEffect, useState, useCallback } from 'react'
 import { Confetti } from '@/components/confetti'
 import { playCorrectSound, playCompleteSound, getSoundMuted, toggleSoundMuted } from '@/lib/sounds'
 import { useToast } from '@/hooks/use-toast'
+import { evaluateBadges, getNewBadges, saveBadgesToStorage, type Badge, type QuizResultForBadge } from '@/lib/badges'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -159,6 +161,8 @@ export function ResultView() {
   const [showReview, setShowReview] = useState(false)
   const [soundMuted, setSoundMuted] = useState(getSoundMuted)
   const [showCertificate, setShowCertificate] = useState(false)
+  const [newBadges, setNewBadges] = useState<Badge[]>([])
+  const [showBadgeNotification, setShowBadgeNotification] = useState(false)
   const { toast } = useToast()
 
   // Play sound when result loads based on score
@@ -197,6 +201,57 @@ export function ResultView() {
 
     fetchQuiz()
   }, [selectedQuizId])
+
+  // Check for new badges after quiz result
+  useEffect(() => {
+    if (!quizResult || !studentInfo) return
+
+    const checkBadges = async () => {
+      try {
+        // Fetch all results for this student
+        const res = await fetch(`/api/progress?studentName=${encodeURIComponent(studentInfo.name)}&className=${encodeURIComponent(studentInfo.className)}`)
+        if (!res.ok) return
+
+        const data = await res.json()
+        const quizResults: QuizResultForBadge[] = data.map((r: { id: string; score: number; quiz: { subject: string; grade: number; title: string }; timeTaken: number | null; createdAt: string }) => ({
+          id: r.id,
+          score: r.score,
+          subject: r.quiz.subject,
+          grade: r.quiz.grade,
+          quizTitle: r.quiz.title,
+          timeTaken: r.timeTaken,
+          createdAt: r.createdAt,
+        }))
+
+        // Load previously earned badges from localStorage
+        const prevEarnedIds = JSON.parse(localStorage.getItem('earnedBadges') || '[]')
+        const prevBadges = evaluateBadges(quizResults.slice(0, -1), studentInfo) // Exclude current result
+        prevBadges.forEach(b => {
+          if (prevEarnedIds.includes(b.id)) b.earned = true
+        })
+
+        // Evaluate current badges including the new result
+        const currentBadges = evaluateBadges(quizResults, studentInfo)
+
+        // Find newly earned badges
+        const newlyEarned = getNewBadges(prevBadges, currentBadges)
+
+        if (newlyEarned.length > 0) {
+          setNewBadges(newlyEarned)
+          setShowBadgeNotification(true)
+          // Auto-hide after 8 seconds
+          setTimeout(() => setShowBadgeNotification(false), 8000)
+        }
+
+        // Save current badges
+        saveBadgesToStorage(currentBadges)
+      } catch (err) {
+        console.error('Badge check error:', err)
+      }
+    }
+
+    checkBadges()
+  }, [quizResult, studentInfo])
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -366,7 +421,7 @@ export function ResultView() {
       {/* Sound toggle button */}
       <button
         onClick={handleToggleSound}
-        className="no-print fixed top-20 right-3 z-50 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm shadow-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+        className="no-print fixed top-20 right-3 z-50 w-10 h-10 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm shadow-md border border-gray-200 dark:border-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-card transition-colors"
         title={soundMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
       >
         {soundMuted ? (
@@ -385,7 +440,7 @@ export function ResultView() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className={`${msg.bg} rounded-3xl p-6 sm:p-8 text-center shadow-lg border-2 ${msg.border} relative overflow-hidden`}
+          className={`${msg.bg} dark:bg-opacity-30 rounded-3xl p-6 sm:p-8 text-center shadow-lg border-2 ${msg.border} dark:border-opacity-30 relative overflow-hidden`}
         >
           <FloatingStars score={score} />
 
@@ -403,9 +458,64 @@ export function ResultView() {
           </h2>
 
           {/* Circular progress with score */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6 relative">
             <CircularProgress score={score} />
+            {/* New badge indicator near score */}
+            {newBadges.length > 0 && (
+              <motion.div
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
+                className="absolute -top-2 -right-2 sm:right-4"
+              >
+                <div className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg animate-bounce-in flex items-center gap-1">
+                  <Award className="w-3 h-3" />
+                  {newBadges.length} huy hiệu mới!
+                </div>
+              </motion.div>
+            )}
           </div>
+
+          {/* Badge notification */}
+          {showBadgeNotification && newBadges.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ delay: 2, type: 'spring', stiffness: 150 }}
+              className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-4 mb-4 shadow-md"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">🆕</span>
+                <h4 className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-800">
+                  Huy hiệu mới!
+                </h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {newBadges.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className="bg-white dark:bg-card rounded-xl px-3 py-2 shadow-sm flex items-center gap-2 border border-amber-200 dark:border-amber-800"
+                  >
+                    <span className="text-xl">{badge.emoji}</span>
+                    <div>
+                      <span className="font-semibold text-amber-800 text-sm">{badge.name}</span>
+                      <p className="text-amber-600 text-[10px] leading-tight">{badge.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  const { setView } = useAppStore.getState()
+                  setView('badges')
+                }}
+                className="mt-2 text-amber-700 text-xs font-semibold hover:text-amber-800 underline underline-offset-2"
+              >
+                Xem tất cả huy hiệu →
+              </button>
+            </motion.div>
+          )}
 
           {/* Correct/Incorrect count - prominent display */}
           <div className="flex items-center justify-center gap-4 sm:gap-6">
@@ -413,7 +523,7 @@ export function ResultView() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 1, type: 'spring' }}
-              className="bg-white rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
+              className="bg-white dark:bg-card rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
             >
               <CheckCircle className="w-5 h-5 text-emerald-500" />
               <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700">
@@ -427,7 +537,7 @@ export function ResultView() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 1.2, type: 'spring' }}
-                className="bg-white rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
+                className="bg-white dark:bg-card rounded-2xl px-4 py-3 shadow-md flex items-center gap-2"
               >
                 <XCircle className="w-5 h-5 text-rose-400" />
                 <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-rose-600">
@@ -559,8 +669,8 @@ export function ResultView() {
                     transition={{ delay: idx * 0.05 }}
                     className={`rounded-2xl p-4 sm:p-5 border-2 transition-all ${
                       isCorrect
-                        ? 'bg-emerald-50 border-emerald-300 shadow-sm'
-                        : 'bg-rose-50 border-rose-300 shadow-sm'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-700 shadow-sm'
+                        : 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-700 shadow-sm'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -600,9 +710,9 @@ export function ResultView() {
                                   key={oi}
                                   className={`text-sm px-3 py-2 rounded-xl border ${
                                     isThisCorrect
-                                      ? 'bg-emerald-100 text-emerald-700 font-semibold border-emerald-300'
+                                      ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-semibold border-emerald-300 dark:border-emerald-700'
                                       : isThisUser && !isThisCorrect
-                                        ? 'bg-rose-100 text-rose-700 line-through border-rose-300'
+                                        ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 line-through border-rose-300 dark:border-rose-700'
                                         : 'text-muted-foreground border-gray-200'
                                   }`}
                                 >
@@ -621,15 +731,15 @@ export function ResultView() {
                             <div className={`inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border ${
                               userAnswer
                                 ? isCorrect
-                                  ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
-                                  : 'bg-rose-100 text-rose-700 border-rose-300'
+                                  ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                                  : 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700'
                                 : 'text-muted-foreground border-gray-200'
                             }`}>
                               <span className="text-xs">✏️</span>
                               Trả lời của bạn: <span className="font-semibold">{userAnswer || '(chưa trả lời)'}</span>
                             </div>
                             {!isCorrect && (
-                              <div className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border bg-emerald-100 text-emerald-700 border-emerald-300">
+                              <div className="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-xl border bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700">
                                 <span className="text-xs">✅</span>
                                 Đáp án đúng: <span className="font-semibold">{q.correctAnswer}</span>
                               </div>
@@ -638,7 +748,7 @@ export function ResultView() {
                         )}
 
                         {!isCorrect && q.questionType === 'multiple_choice' && (
-                          <div className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300">
+                          <div className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
                             ✅ Đáp án đúng: {q.correctAnswer}
                           </div>
                         )}
@@ -659,12 +769,12 @@ export function ResultView() {
         >
           <div className={`${
             score >= 9
-              ? 'bg-gradient-to-r from-amber-100 to-yellow-100'
+              ? 'bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-950/30 dark:to-yellow-950/30'
               : score >= 7
-                ? 'bg-gradient-to-r from-emerald-100 to-teal-100'
+                ? 'bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:to-teal-950/30'
                 : score >= 5
-                  ? 'bg-gradient-to-r from-orange-100 to-amber-100'
-                  : 'bg-gradient-to-r from-rose-100 to-pink-100'
+                  ? 'bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-950/30 dark:to-amber-950/30'
+                  : 'bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-950/30 dark:to-pink-950/30'
           } p-6 text-center`}>
             <div className="text-3xl mb-2">
               {score >= 9 ? '🎉🎊🌟🏆' : score >= 7 ? '🌟⭐👏' : score >= 5 ? '👍✨💪' : '💪📚❤️'}
@@ -791,6 +901,7 @@ export function ResultView() {
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="sr-only">Chứng nhận kết quả</DialogTitle>
+            <DialogDescription className="sr-only">Chứng nhận kết quả kiểm tra của học sinh</DialogDescription>
           </DialogHeader>
 
           {/* Certificate Card */}

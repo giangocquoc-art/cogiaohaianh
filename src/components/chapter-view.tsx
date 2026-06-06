@@ -451,7 +451,7 @@ function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-2 space-y-3">
+            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mt-2 space-y-3">
               {/* Key knowledge points */}
               <div>
                 <h5 className="text-sm font-bold text-amber-800 mb-2 flex items-center gap-1">
@@ -587,7 +587,7 @@ export function ChapterView() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden"
+            className="bg-white dark:bg-card rounded-2xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden"
           >
             {/* Decorative top strip */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400" />
@@ -706,7 +706,7 @@ export function ChapterView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} border-2 border-current/10 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
+        className={`${gc.bg} border-2 border-current/10 dark:bg-opacity-20 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
       >
         {/* Decorative elements */}
         <div className="absolute top-2 right-4 text-lg opacity-15 animate-float">📖</div>
@@ -723,7 +723,7 @@ export function ChapterView() {
         <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl p-4 shadow-sm border"
+          className="bg-white dark:bg-card rounded-2xl p-4 shadow-sm border dark:border-border"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
@@ -756,7 +756,7 @@ export function ChapterView() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 text-center text-amber-700 text-sm"
+          className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-2 text-center text-amber-700 dark:text-amber-300 text-sm"
         >
           👤 {studentInfo.name} | Lớp {studentInfo.className}
           {studentInfo.schoolName && ` | ${studentInfo.schoolName}`}
@@ -776,7 +776,7 @@ export function ChapterView() {
 
       {/* Error state */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
           <p className="text-red-600">{error}</p>
           <Button
             variant="outline"
@@ -790,7 +790,7 @@ export function ChapterView() {
 
       {/* Quiz list */}
       {!loading && !error && quizzes.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 text-center">
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-8 text-center">
           <p className="text-amber-700 text-lg">Chưa có bài kiểm tra nào cho môn này.</p>
           <p className="text-amber-600 text-sm mt-2">Vui lòng quay lại sau nhé!</p>
         </div>
@@ -810,7 +810,7 @@ export function ChapterView() {
                 key={quiz.id}
                 variants={item}
                 whileHover={{ scale: 1.01, x: 4 }}
-                className="bg-white border-2 border-gray-100 hover:border-orange-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
+                className="bg-white dark:bg-card border-2 border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
               >
                 {/* Subtle left accent */}
                 <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-orange-400 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />

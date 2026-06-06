@@ -2,13 +2,12 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, ChevronLeft, ChevronRight, Send, AlertCircle, Pencil, Check, Lightbulb, Loader2 } from 'lucide-react'
+import { Clock, ChevronLeft, ChevronRight, Send, AlertCircle, Pencil, Check, Lightbulb, Loader2, Star, Keyboard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { playClickSound } from '@/lib/sounds'
-
 interface Question {
   id: string
   questionText: string
@@ -286,6 +285,44 @@ export function QuizView() {
     }
   }, [quiz, studentInfo, answers, timeLeft, setQuizResult, toast])
 
+  // Keyboard shortcuts - uses useCallback to avoid conditional hook call
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!quiz) return
+    const currentQuestions = [...quiz.questions].sort((a, b) => a.orderIndex - b.orderIndex)
+    const currentQ = currentQuestions[currentQuestion]
+    if (!currentQ) return
+    const currentOptions = currentQ.questionType === 'multiple_choice' ? parseOptions(currentQ.options) : []
+
+    // 1-4 for A-D selection in multiple choice
+    if (currentQ.questionType === 'multiple_choice' && currentOptions.length > 0) {
+      const num = parseInt(e.key)
+      if (num >= 1 && num <= currentOptions.length) {
+        const optionKey = String.fromCharCode(64 + num) // 1=A, 2=B, 3=C, 4=D
+        setAnswers((prev) => ({ ...prev, [currentQ.id]: optionKey }))
+        playClickSound()
+        return
+      }
+    }
+    // Enter for next question
+    if (e.key === 'Enter') {
+      if (currentQuestion < currentQuestions.length - 1) {
+        setCurrentQuestion((prev) => prev + 1)
+      }
+    }
+    // Arrow keys for navigation
+    if (e.key === 'ArrowLeft' && currentQuestion > 0) {
+      setCurrentQuestion((prev) => prev - 1)
+    }
+    if (e.key === 'ArrowRight' && currentQuestion < currentQuestions.length - 1) {
+      setCurrentQuestion((prev) => prev + 1)
+    }
+  }, [quiz, currentQuestion])
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
   if (!selectedQuizId || !studentInfo) return null
 
   if (loading) {
@@ -334,7 +371,7 @@ export function QuizView() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center"
+              className="bg-white dark:bg-card rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center"
             >
               <div className="text-4xl mb-3">⚠️</div>
               <h3 className="font-semibold text-lg text-foreground mb-2">
@@ -365,15 +402,38 @@ export function QuizView() {
       </AnimatePresence>
 
       {/* Quiz header with student name */}
-      <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border">
+      <div className="sticky top-16 z-40 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border dark:border-border">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700 truncate">
+              <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700 dark:text-orange-300 truncate">
                 {quiz.title}
               </span>
             </div>
-            <CircularTimer timeLeft={timeLeft} totalTime={totalTime} />
+            <div className="flex items-center gap-2">
+              {/* Mini-map of answered/unanswered questions */}
+              <div className="hidden sm:flex items-center gap-0.5">
+                {questions.map((qu, idx) => {
+                  const isAnswered = !!answers[qu.id]
+                  const isCurrent = idx === currentQuestion
+                  return (
+                    <button
+                      key={qu.id}
+                      onClick={() => setCurrentQuestion(idx)}
+                      className={`w-3.5 h-3.5 rounded-sm transition-all ${
+                        isCurrent
+                          ? 'bg-orange-500 ring-2 ring-orange-300'
+                          : isAnswered
+                            ? 'bg-emerald-400'
+                            : 'bg-gray-200 dark:bg-gray-700'
+                      }`}
+                      title={`Câu ${idx + 1}${isAnswered ? ' ✓' : ''}`}
+                    />
+                  )
+                })}
+              </div>
+              <CircularTimer timeLeft={timeLeft} totalTime={totalTime} />
+            </div>
           </div>
           <div className="flex items-center justify-between gap-2">
             {studentInfo && (
@@ -385,7 +445,15 @@ export function QuizView() {
               {answeredCount}/{questions.length} câu
             </span>
           </div>
-          <Progress value={progress} className="h-2" />
+          {/* Progress ring bar */}
+          <div className="relative h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-400"
+              initial={{ width: 0 }}
+              animate={{ width: `${(answeredCount / questions.length) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
         </div>
       </div>
 
@@ -398,7 +466,7 @@ export function QuizView() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border relative overflow-hidden"
+          className="bg-white dark:bg-card rounded-2xl p-5 sm:p-8 shadow-md border dark:border-border relative overflow-hidden"
         >
           {/* Decorative corner elements */}
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-3xl pointer-events-none" />
@@ -407,15 +475,30 @@ export function QuizView() {
           {/* Question number, type indicator, and text */}
           <div className="mb-6 relative">
             <div className="flex items-center gap-2 mb-3 flex-wrap">
-              <span className="bg-orange-100 text-orange-700 text-sm font-bold px-3 py-1 rounded-full">
+              <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-bold px-3 py-1 rounded-full">
                 Câu {currentQuestion + 1}
               </span>
               <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
                 q.questionType === 'multiple_choice'
-                  ? 'bg-emerald-100 text-emerald-700'
-                  : 'bg-violet-100 text-violet-700'
+                  ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                  : 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
               }`}>
                 {q.questionType === 'multiple_choice' ? '📌 Trắc nghiệm' : '✏️ Điền đáp án'}
+              </span>
+              {/* Difficulty indicator */}
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                q.points >= 3
+                  ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                  : q.points >= 2
+                    ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                    : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+              }`}>
+                <span className="inline-flex items-center gap-0.5">
+                  {Array.from({ length: q.points >= 3 ? 3 : q.points >= 2 ? 2 : 1 }).map((_, si) => (
+                    <Star key={si} className="w-3 h-3 fill-current" />
+                  ))}
+                </span>
+                <span className="ml-1">{q.points >= 3 ? 'Khó' : q.points >= 2 ? 'Trung bình' : 'Dễ'}</span>
               </span>
               <span className="text-xs text-muted-foreground ml-auto">
                 {currentQuestion + 1}/{questions.length}
@@ -432,10 +515,10 @@ export function QuizView() {
                 disabled={hintStates[q.id]?.loading || (hintStates[q.id]?.hintsUsed ?? 0) >= 2}
                 className={`shrink-0 gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
                   (hintStates[q.id]?.hintsUsed ?? 0) >= 2
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
                     : hintStates[q.id]?.loading
-                      ? 'bg-amber-50 text-amber-400'
-                      : 'bg-amber-100 text-amber-700 hover:bg-amber-200 active:scale-95'
+                      ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-400'
+                      : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 active:scale-95'
                 }`}
                 title={(hintStates[q.id]?.hintsUsed ?? 0) >= 2 ? 'Đã hết gợi ý cho câu này' : 'Nhận gợi ý từ cô giáo'}
               >
@@ -466,7 +549,7 @@ export function QuizView() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  className="flex items-start gap-3 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border border-amber-200 rounded-xl p-4"
+                  className="flex items-start gap-3 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/30 dark:via-yellow-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4"
                 >
                   <span className="text-xl shrink-0 mt-0.5">💡</span>
                   <div className="flex-1">
@@ -495,10 +578,10 @@ export function QuizView() {
                       playClickSound()
                       setAnswers((prev) => ({ ...prev, [q.id]: optionKey }))
                     }}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all btn-press ${
                       isSelected
-                        ? 'border-orange-400 bg-orange-50 shadow-md'
-                        : 'border-gray-200 hover:border-orange-200 hover:bg-orange-50/50'
+                        ? 'border-orange-400 dark:border-orange-500 bg-orange-50 dark:bg-orange-950/30 shadow-md'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-700 hover:bg-orange-50/50 dark:hover:bg-orange-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -506,7 +589,7 @@ export function QuizView() {
                         className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${
                           isSelected
                             ? 'bg-orange-500 text-white'
-                            : 'bg-gray-100 text-gray-600'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                         }`}
                       >
                         {isSelected ? <Check className="w-4 h-4" /> : optionKey}
@@ -534,7 +617,7 @@ export function QuizView() {
                       setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))
                     }
                     placeholder="Nhập câu trả lời của bạn..."
-                    className="w-full pl-10 pr-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-lg focus:ring-2 focus:ring-orange-100"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-lg bg-white dark:bg-card input-focus"
                   />
                 </div>
               </div>
@@ -559,24 +642,32 @@ export function QuizView() {
           <span className="hidden sm:inline">Câu trước</span>
         </Button>
 
-        {/* Question navigation with answered indicators */}
-        <div className="flex items-center gap-1 flex-wrap justify-center overflow-x-auto max-w-[60%]">
-          {questions.map((_, idx) => {
-            const isAnswered = !!answers[questions[idx].id]
-            return (
-              <button
-                key={idx}
-                onClick={() => {
-                  playClickSound()
-                  setCurrentQuestion(idx)
-                }}
-                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-semibold transition-all relative ${
-                  idx === currentQuestion
-                    ? 'bg-orange-500 text-white shadow-md'
-                    : isAnswered
-                      ? 'bg-emerald-100 text-emerald-700 border border-emerald-300'
-                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                }`}
+        {/* Keyboard shortcuts hint (desktop only) */}
+        <div className="hidden sm:flex items-center justify-center gap-4 text-xs text-muted-foreground mt-1">
+          <span className="flex items-center gap-1"><Keyboard className="w-3 h-3" /> Phím tắt:</span>
+          <span className="flex items-center gap-1"><span className="kbd-hint">1-4</span> Chọn đáp án</span>
+          <span className="flex items-center gap-1"><span className="kbd-hint">←→</span> Chuyển câu</span>
+          <span className="flex items-center gap-1"><span className="kbd-hint">Enter</span> Câu tiếp</span>
+        </div>
+
+      {/* Question navigation with answered indicators */}
+      <div className="flex items-center gap-1 flex-wrap justify-center overflow-x-auto max-w-[60%]">
+        {questions.map((_, idx) => {
+          const isAnswered = !!answers[questions[idx].id]
+          return (
+            <button
+              key={idx}
+              onClick={() => {
+                playClickSound()
+                setCurrentQuestion(idx)
+              }}
+              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-semibold transition-all relative btn-press ${
+                idx === currentQuestion
+                  ? 'bg-orange-500 text-white shadow-md'
+                  : isAnswered
+                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
               >
                 {idx + 1}
                 {isAnswered && idx !== currentQuestion && (

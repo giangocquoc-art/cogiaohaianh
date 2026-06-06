@@ -103,7 +103,7 @@ export function SubjectView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} ${gc.border} border-2 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
+        className={`${gc.bg} ${gc.border} border-2 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden dark:bg-opacity-20`}
       >
         {/* Decorative floating elements */}
         <div className="absolute top-2 left-4 text-lg opacity-20 animate-float" style={{ animationDelay: '0s' }}>📚</div>
@@ -122,7 +122,7 @@ export function SubjectView() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 text-center text-amber-700 text-sm"
+          className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-2 text-center text-amber-700 dark:text-amber-300 text-sm"
         >
           👤 {studentInfo.name} | Lớp {studentInfo.className}
           {studentInfo.schoolName && ` | ${studentInfo.schoolName}`}
@@ -139,7 +139,7 @@ export function SubjectView() {
           whileHover={{ scale: 1.03, y: -4 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => selectSubject('toan')}
-          className="group cursor-pointer bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-300 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all text-left relative overflow-hidden card-glow"
+          className="group cursor-pointer bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-950/40 dark:to-amber-950/40 border-2 border-orange-300 dark:border-orange-700 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all text-left relative overflow-hidden card-glow"
         >
           {/* Floating math symbols decoration */}
           {mathSymbols.map((symbol, i) => (
@@ -195,7 +195,7 @@ export function SubjectView() {
             </div>
 
             {/* Quick Stats mini card */}
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 w-full border border-orange-200/50">
+            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-xl p-3 w-full border border-orange-200/50 dark:border-orange-800/30">
               <div className="flex items-center gap-1 mb-2 text-orange-700">
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span className="text-xs font-bold">Thống kê nhanh</span>
@@ -234,7 +234,7 @@ export function SubjectView() {
           whileHover={{ scale: 1.03, y: -4 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => selectSubject('ngu-van')}
-          className="group cursor-pointer bg-gradient-to-br from-pink-100 to-rose-100 border-2 border-pink-300 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all text-left relative overflow-hidden card-glow"
+          className="group cursor-pointer bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-950/40 dark:to-rose-950/40 border-2 border-pink-300 dark:border-pink-700 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all text-left relative overflow-hidden card-glow"
         >
           {/* Floating literature symbols decoration */}
           {literatureSymbols.map((symbol, i) => (
@@ -290,7 +290,7 @@ export function SubjectView() {
             </div>
 
             {/* Quick Stats mini card */}
-            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 w-full border border-pink-200/50">
+            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-xl p-3 w-full border border-pink-200/50 dark:border-pink-800/30">
               <div className="flex items-center gap-1 mb-2 text-pink-700">
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span className="text-xs font-bold">Thống kê nhanh</span>
