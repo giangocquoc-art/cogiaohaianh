@@ -3,7 +3,7 @@
 import { useAppStore } from '@/store/app-store'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
-import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap, Crown, Medal, ClipboardList } from 'lucide-react'
+import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap, Crown, Medal, ClipboardList, BookMarked } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 import { useScrollReveal } from '@/hooks/use-scroll-reveal'
 import { Button } from '@/components/ui/button'
@@ -329,8 +329,8 @@ export function HomeView() {
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-200 via-amber-100 to-yellow-200 dark:from-orange-950 dark:via-amber-950 dark:to-yellow-950 p-8 sm:p-10 shadow-lg wave-separator"
       >
         {/* Layered background patterns */}
-        <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-10" />
-        <div className="absolute inset-0 pattern-dots opacity-20 dark:opacity-5" />
+        <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-15" />
+        <div className="absolute inset-0 pattern-dots opacity-20 dark:opacity-8" />
 
         {/* School building SVG silhouette in background */}
         <div className="absolute bottom-0 left-0 right-0 opacity-[0.07] dark:opacity-[0.04] pointer-events-none">
@@ -383,12 +383,12 @@ export function HomeView() {
         </motion.div>
 
         {/* Slow-spinning background decoration */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-10 dark:opacity-5 animate-spin-slow">
+        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-10 dark:opacity-8 animate-spin-slow">
           <div className="w-full h-full rounded-full border-8 border-dashed border-orange-400" />
         </div>
 
         {/* School-themed decorative illustration area */}
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-1 opacity-20 dark:opacity-10 pointer-events-none select-none">
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-end gap-1 opacity-20 dark:opacity-15 pointer-events-none select-none">
           {schoolEmojis.map((emoji, i) => (
             <span
               key={i}
@@ -500,7 +500,14 @@ export function HomeView() {
               variants={item}
               whileHover={{ scale: 1.04, y: -4 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => selectGrade(quiz.grade)}
+              onClick={() => {
+                selectGrade(quiz.grade)
+                // Auto-select the subject after a tick so the grade is set first
+                setTimeout(() => {
+                  const { selectSubject } = useAppStore.getState()
+                  selectSubject(quiz.subject)
+                }, 50)
+              }}
               className="group cursor-pointer relative overflow-hidden rounded-2xl bg-white dark:bg-card border-2 border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700 shadow-sm hover:shadow-lg transition-all text-left p-4 sm:p-5 card-glow dark-card-glow-hover"
             >
               {/* Gradient accent top strip */}
@@ -570,8 +577,8 @@ export function HomeView() {
           >
             <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-yellow-950/30 rounded-2xl border-2 border-amber-200 dark:border-amber-800 p-5 shadow-sm group-hover:shadow-md group-hover:border-amber-300 dark:group-hover:border-amber-700 transition-all relative overflow-hidden">
               {/* Decorative elements */}
-              <div className="absolute top-2 right-4 text-xl animate-sparkle opacity-30">✨</div>
-              <div className="absolute bottom-2 left-6 text-lg animate-sparkle opacity-30" style={{ animationDelay: '1s' }}>⭐</div>
+              <div className="absolute top-2 right-4 text-xl animate-sparkle opacity-30 dark:opacity-40">✨</div>
+              <div className="absolute bottom-2 left-6 text-lg animate-sparkle opacity-30 dark:opacity-40" style={{ animationDelay: '1s' }}>⭐</div>
               {/* Podium decoration */}
               <div className="absolute top-3 left-3 text-2xl animate-podium-decor">🏆</div>
               <div className="absolute bottom-3 right-3 text-lg animate-podium-decor opacity-50" style={{ animationDelay: '0.5s' }}>🥇</div>
@@ -720,9 +727,27 @@ export function HomeView() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-2 lg:grid-cols-6 gap-4"
         >
           {[
+            {
+              icon: <BookMarked className="w-7 h-7" />,
+              title: 'Bài học',
+              description: 'Xem bài giảng theo chương trình SGK 2024',
+              gradient: 'from-amber-500 to-orange-600',
+              bgLight: 'bg-amber-50 dark:bg-amber-950/30',
+              emoji: '📚',
+              action: () => setView('lessons'),
+            },
+            {
+              icon: <Zap className="w-7 h-7" />,
+              title: 'Luyện tập',
+              description: 'Luyện tập nhanh từng câu hỏi không áp lực',
+              gradient: 'from-orange-500 to-amber-500',
+              bgLight: 'bg-orange-50 dark:bg-orange-950/30',
+              emoji: '⚡',
+              action: () => setView('practice'),
+            },
             {
               icon: <PenTool className="w-7 h-7" />,
               title: 'Kiểm tra online',
@@ -756,11 +781,12 @@ export function HomeView() {
               emoji: '🏆',
             },
           ].map((feature, index) => (
-            <motion.div
+            <motion.button
               key={feature.title}
               variants={item}
               whileHover={{ y: -5, scale: 1.02 }}
-              className={`${feature.bgLight} dark:bg-card border border-white/50 dark:border-border rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden group cursor-default hover-lift`}
+              onClick={feature.action}
+              className={`${feature.bgLight} dark:bg-card border border-white/50 dark:border-border rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-lg transition-shadow relative overflow-hidden group ${feature.action ? 'cursor-pointer' : 'cursor-default'} hover-lift`}
             >
               {/* Gradient background accent */}
               <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl ${feature.gradient} opacity-10 rounded-bl-full group-hover:opacity-20 transition-opacity`} />
@@ -779,7 +805,7 @@ export function HomeView() {
                   {feature.description}
                 </p>
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </motion.div>
       </section>

@@ -101,6 +101,10 @@ export function ScoreboardView() {
   const [results, setResults] = useState<ResultEntry[]>([])
   const [loadingScores, setLoadingScores] = useState(false)
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 20
+
   // Enter score state
   const [formName, setFormName] = useState('')
   const [formClass, setFormClass] = useState('')
@@ -298,13 +302,13 @@ export function ScoreboardView() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden dark-card-glow-hover"
       >
-        <div className="absolute top-2 left-4 text-lg opacity-10 animate-float">🏆</div>
-        <div className="absolute bottom-2 right-4 text-lg opacity-10 animate-float" style={{ animationDelay: '0.5s' }}>📊</div>
+        <div className="absolute top-2 left-4 text-lg opacity-10 dark:opacity-45 animate-float">🏆</div>
+        <div className="absolute bottom-2 right-4 text-lg opacity-10 dark:opacity-45 animate-float" style={{ animationDelay: '0.5s' }}>📊</div>
         <Trophy className="w-10 h-10 text-amber-500 mx-auto mb-2" />
-        <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-amber-800">
+        <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-amber-800 dark:text-amber-200">
           Bảng Điểm 📊
         </h2>
-        <p className="text-amber-600 text-sm mt-1">Xem điểm, nhập điểm và thống kê 🎯</p>
+        <p className="text-amber-600 dark:text-amber-400 text-sm mt-1">Xem điểm, nhập điểm và thống kê 🎯</p>
       </motion.div>
 
       {/* Tabs */}
@@ -407,92 +411,161 @@ export function ScoreboardView() {
 
           {/* Score table */}
           {loadingScores ? (
-            <div className="flex items-center justify-center py-12 gap-2">
-              <Loader2 className="w-6 h-6 text-orange-400 animate-spin" />
-              <span className="text-muted-foreground">Đang tải...</span>
+            <div className="bg-white dark:bg-card rounded-2xl shadow-sm border dark:border-amber-900/30 overflow-hidden p-6">
+              <div className="space-y-4">
+                {[1,2,3,4,5].map(i => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="skeleton-circle w-10 h-10 shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="skeleton-line h-4 w-3/4" />
+                      <div className="skeleton-line h-3 w-1/2" />
+                    </div>
+                    <div className="skeleton-circle w-10 h-10 shrink-0" />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : allScores.length === 0 ? (
             <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-8 text-center">
               <p className="text-4xl mb-3">📭</p>
-              <p className="text-amber-700 font-medium">Chưa có điểm nào. Hãy thay đổi bộ lọc hoặc nhập điểm mới.</p>
+              <p className="text-amber-700 dark:text-amber-300 font-medium">Chưa có điểm nào. Hãy thay đổi bộ lọc hoặc nhập điểm mới.</p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-card rounded-2xl shadow-sm border dark:border-border overflow-hidden">
-              <div className="px-4 py-3 bg-gradient-to-r from-orange-50 to-amber-50 border-b">
-                <p className="text-sm text-orange-700 dark:text-orange-300 font-medium">
-                  📋 Có <span className="font-bold">{allScores.length}</span> kết quả
-                  {allScores.some((s) => s.source === 'online') && (
-                    <span className="ml-2 inline-flex items-center gap-1 text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                      🟢 Online: {allScores.filter((s) => s.source === 'online').length}
-                    </span>
+            <div className="bg-white dark:bg-card rounded-2xl shadow-sm border dark:border-amber-900/30 overflow-hidden">
+              <div className="px-4 py-3 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border-b dark:border-amber-900/20">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <p className="text-sm text-orange-700 dark:text-orange-300 font-medium">
+                    📋 Có <span className="font-bold">{allScores.length}</span> kết quả
+                    {allScores.some((s) => s.source === 'online') && (
+                      <span className="ml-2 inline-flex items-center gap-1 text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full">
+                        🟢 Online: {allScores.filter((s) => s.source === 'online').length}
+                      </span>
+                    )}
+                    {allScores.some((s) => s.source === 'manual') && (
+                      <span className="ml-2 inline-flex items-center gap-1 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                        ✏️ Nhập tay: {allScores.filter((s) => s.source === 'manual').length}
+                      </span>
+                    )}
+                  </p>
+                  {allScores.length > pageSize && (
+                    <p className="text-xs text-muted-foreground dark:text-gray-400">
+                      Hiển thị {((currentPage - 1) * pageSize) + 1}–{Math.min(currentPage * pageSize, allScores.length)} / {allScores.length}
+                    </p>
                   )}
-                  {allScores.some((s) => s.source === 'manual') && (
-                    <span className="ml-2 inline-flex items-center gap-1 text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
-                      ✏️ Nhập tay: {allScores.filter((s) => s.source === 'manual').length}
-                    </span>
-                  )}
-                </p>
+                </div>
               </div>
-              <div className="max-h-[28rem] overflow-y-auto overflow-x-auto mobile-table-scroll">
+              <div className="overflow-x-auto mobile-table-scroll">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Họ tên</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Lớp</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300 hidden sm:table-cell">Trường</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Môn</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Bài kiểm tra</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300 text-center">Điểm</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300 text-center">Nguồn</TableHead>
-                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Ngày</TableHead>
+                    <TableRow className="bg-orange-100/80 dark:bg-orange-950/30 border-b-2 border-orange-200 dark:border-orange-800">
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3">Họ tên</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3">Lớp</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3 hidden sm:table-cell">Trường</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3">Môn</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3">Bài kiểm tra</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3 text-center">Điểm</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3 text-center">Nguồn</TableHead>
+                      <TableHead className="font-extrabold text-orange-800 dark:text-orange-200 text-xs uppercase tracking-wider py-3">Ngày</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {allScores.map((entry, idx) => (
-                      <TableRow key={idx} className="hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-colors">
-                        <TableCell className="font-medium">{entry.studentName}</TableCell>
-                        <TableCell>{entry.className}</TableCell>
-                        <TableCell className="hidden sm:table-cell text-muted-foreground text-xs">
-                          {entry.schoolName || '—'}
-                        </TableCell>
-                        <TableCell>
-                          <span className="inline-flex items-center gap-1 text-xs">
-                            {entry.subject === 'Toán' ? '🔢' : '📖'} {entry.subject}
-                          </span>
-                        </TableCell>
-                        <TableCell className="max-w-[120px] truncate">{entry.testTitle}</TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm ${
-                              entry.score >= 9
-                                ? 'score-excellent ring-2 ring-amber-300'
-                                : entry.score >= 7
-                                  ? 'score-good ring-2 ring-emerald-200'
-                                  : entry.score >= 5
-                                    ? 'score-average ring-2 ring-orange-200'
-                                    : 'score-poor ring-2 ring-rose-200'
-                            }`}
-                          >
-                            {entry.score.toFixed(1)}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {entry.source === 'online' ? (
-                            <span className="inline-flex items-center gap-1 text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
-                              🟢 Online
+                    {allScores.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((entry, idx) => {
+                      const globalIdx = (currentPage - 1) * pageSize + idx
+                      return (
+                        <TableRow
+                          key={globalIdx}
+                          className={`transition-colors hover:bg-orange-50/70 dark:hover:bg-orange-950/30 hover:shadow-sm ${
+                            idx % 2 === 1
+                              ? 'bg-amber-50/40 dark:bg-amber-950/10'
+                              : 'bg-white dark:bg-card'
+                          }`}
+                        >
+                          <TableCell className="font-medium text-foreground">{entry.studentName}</TableCell>
+                          <TableCell className="text-foreground">{entry.className}</TableCell>
+                          <TableCell className="hidden sm:table-cell text-muted-foreground dark:text-gray-400 text-xs">
+                            {entry.schoolName || 'Chưa nhập'}
+                          </TableCell>
+                          <TableCell>
+                            <span className="inline-flex items-center gap-1 text-xs">
+                              {entry.subject === 'Toán' ? '🔢' : '📖'} {entry.subject}
                             </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 text-xs bg-violet-100 text-violet-700 px-2 py-1 rounded-full font-medium">
-                              ✏️ Nhập tay
+                          </TableCell>
+                          <TableCell className="max-w-[120px] truncate">{entry.testTitle}</TableCell>
+                          <TableCell className="text-center">
+                            <span
+                              className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm shadow-sm ${
+                                entry.score >= 9
+                                  ? 'score-excellent ring-2 ring-amber-300 dark:ring-amber-600'
+                                  : entry.score >= 7
+                                    ? 'score-good ring-2 ring-emerald-200 dark:ring-emerald-600'
+                                    : entry.score >= 5
+                                      ? 'score-average ring-2 ring-orange-200 dark:ring-orange-600'
+                                      : 'score-poor ring-2 ring-rose-200 dark:ring-rose-600'
+                              }`}
+                            >
+                              {entry.score.toFixed(1)}
                             </span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground text-xs">{entry.date}</TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {entry.source === 'online' ? (
+                              <span className="inline-flex items-center gap-1 text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-full font-medium">
+                                🟢 Online
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-1 rounded-full font-medium">
+                                ✏️ Nhập tay
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground dark:text-gray-400 text-xs">{entry.date}</TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </div>
+              {/* Pagination */}
+              {allScores.length > pageSize && (
+                <div className="flex items-center justify-between px-4 py-3 border-t dark:border-amber-900/20 bg-orange-50/30 dark:bg-orange-950/10">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="text-xs gap-1 dark:border-amber-800 dark:text-amber-300"
+                  >
+                    ← Trước
+                  </Button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.ceil(allScores.length / pageSize) }, (_, i) => i + 1)
+                      .filter(p => p === 1 || p === Math.ceil(allScores.length / pageSize) || Math.abs(p - currentPage) <= 1)
+                      .map((page, i, arr) => (
+                        <span key={page} className="flex items-center">
+                          {i > 0 && arr[i - 1] !== page - 1 && <span className="px-1 text-muted-foreground text-xs">…</span>}
+                          <button
+                            onClick={() => setCurrentPage(page)}
+                            className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
+                              currentPage === page
+                                ? 'bg-orange-500 text-white shadow-md'
+                                : 'text-foreground hover:bg-orange-100 dark:hover:bg-orange-900/30'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        </span>
+                      ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(allScores.length / pageSize), p + 1))}
+                    disabled={currentPage >= Math.ceil(allScores.length / pageSize)}
+                    className="text-xs gap-1 dark:border-amber-800 dark:text-amber-300"
+                  >
+                    Sau →
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </motion.div>
@@ -643,10 +716,24 @@ export function ScoreboardView() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          {allScores.length === 0 ? (
+          {loadingScores ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {[1,2,3,4,5,6].map(i => (
+                  <div key={i} className="skeleton-card">
+                    <div className="skeleton-card-inner items-center text-center">
+                      <div className="skeleton-circle w-8 h-8 mx-auto" />
+                      <div className="skeleton-line h-6 w-12 mx-auto" />
+                      <div className="skeleton-line h-3 w-20 mx-auto" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : allScores.length === 0 ? (
             <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-8 text-center">
               <p className="text-4xl mb-3">📊</p>
-              <p className="text-amber-700 font-medium">Chưa có dữ liệu để thống kê. Hãy làm bài kiểm tra hoặc nhập điểm trước nhé!</p>
+              <p className="text-amber-700 dark:text-amber-300 font-medium">Chưa có dữ liệu để thống kê. Hãy làm bài kiểm tra hoặc nhập điểm trước nhé!</p>
             </div>
           ) : (
             <>
@@ -654,45 +741,45 @@ export function ScoreboardView() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">📝</div>
-                  <p className="text-2xl font-bold text-amber-700">
+                  <p className="text-2xl font-bold text-amber-700 dark:text-amber-300">
                     <AnimatedNumber target={stats.totalResults} />
                   </p>
-                  <p className="text-xs text-amber-600 font-medium">Tổng bài làm</p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">Tổng bài làm</p>
                 </div>
                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">📈</div>
-                  <p className="text-2xl font-bold text-emerald-700">
+                  <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">
                     <AnimatedNumber target={stats.averageScore} />
                   </p>
-                  <p className="text-xs text-emerald-600 font-medium">Điểm trung bình</p>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Điểm trung bình</p>
                 </div>
                 <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">🌟</div>
-                  <p className="text-2xl font-bold text-rose-700">
+                  <p className="text-2xl font-bold text-rose-700 dark:text-rose-300">
                     <AnimatedNumber target={stats.highestScore} />
                   </p>
-                  <p className="text-xs text-rose-600 font-medium">Điểm cao nhất</p>
+                  <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">Điểm cao nhất</p>
                 </div>
                 <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 border border-teal-200 dark:border-teal-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">👥</div>
-                  <p className="text-2xl font-bold text-teal-700">
+                  <p className="text-2xl font-bold text-teal-700 dark:text-teal-300">
                     <AnimatedNumber target={stats.uniqueStudents} />
                   </p>
-                  <p className="text-xs text-teal-600 font-medium">Học sinh</p>
+                  <p className="text-xs text-teal-600 dark:text-teal-400 font-medium">Học sinh</p>
                 </div>
                 <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">🟢</div>
-                  <p className="text-2xl font-bold text-emerald-700">
+                  <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">
                     <AnimatedNumber target={stats.onlineCount} />
                   </p>
-                  <p className="text-xs text-emerald-600 font-medium">Làm online</p>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Làm online</p>
                 </div>
                 <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">✏️</div>
-                  <p className="text-2xl font-bold text-violet-700">
+                  <p className="text-2xl font-bold text-violet-700 dark:text-violet-300">
                     <AnimatedNumber target={stats.manualCount} />
                   </p>
-                  <p className="text-xs text-violet-600 font-medium">Nhập tay</p>
+                  <p className="text-xs text-violet-600 dark:text-violet-400 font-medium">Nhập tay</p>
                 </div>
               </div>
 
@@ -942,8 +1029,8 @@ export function ScoreboardView() {
                               key={subject.name}
                               className={`rounded-xl p-4 text-center border hover-lift ${
                                 subject.name === 'Toán'
-                                  ? 'bg-orange-50 border-orange-200'
-                                  : 'bg-pink-50 border-pink-200'
+                                  ? 'bg-orange-50 border-orange-200 dark:bg-orange-950/30 dark:border-orange-800'
+                                  : 'bg-pink-50 border-pink-200 dark:bg-pink-950/30 dark:border-pink-800'
                               }`}
                             >
                               <p className="text-2xl mb-1">{subject.name === 'Toán' ? '🔢' : '📖'}</p>
@@ -994,7 +1081,7 @@ export function ScoreboardView() {
                               }`}
                             />
 
-                            <div className="bg-gray-50 hover:bg-gray-100 rounded-xl p-3 transition-colors">
+                            <div className="bg-gray-50 dark:bg-gray-900/30 hover:bg-gray-100 dark:hover:bg-gray-800/30 rounded-xl p-3 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-gray-700">
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex-1 min-w-0">
                                   <p className="font-semibold text-foreground text-sm truncate">{entry.studentName}</p>

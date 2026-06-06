@@ -286,6 +286,45 @@ html.theme-transition *::after {
 
 /* ===== DARK MODE SPECIFIC OVERRIDES ===== */
 
+/* Dark mode decorative sparkle/emoji elements - increased visibility */
+.dark .animate-float,
+.dark .animate-sparkle,
+.dark .animate-drift-left,
+.dark .animate-drift-right,
+.dark .animate-pulse-soft {
+  opacity: 0.5 !important;
+}
+
+/* Dark mode card glow - enhanced */
+.dark .card-glow:hover::before {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.25), rgba(245, 158, 11, 0.25));
+}
+
+.dark .card-glow:hover {
+  box-shadow: 0 8px 30px rgba(251, 146, 60, 0.15), 0 0 20px rgba(251, 146, 60, 0.08);
+}
+
+/* Dark mode card subtle glow for better visual depth */
+.dark .dark-card-glow-hover:hover {
+  box-shadow: 0 4px 20px rgba(251, 146, 60, 0.12), 0 0 10px rgba(251, 146, 60, 0.06);
+}
+
+/* Dark mode card borders - more visible */
+.dark [class*="border-amber"],
+.dark [class*="border-orange"] {
+  border-color: rgba(251, 146, 60, 0.3);
+}
+
+/* Dark mode muted text - better contrast */
+.dark .text-muted-foreground {
+  color: oklch(0.78 0.03 75);
+}
+
+/* Dark mode stats gradient backgrounds */
+.dark .dark-stats-gradient {
+  background-image: linear-gradient(135deg, rgba(251, 146, 60, 0.05), rgba(245, 158, 11, 0.05));
+}
+
 /* Dark scrollbar */
 .dark ::-webkit-scrollbar-track {
   background: #3d2e1f;
@@ -424,20 +463,20 @@ html.theme-transition *::after {
 
 /* Dark mode card glow */
 .dark .card-glow:hover::before {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(245, 158, 11, 0.2));
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.3), rgba(245, 158, 11, 0.3));
 }
 
 .dark .card-glow:hover {
-  box-shadow: 0 8px 30px rgba(251, 146, 60, 0.1);
+  box-shadow: 0 8px 30px rgba(251, 146, 60, 0.15), 0 0 20px rgba(251, 146, 60, 0.08);
 }
 
 /* Dark mode hover effects */
 .dark .hover-lift:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(251, 146, 60, 0.08);
 }
 
 .dark .hover-glow:hover {
-  box-shadow: 0 0 15px rgba(251, 146, 60, 0.25), 0 4px 15px rgba(251, 146, 60, 0.1);
+  box-shadow: 0 0 15px rgba(251, 146, 60, 0.3), 0 4px 15px rgba(251, 146, 60, 0.15), 0 0 30px rgba(251, 146, 60, 0.06);
 }
 
 /* Dark mode selection */
@@ -467,6 +506,66 @@ html.theme-transition *::after {
 
 /* ===== ADDITIONAL STYLING POLISH ===== */
 
+/* View transition animation smoothness */
+.view-transition-enter {
+  animation: view-enter 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.view-transition-exit {
+  animation: view-exit 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes view-exit {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-8px) scale(0.99); }
+}
+
+/* Subtle box shadow on interactive elements */
+.btn-shadow {
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.15);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.btn-shadow:hover {
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.25);
+}
+
+.btn-shadow:active {
+  box-shadow: 0 1px 4px rgba(249, 115, 22, 0.15);
+  transform: scale(0.98);
+}
+
+.dark .btn-shadow {
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.1);
+}
+
+.dark .btn-shadow:hover {
+  box-shadow: 0 4px 16px rgba(251, 146, 60, 0.2), 0 0 10px rgba(251, 146, 60, 0.08);
+}
+
+/* Consistent button hover states */
+button[class*="bg-orange"],
+button[class*="bg-emerald"],
+button[class*="bg-amber"],
+button[class*="bg-rose"],
+button[class*="bg-teal"] {
+  transition: all 0.2s ease;
+}
+
+button[class*="bg-orange"]:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
+.dark button[class*="bg-orange"]:hover {
+  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.3), 0 0 10px rgba(251, 146, 60, 0.1);
+}
+
 /* Enhanced focus-visible for all interactive elements */
 button:focus-visible,
 a:focus-visible,
@@ -488,7 +587,7 @@ a:focus-visible,
 }
 
 .dark .card-polish:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 10px rgba(251, 146, 60, 0.06);
 }
 
 /* Active press feedback for all buttons and interactive elements */

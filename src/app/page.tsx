@@ -15,6 +15,8 @@ import { BadgesView } from '@/components/badges-view'
 import { LeaderboardView } from '@/components/leaderboard-view'
 import { TeacherDashboardView } from '@/components/teacher-dashboard-view'
 import { ProfileView } from '@/components/profile-view'
+import { LessonsView } from '@/components/lessons-view'
+import { PracticeView } from '@/components/practice-view'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { initTheme } from '@/lib/theme'
@@ -35,6 +37,8 @@ function ViewRenderer() {
     leaderboard: <LeaderboardView />,
     teacherDashboard: <TeacherDashboardView />,
     profile: <ProfileView />,
+    lessons: <LessonsView />,
+    practice: <PracticeView />,
   }
 
   return (

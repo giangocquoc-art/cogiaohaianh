@@ -502,6 +502,55 @@ export function ChapterView() {
   const [pendingQuizId, setPendingQuizId] = useState<string | null>(null)
   const [formStep, setFormStep] = useState(1) // 1: name, 2: class/school
 
+  // Quiz completion state from localStorage
+  const [completedQuizzes, setCompletedQuizzes] = useState<Record<string, { score: number; date: string }>>({})
+
+  // Load completed quizzes from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('cogiaohaianh-completed-quizzes')
+      if (stored) {
+        setCompletedQuizzes(JSON.parse(stored))
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, [])
+
+  // Save completed quiz to localStorage (called after quiz submission in result view)
+  // We also check the progress API for current student
+  useEffect(() => {
+    if (!studentInfo?.name || !studentInfo?.className) return
+    const fetchProgress = async () => {
+      try {
+        const res = await fetch(`/api/progress?studentName=${encodeURIComponent(studentInfo.name)}&className=${encodeURIComponent(studentInfo.className)}`)
+        if (res.ok) {
+          const data = await res.json()
+          const completions: Record<string, { score: number; date: string }> = {}
+          data.forEach((r: { quizId: string; score: number; createdAt: string }) => {
+            const existing = completions[r.quizId]
+            if (!existing || r.score > existing.score) {
+              completions[r.quizId] = { score: r.score, date: r.createdAt }
+            }
+          })
+          setCompletedQuizzes(prev => ({ ...prev, ...completions }))
+          // Also save to localStorage
+          try {
+            const stored = localStorage.getItem('cogiaohaianh-completed-quizzes')
+            const existing = stored ? JSON.parse(stored) : {}
+            const merged = { ...existing, ...completions }
+            localStorage.setItem('cogiaohaianh-completed-quizzes', JSON.stringify(merged))
+          } catch {
+            // ignore
+          }
+        }
+      } catch {
+        // ignore errors
+      }
+    }
+    fetchProgress()
+  }, [studentInfo])
+
   useEffect(() => {
     if (!selectedGrade || !selectedSubject) return
 
@@ -568,8 +617,8 @@ export function ChapterView() {
     show: { opacity: 1, y: 0 },
   }
 
-  // Calculate progress (mock based on studentInfo having data)
-  const completedCount = 0 // Would need API to check actual completions
+  // Calculate progress based on completed quizzes
+  const completedCount = quizzes.filter(q => completedQuizzes[q.id]).length
   const totalChapters = quizzes.length
   const progressPercent = totalChapters > 0 ? Math.round((completedCount / totalChapters) * 100) : 0
 
@@ -696,8 +745,8 @@ export function ChapterView() {
             </AnimatePresence>
 
             {/* Fun decorative elements */}
-            <div className="absolute -bottom-2 -right-2 text-4xl opacity-10 select-none pointer-events-none">✏️</div>
-            <div className="absolute -top-1 -left-1 text-3xl opacity-10 select-none pointer-events-none">📚</div>
+            <div className="absolute -bottom-2 -right-2 text-4xl opacity-10 dark:opacity-40 select-none pointer-events-none">✏️</div>
+            <div className="absolute -top-1 -left-1 text-3xl opacity-10 dark:opacity-40 select-none pointer-events-none">📚</div>
           </motion.div>
         </motion.div>
       )}
@@ -709,8 +758,8 @@ export function ChapterView() {
         className={`${gc.bg} border-2 border-current/10 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
       >
         {/* Decorative elements */}
-        <div className="absolute top-2 right-4 text-lg opacity-15 animate-float">📖</div>
-        <div className="absolute bottom-2 left-4 text-lg opacity-15 animate-float" style={{ animationDelay: '0.5s' }}>✏️</div>
+        <div className="absolute top-2 right-4 text-lg opacity-15 dark:opacity-45 animate-float">📖</div>
+        <div className="absolute bottom-2 left-4 text-lg opacity-15 dark:opacity-45 animate-float" style={{ animationDelay: '0.5s' }}>✏️</div>
 
         <h2 className={`font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl ${gc.text} relative z-10`}>
           {subjectEmoji} {subjectName} - Lớp {selectedGrade}
@@ -805,15 +854,25 @@ export function ChapterView() {
         >
           {quizzes.map((quiz, index) => {
             const diff = chapterDifficulty[(index % 5) + 1] || chapterDifficulty[1]
+            const completion = completedQuizzes[quiz.id]
+            const isCompleted = !!completion
             return (
               <motion.div
                 key={quiz.id}
                 variants={item}
                 whileHover={{ scale: 1.01, x: 4 }}
-                className="bg-white dark:bg-card border-2 border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
+                className={`bg-white dark:bg-card border-2 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden group ${
+                  isCompleted
+                    ? 'border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-700'
+                    : 'border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700'
+                }`}
               >
-                {/* Subtle left accent */}
-                <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-orange-400 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Left accent bar - green for completed, orange for not */}
+                <div className={`absolute top-0 left-0 bottom-0 w-1 transition-opacity ${
+                  isCompleted
+                    ? 'bg-gradient-to-b from-emerald-400 to-teal-400 opacity-100'
+                    : 'bg-gradient-to-b from-orange-400 to-amber-400 opacity-0 group-hover:opacity-100'
+                }`} />
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1">
@@ -828,27 +887,68 @@ export function ChapterView() {
                       </span>
 
                       {quiz.duration > 0 && (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground dark:text-gray-400">
                           <Clock className="w-3 h-3" />
                           ~{quiz.duration} phút
                         </span>
                       )}
                       {quiz._count?.questions && (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground dark:text-gray-400">
                           📝 {quiz._count.questions} câu
                         </span>
                       )}
 
-                      {/* Completed badge placeholder */}
-                      {/* When student has submitted results, show: */}
-                      {/* <span className="completed-badge">✓ Đã làm</span> */}
+                      {/* Completed badge - shown when student has done this quiz */}
+                      {isCompleted && (
+                        <span className="completed-badge">
+                          ✓ Đã làm
+                        </span>
+                      )}
                     </div>
                     <h3 className="font-semibold text-lg text-foreground">
                       {quiz.chapterName}
                     </h3>
-                    <p className="text-muted-foreground text-sm mt-0.5">
+                    <p className="text-muted-foreground dark:text-gray-400 text-sm mt-0.5">
                       {quiz.title}
                     </p>
+
+                    {/* Best score display for completed quizzes */}
+                    {isCompleted && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold shadow-sm ${
+                            completion.score >= 9
+                              ? 'score-excellent'
+                              : completion.score >= 7
+                                ? 'score-good'
+                                : completion.score >= 5
+                                  ? 'score-average'
+                                  : 'score-poor'
+                          }`}>
+                            {completion.score.toFixed(1)}
+                          </span>
+                          <span className="text-xs text-muted-foreground dark:text-gray-400">Điểm cao nhất</span>
+                        </div>
+                        {/* Mini progress bar */}
+                        <div className="flex-1 max-w-[100px]">
+                          <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-500 ${
+                                completion.score >= 9
+                                  ? 'bg-gradient-to-r from-amber-400 to-yellow-400'
+                                  : completion.score >= 7
+                                    ? 'bg-gradient-to-r from-emerald-400 to-teal-400'
+                                    : completion.score >= 5
+                                      ? 'bg-gradient-to-r from-orange-400 to-amber-400'
+                                      : 'bg-gradient-to-r from-rose-400 to-pink-400'
+                              }`}
+                              style={{ width: `${(completion.score / 10) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Study tips section */}
                     <StudyTipsSection quiz={quiz} />
                   </div>
@@ -857,9 +957,13 @@ export function ChapterView() {
                       playClickSound()
                       handleStartQuiz(quiz.id)
                     }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-xl text-base shrink-0 gap-2 shadow-md hover-glow"
+                    className={`font-semibold px-6 py-3 rounded-xl text-base shrink-0 gap-2 shadow-md hover-glow transition-all ${
+                      isCompleted
+                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                        : 'bg-orange-500 hover:bg-orange-600 text-white'
+                    }`}
                   >
-                    Kiểm tra online
+                    {isCompleted ? 'Làm lại' : 'Kiểm tra online'}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>

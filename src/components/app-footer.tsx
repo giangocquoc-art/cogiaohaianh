@@ -184,7 +184,7 @@ export function AppFooter() {
               </h4>
               {[
                 { icon: <Home className="w-4 h-4" />, label: 'Trang chủ', action: goHome },
-                { icon: <BookOpen className="w-4 h-4" />, label: 'Kiểm tra', action: goHome },
+                { icon: <BookOpen className="w-4 h-4" />, label: 'Kiểm tra', action: () => setView('home') },
                 { icon: <Trophy className="w-4 h-4" />, label: 'Bảng điểm', action: () => setView('scoreboard') },
               ].map((link) => (
                 <button

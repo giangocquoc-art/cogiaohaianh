@@ -1285,3 +1285,218 @@ Stage Summary:
 8. Add animated background patterns that change with seasons/holidays
 9. Consider adding a "Luyện tập" (Practice) mode without timer for stressed students
 10. Add AI-powered question generation to create unlimited practice questions
+
+---
+Task ID: 5b
+Agent: Feature Developer
+Task: Add Quick Practice (Luyện tập) feature with rapid-fire mode
+
+Work Log:
+- Created `/src/app/api/practice/route.ts` backend API with GET endpoint
+  - Accepts query parameters: grade (required), subject (required), count (optional, default 5, max 10)
+  - Returns randomly selected questions from the database with Fisher-Yates shuffle
+  - Each question includes: questionText, questionType, options, correctAnswer, points, subject, grade, chapterName, explanation
+  - Generates brief explanations for correct answers
+  - Validates grade (1-5) and returns appropriate Vietnamese error messages
+- Created `/src/components/practice-view.tsx` frontend component with three phases:
+  - Setup Phase: Grade selection (1-5) with emoji cards, subject selection (Toán/Ngữ văn), question count selector (5/8/10), start button
+  - Practice Phase: One question at a time in large card with gradient border, no timer, immediate correct/incorrect feedback with animations, explanation after answering, progress bar, sticky score counter, streak counter with growing fire emoji, encouraging messages based on streak
+  - Results Phase: Summary card with total correct/incorrect, accuracy percentage with circular progress animation, streak record, XP earned (+5 per correct answer), "Luyện tập lại" button, "Về trang chủ" button, expandable detailed answers section
+- Integrated XP system: Awards +5 XP per correct answer using `triggerXPGain` function from xp-widget.tsx
+- Integrated sound effects: playCorrectSound, playWrongSound, playClickSound, playCompleteSound from sounds.ts
+- Updated `/src/store/app-store.ts`: Added 'practice' to ViewType union
+- Updated `/src/app/page.tsx`: Added PracticeView import and practice viewMap entry
+- Updated `/src/components/app-header.tsx`: Added Zap icon import and "Luyện tập" navigation button (placed after "Thử thách"), excluded 'practice' from breadcrumb condition
+- Updated `/src/components/home-view.tsx`: Added "⚡ Luyện tập" quick action card as first item in features section (grid changed to 5 columns), made cards clickable with motion.button, only practice card has action to navigate
+- All lint checks pass with no errors, no runtime errors in dev.log
+
+Stage Summary:
+**New Feature: Quick Practice (Luyện Tập Nhanh)**
+1. Backend: GET /api/practice route with random question selection from database
+2. Frontend: PracticeView component with setup → practice → results phases
+3. Setup: Grade/subject/count selection with child-friendly emoji cards
+4. Practice: Rapid-fire mode, no timer, immediate feedback with animations, streak tracking, XP rewards
+5. Results: Circular progress ring, streak record, XP earned, detailed answer review
+6. Navigation: "Luyện tập" button in header with Zap icon (after "Thử thách")
+7. Homepage: "⚡ Luyện tập" quick action card in features section
+8. XP integration: +5 XP per correct answer with floating animation
+9. Sound integration: Correct/wrong/click/complete sounds throughout practice flow
+10. Dark mode: Full support with warm brown/amber tones (NOT cold blue/gray)
+
+**Files Created:**
+- `/src/app/api/practice/route.ts`
+- `/src/components/practice-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added 'practice' to ViewType
+- `/src/app/page.tsx` - Added PracticeView import and viewMap entry
+- `/src/components/app-header.tsx` - Added Zap icon and "Luyện tập" nav button
+- `/src/components/home-view.tsx` - Added "⚡ Luyện tập" feature card, 5-column grid
+
+---
+Task ID: 4
+Agent: Styling Enhancement Developer
+Task: Improve styling across scoreboard, badges, chapter, dark mode, and general polish
+
+Work Log:
+- Updated scoreboard-view.tsx with zebra striping (alternating amber/white rows), enhanced table header (uppercase tracking-wider, extrabold), row hover states with shadow, pagination system (max 20 per page with page buttons), skeleton loading states for both table and stats views, dark mode color fixes throughout (source badges, stat card text, subject breakdown, timeline entries)
+- Rewrote badges-view.tsx with category grouping tabs (Quiz/Challenge/Progress), progress detail text for each locked badge (e.g., "2/3 bài kiểm tra Toán ≥9"), gradient progress bars with animated shimmer overlay and percentage labels, dark mode color variants per badge, earned date display, dark glow effect behind earned badges
+- Updated chapter-view.tsx with localStorage-based quiz completion tracking, API-driven progress data (fetches from /api/progress), completed badge display on chapter cards (✓ Đã làm), best score display with score circle and mini progress bar, "Làm lại" button for completed quizzes, green border accent for completed chapters, dark mode text contrast fixes
+- Updated globals.css with dark mode sparkle/emoji opacity increase (20-30% → 50% via CSS override), dark mode card glow enhancement, new dark-card-glow-hover class, dark mode muted text contrast improvement, dark-stats-gradient utility, view transition animations (view-enter/view-exit), btn-shadow utility for interactive elements, consistent button hover states with brightness filter, enhanced card-polish dark shadow
+- Updated home-view.tsx dark mode pattern opacities (clouds 10→15%, dots 5→8%, spinner 5→8%, school emojis 10→15%, sparkle decorations 30→40% in dark)
+- Updated scoreboard-view.tsx and chapter-view.tsx decorative element dark mode opacities (10→45%)
+
+Stage Summary:
+**1. Scoreboard View - Table Styling:**
+- Zebra striping with alternating amber/white row backgrounds
+- Enhanced table header with uppercase, extrabold, tracking-wider typography
+- Row hover states with shadow-sm and orange tint
+- Pagination system (20 entries per page with prev/next and page number buttons)
+- Skeleton loading states for table and stats views
+- Dark mode fixes for all badges, source labels, and stat text
+
+**2. Badges View - Progress & Categories:**
+- 3 category filter tabs: Kiểm tra (Quiz), Thử thách (Challenge), Tiến bộ (Progress)
+- Per-badge progress detail text (e.g., "2/3 bài Ngữ văn ≥9", "Nhanh nhất: 3p")
+- Gradient progress bars with animated shimmer overlay and bold percentage labels
+- Dark mode color variants for each badge type
+- Earned date display next to "Đã đạt" indicator
+- Subtle glow behind earned badges for visual depth
+
+**3. Chapter View - Progress Indicators:**
+- localStorage + API-driven completion tracking via /api/progress
+- "✓ Đã làm" completed badge on chapter cards
+- Best score circle with color coding + mini gradient progress bar
+- "Làm lại" (retry) button for completed quizzes (green instead of orange)
+- Green border accent + left bar for completed chapters
+- Progress bar now reflects actual completion count
+
+**4. Dark Mode Visibility Improvements:**
+- Decorative sparkle/emoji elements increased from 20-30% to 40-50% opacity in dark mode
+- Card glow effects enhanced with subtle amber tint for depth
+- Muted text contrast improved via CSS override
+- All card borders more visible in dark mode
+- Pattern opacities increased (clouds, dots, spinners)
+
+**5. General Styling Polish:**
+- View transition animations (view-enter/view-exit keyframes)
+- btn-shadow utility for consistent interactive depth
+- Consistent button hover states with brightness filter + glow
+- Enhanced card-polish with dark mode amber glow
+- Skeleton loading states for scoreboard and badges views
+
+---
+Task ID: 5
+Agent: Feature Developer
+Task: Add Study Materials / Bài học view with curriculum content
+
+Work Log:
+- Created `/src/app/api/lessons/route.ts` backend API with comprehensive lesson data
+  - GET endpoint accepting `grade` and `subject` query parameters
+  - Returns structured lesson data: title, description, emoji, difficulty, key concepts, examples with step-by-step, practice tips, related quiz ID
+  - Comprehensive content for ALL grades (1-5) and BOTH subjects (toan, ngu-van)
+  - 3 lessons per grade per subject (covering chapters 1-3) = 30 total lessons
+  - Content aligned with Vietnamese primary school curriculum SGK 2024
+  - Fixed typo: `step` → `text` in grade 4 toan key concept
+- Created `/src/components/lessons-view.tsx` frontend component
+  - 3-step flow: Grade selection → Subject selection → Lesson list
+  - Grade selection grid with same style as home-view (warm colors, emojis, gradients)
+  - Subject selection with Toán and Ngữ văn cards
+  - Lesson list with responsive grid (1 col mobile, 2 cols tablet, 3 cols desktop)
+  - Lesson cards with: gradient accent strip, emoji icon, title, description, difficulty stars, concept count, example count
+  - Expandable "Học bài" section with: key concepts in colorful bullet cards, examples in step-by-step highlighted boxes, practice tips with emojis
+  - "Kiểm tra" button linking to related quiz via global store navigation
+  - Smooth accordion/collapsible animation with framer-motion AnimatePresence
+  - Skeleton loading cards during data fetch
+  - Empty state with helpful message and navigation back
+  - Patrick Hand font for headings, warm color scheme, dark mode support
+  - Back button navigation between steps
+- Updated `/src/store/app-store.ts`: Added 'lessons' to ViewType union
+- Updated `/src/app/page.tsx`: Added LessonsView import and `lessons: <LessonsView />` to viewMap
+- Updated `/src/components/app-header.tsx`:
+  - Added BookMarked icon import from lucide-react
+  - Added "Bài học" navigation button between "Thử thách" and "Luyện tập" in navItems
+  - Added 'lessons' to breadcrumb exclusion condition
+- Updated `/src/components/home-view.tsx`:
+  - Added BookMarked icon import from lucide-react
+  - Added "📚 Bài học" feature card as first item in features section with amber-to-orange gradient
+  - Changed features grid from lg:grid-cols-5 to lg:grid-cols-6 to accommodate new card
+  - Card navigates to lessons view via setView('lessons')
+- All lint checks pass with no errors
+- API tested and verified: returns correct lesson data for all grades and subjects
+- No runtime errors in dev.log
+
+Stage Summary:
+**New Feature: Bài học (Study Materials / Lessons) View**
+
+1. **Backend API** (`/api/lessons`): GET endpoint with grade/subject filtering, 30 comprehensive lessons covering grades 1-5 for both Toán and Ngữ văn (3 per grade per subject), each with key concepts, step-by-step examples, and practice tips
+
+2. **Frontend Component** (`lessons-view.tsx`): 3-step navigation flow (grade → subject → lessons), expandable lesson cards with curriculum content, responsive grid, skeleton loading, dark mode with warm brown/amber tones, framer-motion animations
+
+3. **Integration**: 'lessons' ViewType added to store, LessonsView in page.tsx viewMap, "Bài học" nav button in header (BookMarked icon), "📚 Bài học" feature card on homepage
+
+4. **Files Created**: `/src/app/api/lessons/route.ts`, `/src/components/lessons-view.tsx`
+
+5. **Files Modified**: `app-store.ts`, `page.tsx`, `app-header.tsx`, `home-view.tsx`
+
+---
+Task ID: 24 (Main Agent - Round 4)
+Agent: Main
+Task: QA Testing + Bug Fixes + New Features (Bài học & Luyện tập) + Styling Improvements
+
+Work Log:
+- Reviewed /home/z/my-project/worklog.md (1440 lines) to understand project status
+- Ran ESLint - all checks pass
+- Launched comprehensive QA testing with agent-browser across all 12+ views
+- QA identified critical and medium bugs, plus styling improvements needed
+
+**Bug Fixes (Direct):**
+1. Fixed Framer Motion keyframe bug in result-view.tsx: Changed `scale: [0, 1.3, 1]` with `type: 'spring'` to `scale: 1` with `type: 'spring', stiffness: 200` (3-keyframe arrays don't work with spring type)
+2. Fixed footer "Kiểm tra" button: Changed from `goHome()` to `setView('home')` for proper navigation
+3. Fixed scoreboard "—" for missing school names: Changed to "Chưa nhập" (Vietnamese for "Not entered")
+4. Fixed popular quiz CTA: Changed `selectGrade(quiz.grade)` to also auto-select the subject with `selectSubject(quiz.subject)` after a tick
+
+**Parallel Agent Tasks:**
+
+Task 4 (Styling Enhancement Developer):
+- Scoreboard: Added zebra striping, score color coding, hover states, pagination (max 20), skeleton loading
+- Badges: Added category tabs (Quiz/Challenge/Progress), progress details per badge, gradient progress bars
+- Chapter: Added completion tracking via localStorage + /api/progress, "✓ Đã làm" badge, score circles, "Làm lại" button
+- Dark mode: Increased sparkle/emoji opacity 20-30% → 40-50%, enhanced card glow effects, improved muted text contrast
+- General: Added view-enter/view-exit animations, btn-shadow utility, consistent hover states
+
+Task 5 (Feature Developer - Bài học):
+- Created /api/lessons/route.ts with GET endpoint for 30 comprehensive lessons (5 grades × 2 subjects × 3 chapters)
+- Created /src/components/lessons-view.tsx with 3-step flow: grade selection → subject selection → lesson list
+- Each lesson includes: title, description, emoji, difficulty, 4 key concepts, 2 examples, 3 practice tips, related quiz
+- Added 'lessons' to ViewType, LessonsView to viewMap, "Bài học" nav button in header
+- Content aligned with Vietnamese SGK 2024 curriculum
+
+Task 5b (Feature Developer - Luyện tập):
+- Created /api/practice/route.ts with GET endpoint returning random questions by grade/subject/count
+- Created /src/components/practice-view.tsx with 3 phases: setup, practice, results
+- Practice phase: no timer, immediate correct/incorrect feedback, explanation cards, streak tracking
+- Results phase: circular progress, stats grid, XP earned (+5 per correct), detailed answer review
+- Added 'practice' to ViewType, PracticeView to viewMap, "Luyện tập" nav button in header
+- Integrated with XP system (triggerXPGain) and sound effects (playCorrectSound, playWrongSound, etc.)
+
+Stage Summary:
+**Current Project Status:**
+- 14 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard, TeacherDashboard, Profile, Lessons, Practice
+- 11 API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge, /xp, /leaderboard, /teacher, /explain, /lessons, /practice
+- Full dark mode with warm colors
+- 12 achievement badges + daily challenge + XP/level system
+- LLM-powered hints + AI answer explanations
+- Sound effects, keyboard shortcuts, micro-interactions
+- Print/Share/Certificate features
+- No lint errors, no runtime errors
+
+**Unresolved / Future Recommendations:**
+1. Could add more quiz questions (currently 248 for 27 quizzes)
+2. Could add teacher dashboard for managing quizzes and scores
+3. Could add VLM-powered question image understanding
+4. Could add parent notification system for low scores
+5. Could add multiplayer/competitive quiz mode
+6. Could add more lesson content beyond chapters 1-3
+7. Could add student avatar customization in profile view
+8. Practice view could track high scores per grade/subject

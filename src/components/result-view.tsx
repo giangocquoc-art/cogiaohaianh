@@ -146,11 +146,11 @@ function BouncingEmoji({ emoji, delay = 0 }: { emoji: string; delay?: number }) 
     <motion.span
       initial={{ scale: 0 }}
       animate={{
-        scale: [0, 1.3, 1],
+        scale: 1,
         y: [0, -8, 0],
       }}
       transition={{
-        scale: { delay, duration: 0.5, type: 'spring' },
+        scale: { delay, duration: 0.5, type: 'spring', stiffness: 200 },
         y: { delay: delay + 0.5, duration: 1.5, repeat: Infinity, repeatType: 'reverse' },
       }}
       className="inline-block text-2xl"
