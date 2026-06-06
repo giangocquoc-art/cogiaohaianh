@@ -1,0 +1,66 @@
+'use client'
+
+import { useAppStore } from '@/store/app-store'
+import { AppHeader } from '@/components/app-header'
+import { AppFooter } from '@/components/app-footer'
+import { HomeView } from '@/components/home-view'
+import { SubjectView } from '@/components/subject-view'
+import { ChapterView } from '@/components/chapter-view'
+import { QuizView } from '@/components/quiz-view'
+import { ResultView } from '@/components/result-view'
+import { ScoreboardView } from '@/components/scoreboard-view'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect } from 'react'
+
+function ViewRenderer() {
+  const currentView = useAppStore((s) => s.currentView)
+
+  const viewMap: Record<string, React.ReactNode> = {
+    home: <HomeView />,
+    subjects: <SubjectView />,
+    chapters: <ChapterView />,
+    quiz: <QuizView />,
+    result: <ResultView />,
+    scoreboard: <ScoreboardView />,
+  }
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={currentView}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+      >
+        {viewMap[currentView] || <HomeView />}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+export default function Home() {
+  const setView = useAppStore((s) => s.setView)
+
+  // Seed data on first load
+  useEffect(() => {
+    const seedData = async () => {
+      try {
+        await fetch('/api/seed', { method: 'POST' })
+      } catch (err) {
+        console.error('Failed to seed data:', err)
+      }
+    }
+    seedData()
+  }, [])
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <AppHeader />
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+        <ViewRenderer />
+      </main>
+      <AppFooter />
+    </div>
+  )
+}

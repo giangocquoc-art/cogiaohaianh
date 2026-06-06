@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Quiz {
+  id          String     @id @default(cuid())
+  grade       Int        // 1-5
+  subject     String     // "toan" or "ngu-van"
+  chapter     String     // Chapter identifier e.g. "chuong-1"
+  chapterName String     // Display name e.g. "Các số từ 1 đến 10"
+  title       String     // Quiz title
+  description String?    // Quiz description
+  duration    Int        @default(30) // Duration in minutes
+  questions   Question[]
+  results     StudentResult[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Question {
+  id            String   @id @default(cuid())
+  quizId        String
+  questionText  String   // The question text
+  questionType  String   @default("multiple_choice") // "multiple_choice" or "fill_blank"
+  options       String   // JSON array of options e.g. ["A. 5", "B. 6", "C. 7", "D. 8"]
+  correctAnswer String   // The correct answer key e.g. "A" or the exact text
+  points        Float    @default(1.0) // Points for this question
+  orderIndex    Int      @default(0) // Order within quiz
+  image         String?  // Optional image URL for the question
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model StudentResult {
+  id          String   @id @default(cuid())
+  studentName String   // Student's name
+  className   String   // Class name e.g. "1A"
+  schoolName  String   // School name
+  quizId      String
+  score       Float    // Score on 10-point scale
+  totalPoints Float    // Total possible points
+  answers     String   // JSON object of answers e.g. {"1": "A", "2": "B"}
+  timeTaken   Int?     // Time taken in seconds
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ScoreEntry {
+  id          String   @id @default(cuid())
+  studentName String   // Student's name
+  className   String   // Class name
+  schoolName  String   // School name
+  subject     String   // "toan" or "ngu-van"
+  grade       Int      // 1-5
+  testTitle   String   // Name of the test/exam
+  score       Float    // Score on 10-point scale
+  notes       String?  // Optional notes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
