@@ -401,12 +401,12 @@ export function ProgressView() {
             transition={{ delay: 0.35 }}
             className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
           >
-            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 mb-4 flex items-center gap-2">
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 dark:text-emerald-300 mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
               Theo môn học 📚
             </h3>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl p-4 text-center border bg-blue-50 border-blue-200 relative overflow-hidden">
+              <div className="rounded-xl p-4 text-center border bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 relative overflow-hidden">
                 <div className="absolute top-1 right-1 text-lg opacity-20">🔢</div>
                 <p className="text-2xl mb-1">🔢</p>
                 <p className="font-bold text-foreground">Toán</p>
@@ -419,7 +419,7 @@ export function ProgressView() {
                   <p className="text-sm text-muted-foreground mt-1">Chưa có bài</p>
                 )}
               </div>
-              <div className="rounded-xl p-4 text-center border bg-pink-50 border-pink-200 relative overflow-hidden">
+              <div className="rounded-xl p-4 text-center border bg-pink-50 dark:bg-pink-950/30 border-pink-200 dark:border-pink-800 relative overflow-hidden">
                 <div className="absolute top-1 right-1 text-lg opacity-20">📖</div>
                 <p className="text-2xl mb-1">📖</p>
                 <p className="font-bold text-foreground">Ngữ văn</p>
@@ -442,7 +442,7 @@ export function ProgressView() {
             transition={{ delay: 0.4 }}
             className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
           >
-            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 mb-4 flex items-center gap-2">
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 dark:text-emerald-300 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
               Biểu đồ điểm theo thời gian 📊
             </h3>
@@ -543,7 +543,7 @@ export function ProgressView() {
             transition={{ delay: 0.45 }}
             className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border"
           >
-            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 mb-4 flex items-center gap-2">
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-emerald-700 dark:text-emerald-300 mb-4 flex items-center gap-2">
               <Award className="w-5 h-5" />
               Kết quả gần đây 🎯
             </h3>
@@ -561,12 +561,12 @@ export function ProgressView() {
                     transition={{ delay: 0.05 * idx }}
                     className={`rounded-xl p-4 border-2 transition-all hover:shadow-md ${
                       result.score >= 9
-                        ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200'
+                        ? 'bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border-amber-200 dark:border-amber-800'
                         : result.score >= 7
-                          ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200'
+                          ? 'bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-emerald-200 dark:border-emerald-800'
                           : result.score >= 5
-                            ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200'
-                            : 'bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200'
+                            ? 'bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border-orange-200 dark:border-orange-800'
+                            : 'bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border-rose-200 dark:border-rose-800'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -590,7 +590,7 @@ export function ProgressView() {
                             </span>
                           )}
                           {result.quiz?.chapterName && (
-                            <span className="inline-flex items-center gap-1 text-xs bg-white/80 px-2 py-0.5 rounded-full font-medium truncate max-w-[150px]">
+                            <span className="inline-flex items-center gap-1 text-xs bg-white/80 dark:bg-white/10 px-2 py-0.5 rounded-full font-medium truncate max-w-[150px]">
                               📑 {result.quiz.chapterName}
                             </span>
                           )}

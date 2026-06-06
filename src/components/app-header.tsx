@@ -1,12 +1,13 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { getTheme, toggleTheme, initTheme, type Theme } from '@/lib/theme'
+import { XPWidget } from '@/components/xp-widget'
 
 export function AppHeader() {
   const { currentView, goBack, goHome, selectedGrade } = useAppStore()
@@ -58,13 +59,14 @@ export function AppHeader() {
     { view: 'dailyChallenge' as const, icon: Flame, label: 'Thử thách', action: () => useAppStore.getState().setView('dailyChallenge') },
     { view: 'badges' as const, icon: Award, label: 'Huy hiệu', action: () => useAppStore.getState().setView('badges') },
     { view: 'scoreboard' as const, icon: Trophy, label: 'Bảng điểm', action: () => useAppStore.getState().setView('scoreboard') },
+    { view: 'leaderboard' as const, icon: Crown, label: 'Xếp hạng', action: () => useAppStore.getState().setView('leaderboard') },
     { view: 'progress' as const, icon: BarChart3, label: 'Tiến độ', action: () => useAppStore.getState().setView('progress') },
   ]
 
   return (
     <>
       <header
-        className={`sticky top-0 z-50 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 animate-gradient-shift transition-shadow duration-300 ${scrolled ? 'header-shadow' : 'shadow-lg'}`}
+        className={`sticky top-0 z-50 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 animate-gradient-shift transition-shadow duration-300 ${scrolled ? 'header-shadow' : 'shadow-lg'}`}
       >
         {/* Subtle wave pattern overlay */}
         <div className="absolute inset-0 pattern-wave opacity-30 pointer-events-none" />
@@ -76,7 +78,7 @@ export function AppHeader() {
               onClick={goHome}
               className="flex items-center gap-2.5 hover:opacity-90 transition-opacity"
             >
-              <div className="bg-white rounded-full shadow-md px-2 py-1 flex items-center gap-2">
+              <div className="bg-white dark:bg-amber-950 rounded-full shadow-md px-2 py-1 flex items-center gap-2">
                 <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden">
                   <Image
                     src="/images/mascot.png"
@@ -87,13 +89,13 @@ export function AppHeader() {
                   />
                 </div>
                 <div className="hidden sm:block pr-1">
-                  <h1 className="font-[family-name:var(--font-patrick-hand)] text-orange-700 text-lg sm:text-xl font-bold leading-tight">
+                  <h1 className="font-[family-name:var(--font-patrick-hand)] text-orange-700 dark:text-amber-200 text-lg sm:text-xl font-bold leading-tight">
                     Cô Giáo Hải Anh
                   </h1>
-                  <p className="text-orange-500 text-[10px] leading-tight font-medium">Học Tập Vui Vẻ 🌟</p>
+                  <p className="text-orange-500 dark:text-amber-300 text-[10px] leading-tight font-medium">Học Tập Vui Vẻ 🌟</p>
                 </div>
               </div>
-              <span className="sm:hidden font-[family-name:var(--font-patrick-hand)] text-white text-lg font-bold drop-shadow-md">
+              <span className="sm:hidden font-[family-name:var(--font-patrick-hand)] text-white dark:text-amber-100 text-lg font-bold drop-shadow-md">
                 CGHA
               </span>
             </button>
@@ -107,7 +109,7 @@ export function AppHeader() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="hidden sm:flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-white text-xs font-semibold"
+                    className="hidden sm:flex items-center gap-1.5 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 text-white dark:text-amber-100 text-xs font-semibold"
                   >
                     <BookCheck className="w-3.5 h-3.5" />
                     <span>Đang làm bài</span>
@@ -116,9 +118,10 @@ export function AppHeader() {
                 )}
               </AnimatePresence>
 
-              {/* Desktop Navigation */}
+              {/* Desktop Navigation - simplified during quiz */}
               <nav className="hidden sm:flex items-center gap-1 sm:gap-1.5">
-                {currentView !== 'home' && (
+                {isStudying ? (
+                  /* Simplified nav during quiz: only back button */
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -128,30 +131,53 @@ export function AppHeader() {
                       variant="ghost"
                       size="sm"
                       onClick={goBack}
-                      className="text-white hover:bg-white/20 gap-1 text-sm sm:text-base h-9 sm:h-10"
+                      className="text-white dark:text-amber-100 hover:bg-white/20 dark:hover:bg-white/10 gap-1 text-sm sm:text-base h-9 sm:h-10"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       <span className="hidden sm:inline">Quay lại</span>
                     </Button>
                   </motion.div>
-                )}
+                ) : (
+                  <>
+                    {currentView !== 'home' && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={goBack}
+                          className="text-white dark:text-amber-100 hover:bg-white/20 dark:hover:bg-white/10 gap-1 text-sm sm:text-base h-9 sm:h-10"
+                        >
+                          <ArrowLeft className="w-4 h-4" />
+                          <span className="hidden sm:inline">Quay lại</span>
+                        </Button>
+                      </motion.div>
+                    )}
 
-                {navItems.map((navItem) => {
-                  const isActive = currentView === navItem.view || (navItem.view === 'home' && currentView === 'home')
-                  return (
-                    <Button
-                      key={navItem.view}
-                      variant="ghost"
-                      size="sm"
-                      onClick={navItem.action}
-                      className={`text-white hover:bg-white/20 gap-1 text-sm sm:text-base h-9 sm:h-10 ${isActive ? 'bg-white/20 nav-active' : ''}`}
-                    >
-                      <navItem.icon className="w-4 h-4" />
-                      <span className="hidden sm:inline">{navItem.label}</span>
-                    </Button>
-                  )
-                })}
+                    {navItems.map((navItem) => {
+                      const isActive = currentView === navItem.view || (navItem.view === 'home' && currentView === 'home')
+                      return (
+                        <Button
+                          key={navItem.view}
+                          variant="ghost"
+                          size="sm"
+                          onClick={navItem.action}
+                          className={`text-white hover:bg-white/20 gap-1 text-sm sm:text-base h-9 sm:h-10 ${isActive ? 'bg-white/20 nav-active' : ''}`}
+                        >
+                          <navItem.icon className="w-4 h-4" />
+                          <span className="hidden sm:inline">{navItem.label}</span>
+                        </Button>
+                      )
+                    })}
+                  </>
+                )}
               </nav>
+
+              {/* XP Widget - hidden during quiz */}
+              {!isStudying && <XPWidget />}
 
               {/* Theme toggle button */}
               <motion.button
@@ -186,19 +212,30 @@ export function AppHeader() {
                 </AnimatePresence>
               </motion.button>
 
-              {/* Mobile hamburger menu */}
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="sm:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
-                aria-label="Mở menu"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
+              {/* Mobile hamburger menu - simplified during quiz */}
+              {isStudying ? (
+                <button
+                  onClick={goBack}
+                  className="sm:hidden flex items-center gap-1 text-white hover:bg-white/20 transition-colors px-2 py-1 rounded-xl text-sm font-medium"
+                  aria-label="Quay lại"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>Quay lại</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setDrawerOpen(true)}
+                  className="sm:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
+                  aria-label="Mở menu"
+                >
+                  <Menu className="w-6 h-6" />
+                </button>
+              )}
             </div>
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -260,7 +297,7 @@ export function AppHeader() {
               className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white dark:bg-[#1a1208] z-[70] shadow-2xl overflow-y-auto"
             >
               {/* Drawer header */}
-              <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 p-5">
+              <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white shadow-md">
@@ -273,10 +310,10 @@ export function AppHeader() {
                       />
                     </div>
                     <div>
-                      <h2 className="font-[family-name:var(--font-patrick-hand)] text-orange-800 text-lg font-bold">
+                      <h2 className="font-[family-name:var(--font-patrick-hand)] text-orange-800 dark:text-amber-200 text-lg font-bold">
                         Cô Giáo Hải Anh
                       </h2>
-                      <p className="text-orange-600 text-xs">Học Tập Vui Vẻ 🌟</p>
+                      <p className="text-orange-600 dark:text-amber-300 text-xs">Học Tập Vui Vẻ 🌟</p>
                     </div>
                   </div>
                   <button
@@ -298,7 +335,7 @@ export function AppHeader() {
                       goBack()
                       setDrawerOpen(false)
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-orange-50 transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-left"
                   >
                     <ArrowLeft className="w-5 h-5 text-orange-500" />
                     <span className="font-medium">Quay lại</span>

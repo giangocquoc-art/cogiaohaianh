@@ -97,7 +97,7 @@ export function BadgesView() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-100 via-orange-50 to-rose-100 p-6 sm:p-8 shadow-lg border-2 border-amber-200"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-100 via-orange-50 to-rose-100 dark:from-amber-950/30 dark:via-orange-950/30 dark:to-rose-950/30 p-6 sm:p-8 shadow-lg border-2 border-amber-200 dark:border-amber-800"
       >
         {/* Decorative elements */}
         <div className="absolute top-3 right-6 text-3xl animate-sparkle opacity-60">✨</div>
@@ -115,7 +115,7 @@ export function BadgesView() {
               <Trophy className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
             </div>
             {/* Badge count badge */}
-            <div className="absolute -bottom-1 -right-1 bg-white rounded-full px-2.5 py-1 shadow-md border-2 border-amber-300">
+            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-card rounded-full px-2.5 py-1 shadow-md border-2 border-amber-300 dark:border-amber-700">
               <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-700 font-bold">
                 {earnedCount}/{totalBadges}
               </span>
@@ -123,10 +123,10 @@ export function BadgesView() {
           </motion.div>
 
           <div className="text-center sm:text-left flex-1">
-            <h1 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-amber-800 mb-2">
+            <h1 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-amber-800 dark:text-amber-200 mb-2">
               Huy Hiệu Thành Tích 🏅
             </h1>
-            <p className="text-amber-700 text-sm sm:text-base mb-3">
+            <p className="text-amber-700 dark:text-amber-300 text-sm sm:text-base mb-3">
               {earnedCount === 0
                 ? 'Hoàn thành bài kiểm tra để mở khóa huy hiệu!'
                 : earnedCount < 5
@@ -138,7 +138,7 @@ export function BadgesView() {
 
             {/* Progress bar */}
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-3 bg-white/50 rounded-full overflow-hidden">
+              <div className="flex-1 h-3 bg-white/50 dark:bg-white/10 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(earnedCount / totalBadges) * 100}%` }}
@@ -146,7 +146,7 @@ export function BadgesView() {
                   className="h-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 rounded-full"
                 />
               </div>
-              <span className="text-amber-700 font-bold text-sm">
+              <span className="text-amber-700 dark:text-amber-300 font-bold text-sm">
                 {Math.round((earnedCount / totalBadges) * 100)}%
               </span>
             </div>
@@ -155,12 +155,12 @@ export function BadgesView() {
             <div className="flex items-center gap-4 mt-3 justify-center sm:justify-start">
               <div className="flex items-center gap-1.5 text-sm">
                 <Star className="w-4 h-4 text-amber-500" />
-                <span className="text-amber-700 font-semibold">{results.length} bài làm</span>
+                <span className="text-amber-700 dark:text-amber-300 font-semibold">{results.length} bài làm</span>
               </div>
               {results.length > 0 && (
                 <div className="flex items-center gap-1.5 text-sm">
                   <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span className="text-amber-700 font-semibold">
+                  <span className="text-amber-700 dark:text-amber-300 font-semibold">
                     TB: {(results.reduce((s, r) => s + r.score, 0) / results.length).toFixed(1)} điểm
                   </span>
                 </div>
@@ -175,9 +175,9 @@ export function BadgesView() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center"
+          className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-center"
         >
-          <p className="text-amber-700 text-sm">
+          <p className="text-amber-700 dark:text-amber-300 text-sm">
             Nhập thông tin học sinh khi làm bài kiểm tra để theo dõi huy hiệu thành tích!
           </p>
           <Button
@@ -209,7 +209,7 @@ export function BadgesView() {
               className={`relative rounded-2xl p-4 sm:p-5 border-2 transition-all overflow-hidden ${
                 isEarned
                   ? `bg-gradient-to-br ${colors.bg} ${colors.border} shadow-lg ${colors.glow}`
-                  : 'bg-gray-50 border-gray-200 opacity-70'
+                  : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 opacity-70'
               }`}
             >
               {/* Glow effect for earned badges */}
@@ -231,12 +231,12 @@ export function BadgesView() {
               {/* Badge info */}
               <div className="text-center">
                 <h3 className={`font-[family-name:var(--font-patrick-hand)] text-lg sm:text-xl mb-1 ${
-                  isEarned ? colors.text : 'text-gray-500'
+                  isEarned ? colors.text : 'text-gray-500 dark:text-gray-400'
                 }`}>
                   {badge.name}
                 </h3>
                 <p className={`text-xs leading-relaxed ${
-                  isEarned ? 'text-foreground/70' : 'text-gray-400'
+                  isEarned ? 'text-foreground/70' : 'text-gray-400 dark:text-gray-500'
                 }`}>
                   {badge.description}
                 </p>
@@ -245,13 +245,13 @@ export function BadgesView() {
               {/* Progress bar */}
               {!isEarned && (
                 <div className="mt-3">
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-orange-300 to-amber-400 rounded-full transition-all duration-500"
                       style={{ width: `${badge.progress}%` }}
                     />
                   </div>
-                  <p className="text-[10px] text-gray-400 text-center mt-1">
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-1">
                     {badge.progress}% hoàn thành
                   </p>
                 </div>

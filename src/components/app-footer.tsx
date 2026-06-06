@@ -148,7 +148,7 @@ export function AppFooter() {
       </div>
 
       {/* Main footer content */}
-      <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white">
+      <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 text-white">
         <div className="max-w-6xl mx-auto px-4 py-6">
           {/* Top section with three columns */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">

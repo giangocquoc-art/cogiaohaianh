@@ -38,10 +38,13 @@ function CircularTimer({ timeLeft, totalTime }: { timeLeft: number; totalTime: n
   const isLow = timeLeft < 60
   const isCritical = timeLeft < 30
 
-  const radius = 22
-  const strokeWidth = 4
+  const radius = 24
+  const strokeWidth = 5
   const circumference = radius * 2 * Math.PI
   const offset = circumference - (percentage / 100) * circumference
+
+  // Gradient color from orange to green as time remaining
+  const strokeColor = isCritical ? '#EF4444' : isLow ? '#F97316' : percentage > 50 ? '#22C55E' : '#F97316'
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -51,23 +54,29 @@ function CircularTimer({ timeLeft, totalTime }: { timeLeft: number; totalTime: n
 
   return (
     <div className="relative flex items-center gap-2">
-      <div className="relative" style={{ width: 52, height: 52 }}>
-        <svg width={52} height={52} className="-rotate-90">
+      <div className="relative" style={{ width: 56, height: 56 }}>
+        <svg width={56} height={56} className="-rotate-90">
+          <defs>
+            <linearGradient id="timer-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={isCritical ? '#EF4444' : '#F97316'} />
+              <stop offset="100%" stopColor={isCritical ? '#DC2626' : isLow ? '#EA580C' : '#22C55E'} />
+            </linearGradient>
+          </defs>
           <circle
-            cx={26}
-            cy={26}
+            cx={28}
+            cy={28}
             r={radius}
             fill="none"
             stroke="currentColor"
             strokeWidth={strokeWidth}
-            className={isCritical ? 'text-red-100' : isLow ? 'text-amber-100' : 'text-orange-100'}
+            className={isCritical ? 'text-red-100 dark:text-red-900/30' : isLow ? 'text-amber-100 dark:text-amber-900/30' : 'text-orange-100 dark:text-orange-900/30'}
           />
           <motion.circle
-            cx={26}
-            cy={26}
+            cx={28}
+            cy={28}
             r={radius}
             fill="none"
-            stroke={isCritical ? '#EF4444' : isLow ? '#F97316' : '#F97316'}
+            stroke="url(#timer-gradient)"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -76,11 +85,11 @@ function CircularTimer({ timeLeft, totalTime }: { timeLeft: number; totalTime: n
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Clock className={`w-4 h-4 ${isCritical ? 'text-red-500' : isLow ? 'text-amber-500' : 'text-orange-500'}`} />
+          <Clock className={`w-4.5 h-4.5 ${isCritical ? 'text-red-500' : isLow ? 'text-amber-500' : 'text-green-500'}`} />
         </div>
       </div>
       <span className={`font-mono text-sm font-bold ${
-        isCritical ? 'text-red-600 animate-pulse' : isLow ? 'text-amber-600' : 'text-orange-700'
+        isCritical ? 'text-red-600 dark:text-red-400 animate-pulse' : isLow ? 'text-amber-600 dark:text-amber-400' : 'text-green-700 dark:text-green-400'
       }`}>
         {formatTime(timeLeft)}
       </span>
@@ -336,7 +345,7 @@ export function QuizView() {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
+      <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-8 text-center">
         <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
         <p className="text-red-600 text-lg">{error}</p>
         <Button variant="outline" className="mt-4" onClick={goBack}>
@@ -420,11 +429,11 @@ export function QuizView() {
                     <button
                       key={qu.id}
                       onClick={() => setCurrentQuestion(idx)}
-                      className={`w-3.5 h-3.5 rounded-sm transition-all ${
+                      className={`w-4 h-4 rounded-sm transition-all ${
                         isCurrent
-                          ? 'bg-orange-500 ring-2 ring-orange-300'
+                          ? 'bg-orange-500 ring-2 ring-orange-300 dark:ring-orange-600 shadow-sm'
                           : isAnswered
-                            ? 'bg-emerald-400'
+                            ? 'bg-green-400 dark:bg-green-500'
                             : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                       title={`Câu ${idx + 1}${isAnswered ? ' ✓' : ''}`}
@@ -445,10 +454,13 @@ export function QuizView() {
               {answeredCount}/{questions.length} câu
             </span>
           </div>
-          {/* Progress ring bar */}
-          <div className="relative h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+          {/* Progress ring bar - gradient from orange to green */}
+          <div className="relative h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-orange-400 to-amber-400"
+              className="h-full rounded-full"
+              style={{
+                background: 'linear-gradient(to right, #F97316, #EAB308, #22C55E)',
+              }}
               initial={{ width: 0 }}
               animate={{ width: `${(answeredCount / questions.length) * 100}%` }}
               transition={{ duration: 0.3 }}
@@ -466,14 +478,14 @@ export function QuizView() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="bg-white dark:bg-card rounded-2xl p-5 sm:p-8 shadow-md border dark:border-border relative overflow-hidden"
+          className="bg-white dark:bg-card rounded-2xl p-6 sm:p-8 shadow-md border dark:border-border relative overflow-hidden"
         >
           {/* Decorative corner elements */}
-          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-amber-50 to-transparent rounded-tr-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 dark:from-orange-950/30 to-transparent rounded-bl-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-amber-50 dark:from-amber-950/30 to-transparent rounded-tr-3xl pointer-events-none" />
 
           {/* Question number, type indicator, and text */}
-          <div className="mb-6 relative">
+          <div className="mb-8 relative">
             <div className="flex items-center gap-2 mb-3 flex-wrap">
               <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-bold px-3 py-1 rounded-full">
                 Câu {currentQuestion + 1}
@@ -553,10 +565,10 @@ export function QuizView() {
                 >
                   <span className="text-xl shrink-0 mt-0.5">💡</span>
                   <div className="flex-1">
-                    <span className="text-xs font-semibold text-amber-600 block mb-1">
+                    <span className="text-xs text-amber-600 dark:text-amber-400 block mb-1">
                       Gợi ý {idx + 1}
                     </span>
-                    <p className="text-sm text-amber-900 leading-relaxed">{hint}</p>
+                    <p className="text-sm text-amber-900 dark:text-amber-200 leading-relaxed">{hint}</p>
                   </div>
                 </motion.div>
               ))}
@@ -565,7 +577,7 @@ export function QuizView() {
 
           {/* Multiple choice */}
           {q.questionType === 'multiple_choice' && options.length > 0 && (
-            <div className="space-y-3">
+            <div className="space-y-3 mt-2">
               {options.map((option, idx) => {
                 const optionKey = String.fromCharCode(65 + idx) // A, B, C, D
                 const isSelected = answers[q.id] === optionKey
@@ -578,23 +590,23 @@ export function QuizView() {
                       playClickSound()
                       setAnswers((prev) => ({ ...prev, [q.id]: optionKey }))
                     }}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all btn-press ${
+                    className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
                       isSelected
-                        ? 'border-orange-400 dark:border-orange-500 bg-orange-50 dark:bg-orange-950/30 shadow-md'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-700 hover:bg-orange-50/50 dark:hover:bg-orange-950/20'
+                        ? 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600'
+                        : 'border-gray-200 dark:border-gray-700 hover:bg-orange-50 hover:border-orange-300 hover:shadow-md dark:hover:bg-orange-950/30 dark:hover:border-orange-700'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${
+                        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-all duration-200 ${
                           isSelected
-                            ? 'bg-orange-500 text-white'
+                            ? 'bg-orange-500 text-white shadow-md'
                             : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                         }`}
                       >
                         {isSelected ? <Check className="w-4 h-4" /> : optionKey}
                       </span>
-                      <span className="text-base">{option.replace(/^[A-D]\.\s*/, '')}</span>
+                      <span className="text-base leading-relaxed">{option.replace(/^[A-D]\.\s*/, '')}</span>
                     </div>
                   </motion.button>
                 )
@@ -651,7 +663,7 @@ export function QuizView() {
         </div>
 
       {/* Question navigation with answered indicators */}
-      <div className="flex items-center gap-1 flex-wrap justify-center overflow-x-auto max-w-[60%]">
+      <div className="flex items-center gap-1.5 flex-wrap justify-center overflow-x-auto max-w-[60%]">
         {questions.map((_, idx) => {
           const isAnswered = !!answers[questions[idx].id]
           return (
@@ -661,21 +673,16 @@ export function QuizView() {
                 playClickSound()
                 setCurrentQuestion(idx)
               }}
-              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-semibold transition-all relative btn-press ${
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-1 ${
                 idx === currentQuestion
-                  ? 'bg-orange-500 text-white shadow-md'
+                  ? 'bg-orange-100 border-2 border-orange-500 text-orange-700 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:text-orange-300'
                   : isAnswered
-                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-green-100 border-2 border-green-400 text-green-700 dark:bg-green-900/40 dark:border-green-600 dark:text-green-300'
+                    : 'bg-gray-50 border-2 border-gray-200 text-gray-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
-              >
-                {idx + 1}
-                {isAnswered && idx !== currentQuestion && (
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full flex items-center justify-center">
-                    <Check className="w-2 h-2 text-white" />
-                  </span>
-                )}
-              </button>
+            >
+              {isAnswered && idx !== currentQuestion ? '✓' : idx + 1}
+            </button>
             )
           })}
         </div>

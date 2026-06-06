@@ -2,13 +2,14 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion } from 'framer-motion'
-import { CheckCircle, XCircle, RotateCcw, Home, ClipboardList, Volume2, VolumeX, Printer, Share2, Award } from 'lucide-react'
+import { CheckCircle, XCircle, RotateCcw, Home, ClipboardList, Volume2, VolumeX, Printer, Share2, Award, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState, useCallback } from 'react'
 import { Confetti } from '@/components/confetti'
 import { playCorrectSound, playCompleteSound, getSoundMuted, toggleSoundMuted } from '@/lib/sounds'
 import { useToast } from '@/hooks/use-toast'
 import { evaluateBadges, getNewBadges, saveBadgesToStorage, type Badge, type QuizResultForBadge } from '@/lib/badges'
+import { calculateQuizXP, triggerXPGain } from '@/components/xp-widget'
 import {
   Dialog,
   DialogContent,
@@ -152,6 +153,60 @@ function BouncingEmoji({ emoji, delay = 0 }: { emoji: string; delay?: number }) 
     >
       {emoji}
     </motion.span>
+  )
+}
+
+function XPDisplay({ score }: { score: number }) {
+  const [showXP, setShowXP] = useState(false)
+  const xpResult = calculateQuizXP(score)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowXP(true)
+      // Trigger XP gain event for the widget
+      triggerXPGain(xpResult.total)
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [xpResult.total])
+
+  if (!showXP) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 200 }}
+      className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 shadow-sm"
+    >
+      <div className="flex items-center justify-center gap-2 mb-2">
+        <Star className="w-5 h-5 text-amber-500" fill="currentColor" />
+        <span className="font-[family-name:var(--font-patrick-hand)] text-xl text-amber-800 dark:text-amber-200">
+          +{xpResult.total} XP
+        </span>
+        <Star className="w-5 h-5 text-amber-500" fill="currentColor" />
+      </div>
+      <div className="flex items-center justify-center gap-3 text-xs text-amber-600 dark:text-amber-400">
+        <span>Cơ bản: +{xpResult.breakdown.base}</span>
+        {xpResult.breakdown.scoreBonus > 0 && (
+          <>
+            <span className="text-amber-300">·</span>
+            <span>
+              {score >= 10 ? 'Hoàn hảo' : score >= 9 ? 'Xuất sắc' : 'Giỏi'}: +{xpResult.breakdown.scoreBonus}
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Floating XP animation */}
+      <motion.div
+        initial={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 0, y: -40 }}
+        transition={{ duration: 2.5, ease: 'easeOut', delay: 0.5 }}
+        className="absolute -top-4 left-1/2 -translate-x-1/2 text-amber-500 font-bold text-lg whitespace-nowrap pointer-events-none"
+      >
+        +{xpResult.total} XP! ⭐
+      </motion.div>
+    </motion.div>
   )
 }
 
@@ -483,11 +538,11 @@ export function ResultView() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ delay: 2, type: 'spring', stiffness: 150 }}
-              className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-4 mb-4 shadow-md"
+              className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-300 dark:border-amber-800 rounded-2xl p-4 mb-4 shadow-md"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-lg">🆕</span>
-                <h4 className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-800">
+                <h4 className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-800 dark:text-amber-200">
                   Huy hiệu mới!
                 </h4>
               </div>
@@ -499,7 +554,7 @@ export function ResultView() {
                   >
                     <span className="text-xl">{badge.emoji}</span>
                     <div>
-                      <span className="font-semibold text-amber-800 text-sm">{badge.name}</span>
+                      <span className="font-semibold text-amber-800 dark:text-amber-200 text-sm">{badge.name}</span>
                       <p className="text-amber-600 text-[10px] leading-tight">{badge.description}</p>
                     </div>
                   </div>
@@ -510,7 +565,7 @@ export function ResultView() {
                   const { setView } = useAppStore.getState()
                   setView('badges')
                 }}
-                className="mt-2 text-amber-700 text-xs font-semibold hover:text-amber-800 underline underline-offset-2"
+                className="mt-2 text-amber-700 dark:text-amber-300 text-xs font-semibold hover:text-amber-800 dark:hover:text-amber-200 underline underline-offset-2"
               >
                 Xem tất cả huy hiệu →
               </button>
@@ -553,6 +608,9 @@ export function ResultView() {
             <span className="flex items-center gap-1">⏱️ {quizResult.timeTaken ? formatTime(quizResult.timeTaken) : 'N/A'}</span>
             <span className="flex items-center gap-1">📝 {totalQuestions} câu hỏi</span>
           </div>
+
+          {/* XP Earned Display */}
+          <XPDisplay score={score} />
 
           {/* Bouncing emojis for encouragement */}
           <div className="flex justify-center gap-2 mt-4">
@@ -780,7 +838,7 @@ export function ResultView() {
               {score >= 9 ? '🎉🎊🌟🏆' : score >= 7 ? '🌟⭐👏' : score >= 5 ? '👍✨💪' : '💪📚❤️'}
             </div>
             <p className={`font-semibold ${
-              score >= 9 ? 'text-amber-800' : score >= 7 ? 'text-emerald-800' : score >= 5 ? 'text-orange-800' : 'text-rose-800'
+              score >= 9 ? 'text-amber-800 dark:text-amber-200' : score >= 7 ? 'text-emerald-800 dark:text-emerald-200' : score >= 5 ? 'text-orange-800 dark:text-orange-200' : 'text-rose-800 dark:text-rose-200'
             }`}>
               {score >= 9
                 ? 'Bạn thật xuất sắc! Hãy tiếp tục phát huy nhé!'

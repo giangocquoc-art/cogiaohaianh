@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Flame, Clock, Star, Zap, Trophy, Calendar, ArrowLeft, Home } from 'lucide-react'
 import { playClickSound } from '@/lib/sounds'
 import { markDailyChallengeCompleted } from '@/lib/badges'
+import { calculateDailyChallengeXP, triggerXPGain } from '@/components/xp-widget'
 
 interface DailyChallengeData {
   quizId: string
@@ -237,39 +238,47 @@ export function DailyChallengeView() {
         </div>
 
         {/* Challenge Details Card */}
-        <div className="bg-white p-6 sm:p-8">
+        <div className="bg-white dark:bg-card p-6 sm:p-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-            <div className="bg-orange-50 rounded-xl p-3 text-center border border-orange-100">
+            <div className="bg-orange-50 dark:bg-orange-950/30 rounded-xl p-3 text-center border border-orange-100 dark:border-orange-800">
               <span className="text-2xl block mb-1">{subjectEmoji}</span>
               <span className="text-xs text-muted-foreground block">Môn học</span>
-              <span className="font-semibold text-orange-700 text-sm">{subjectLabel}</span>
+              <span className="font-semibold text-orange-700 dark:text-orange-300 text-sm">{subjectLabel}</span>
             </div>
-            <div className="bg-amber-50 rounded-xl p-3 text-center border border-amber-100">
+            <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3 text-center border border-amber-100 dark:border-amber-800">
               <span className="text-2xl block mb-1">🏫</span>
               <span className="text-xs text-muted-foreground block">Lớp</span>
-              <span className="font-semibold text-amber-700 text-sm">Lớp {challenge.grade}</span>
+              <span className="font-semibold text-amber-700 dark:text-amber-300 text-sm">Lớp {challenge.grade}</span>
             </div>
-            <div className="bg-rose-50 rounded-xl p-3 text-center border border-rose-100">
+            <div className="bg-rose-50 dark:bg-rose-950/30 rounded-xl p-3 text-center border border-rose-100 dark:border-rose-800">
               <span className="text-2xl block mb-1">📝</span>
               <span className="text-xs text-muted-foreground block">Số câu hỏi</span>
-              <span className="font-semibold text-rose-700 text-sm">{challenge.questionCount} câu</span>
+              <span className="font-semibold text-rose-700 dark:text-rose-300 text-sm">{challenge.questionCount} câu</span>
             </div>
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-3 text-center border border-orange-200 shadow-sm">
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-xl p-3 text-center border border-orange-200 dark:border-orange-800 shadow-sm">
               <span className="text-2xl block mb-1">🎁</span>
               <span className="text-xs text-muted-foreground block">Điểm thưởng</span>
-              <span className="font-semibold text-orange-700 text-sm">+{challenge.bonusPoints} điểm</span>
+              <span className="font-semibold text-orange-700 dark:text-orange-300 text-sm">+{challenge.bonusPoints} điểm</span>
+            </div>
+            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-3 text-center border border-amber-200 shadow-sm">
+              <span className="text-2xl block mb-1">⭐</span>
+              <span className="text-xs text-muted-foreground block">XP thưởng</span>
+              <span className="font-semibold text-amber-700 text-sm">+20 XP</span>
+              {challenge.streak > 0 && (
+                <span className="block text-[10px] text-amber-500">+{Math.min(challenge.streak, 5) * 5} chuỗi</span>
+              )}
             </div>
           </div>
 
           {/* Quiz info */}
-          <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-4 mb-6 border border-orange-100">
+          <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-4 mb-6 border border-orange-100 dark:border-orange-800">
             <div className="flex items-center gap-2 mb-2">
               <Flame className="w-5 h-5 text-orange-500" />
-              <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-800">
+              <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-800 dark:text-orange-200">
                 {challenge.title}
               </h3>
             </div>
-            <p className="text-orange-600 text-sm">
+            <p className="text-orange-600 dark:text-orange-300 text-sm">
               {challenge.chapterName} · {challenge.duration} phút
             </p>
           </div>
@@ -280,7 +289,7 @@ export function DailyChallengeView() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 200 }}
-              className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-6 text-center"
+              className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-2 border-emerald-200 dark:border-emerald-800 rounded-2xl p-6 text-center"
             >
               <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
@@ -289,10 +298,10 @@ export function DailyChallengeView() {
               >
                 🔥
               </motion.div>
-              <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-emerald-700 mb-2">
+              <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-emerald-700 dark:text-emerald-300 mb-2">
                 Thử thách hoàn thành!
               </h3>
-              <p className="text-emerald-600 text-sm">
+              <p className="text-emerald-600 dark:text-emerald-300 text-sm">
                 Bạn đã hoàn thành thử thách hôm nay. Hãy quay lại ngày mai nhé! 🌟
               </p>
               {challenge.streak > 1 && (
@@ -307,8 +316,8 @@ export function DailyChallengeView() {
           ) : (
             <div className="text-center">
               {!studentInfo?.name ? (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
-                  <p className="text-amber-700 text-sm">
+                <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-4">
+                  <p className="text-amber-700 dark:text-amber-300 text-sm">
                     Vui lòng nhập thông tin học sinh trước khi bắt đầu thử thách.
                     Hãy chọn lớp và môn học để bắt đầu!
                   </p>
@@ -334,7 +343,7 @@ export function DailyChallengeView() {
                 </motion.div>
               )}
               <p className="text-muted-foreground text-xs mt-3">
-                ⏱️ Thời gian: {challenge.duration} phút · 🎁 +{challenge.bonusPoints} điểm thưởng
+                ⏱️ Thời gian: {challenge.duration} phút · 🎁 +{challenge.bonusPoints} điểm thưởng · ⭐ +20 XP
               </p>
             </div>
           )}
@@ -346,20 +355,20 @@ export function DailyChallengeView() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-5"
+        className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-5"
       >
-        <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-amber-800 mb-3 flex items-center gap-2">
+        <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-amber-800 dark:text-amber-200 mb-3 flex items-center gap-2">
           <Trophy className="w-5 h-5 text-amber-500" />
           Mẹo cho Thử Thách
         </h3>
-        <ul className="space-y-2 text-amber-700 text-sm">
+        <ul className="space-y-2 text-amber-700 dark:text-amber-300 text-sm">
           <li className="flex items-start gap-2">
             <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-            <span>Hoàn thành thử thách mỗi ngày để nhận +1 điểm thưởng</span>
+            <span>Hoàn thành thử thách mỗi ngày để nhận +1 điểm thưởng và +20 XP</span>
           </li>
           <li className="flex items-start gap-2">
             <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-            <span>Duy trì chuỗi ngày liên tiếp để tích lũy thành tích</span>
+            <span>Duy trì chuỗi ngày liên tiếp để nhận thêm XP (+5 XP/ngày, tối đa +25)</span>
           </li>
           <li className="flex items-start gap-2">
             <Star className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />

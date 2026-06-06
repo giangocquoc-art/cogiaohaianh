@@ -549,11 +549,11 @@ export function ChapterView() {
   const subjectEmoji = selectedSubject === 'toan' ? '🔢' : '📖'
 
   const gradeColors: Record<number, { bg: string; text: string; accent: string }> = {
-    1: { bg: 'bg-rose-50', text: 'text-rose-700', accent: 'bg-rose-500' },
-    2: { bg: 'bg-orange-50', text: 'text-orange-700', accent: 'bg-orange-500' },
-    3: { bg: 'bg-amber-50', text: 'text-amber-700', accent: 'bg-amber-500' },
-    4: { bg: 'bg-emerald-50', text: 'text-emerald-700', accent: 'bg-emerald-500' },
-    5: { bg: 'bg-teal-50', text: 'text-teal-700', accent: 'bg-teal-500' },
+    1: { bg: 'bg-rose-50 dark:bg-rose-950/30', text: 'text-rose-700 dark:text-rose-300', accent: 'bg-rose-500' },
+    2: { bg: 'bg-orange-50 dark:bg-orange-950/30', text: 'text-orange-700 dark:text-orange-300', accent: 'bg-orange-500' },
+    3: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-700 dark:text-amber-300', accent: 'bg-amber-500' },
+    4: { bg: 'bg-emerald-50 dark:bg-emerald-950/30', text: 'text-emerald-700 dark:text-emerald-300', accent: 'bg-emerald-500' },
+    5: { bg: 'bg-teal-50 dark:bg-teal-950/30', text: 'text-teal-700 dark:text-teal-300', accent: 'bg-teal-500' },
   }
 
   const gc = gradeColors[selectedGrade]
@@ -603,7 +603,7 @@ export function ChapterView() {
               </div>
             </div>
 
-            <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-orange-700 mb-4 text-center">
+            <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-orange-700 dark:text-orange-300 mb-4 text-center">
               {formStep === 1 ? 'Nhập thông tin của bạn ✏️' : 'Thông tin lớp học 🏫'}
             </h3>
 
@@ -626,7 +626,7 @@ export function ChapterView() {
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
                       placeholder="Nhập họ và tên..."
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base transition-colors"
+                      className="w-full px-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white dark:bg-card transition-colors"
                       autoFocus
                     />
                   </div>
@@ -658,7 +658,7 @@ export function ChapterView() {
                       value={formClass}
                       onChange={(e) => setFormClass(e.target.value)}
                       placeholder="VD: 1A, 2B..."
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base transition-colors"
+                      className="w-full px-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white dark:bg-card transition-colors"
                       autoFocus
                     />
                   </div>
@@ -672,7 +672,7 @@ export function ChapterView() {
                       value={formSchool}
                       onChange={(e) => setFormSchool(e.target.value)}
                       placeholder="Nhập tên trường..."
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-base transition-colors"
+                      className="w-full px-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white dark:bg-card transition-colors"
                     />
                   </div>
                   <div className="flex gap-3">
@@ -706,7 +706,7 @@ export function ChapterView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} border-2 border-current/10 dark:bg-opacity-20 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
+        className={`${gc.bg} border-2 border-current/10 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
       >
         {/* Decorative elements */}
         <div className="absolute top-2 right-4 text-lg opacity-15 animate-float">📖</div>
@@ -734,7 +734,7 @@ export function ChapterView() {
               <span className="font-bold text-emerald-600">{completedCount}</span> / {totalChapters} chương
             </span>
           </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <div
               className="progress-bar-gradient h-full"
               style={{ width: `${progressPercent}%` }}
@@ -818,7 +818,7 @@ export function ChapterView() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                      <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-bold px-2 py-0.5 rounded-full">
                         Chương {index + 1}
                       </span>
 

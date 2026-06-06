@@ -12,6 +12,7 @@ import { ScoreboardView } from '@/components/scoreboard-view'
 import { ProgressView } from '@/components/progress-view'
 import { DailyChallengeView } from '@/components/daily-challenge-view'
 import { BadgesView } from '@/components/badges-view'
+import { LeaderboardView } from '@/components/leaderboard-view'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 import { initTheme } from '@/lib/theme'
@@ -29,6 +30,7 @@ function ViewRenderer() {
     progress: <ProgressView />,
     dailyChallenge: <DailyChallengeView />,
     badges: <BadgesView />,
+    leaderboard: <LeaderboardView />,
   }
 
   return (

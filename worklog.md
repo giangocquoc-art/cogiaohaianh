@@ -678,7 +678,272 @@ Stage Summary:
 2. Could add batch score import for teachers (CSV upload)
 3. Could add more subjects beyond Toán and Ngữ văn
 4. Could add parent notification system for low scores
-5. Could add leaderboard across all students (privacy considerations)
-6. Could add gamification elements: XP points, levels, avatar customization
+5. Could add leaderboard across all students (privacy considerations) ✅ (Done in Task 21)
+6. Could add gamification elements: XP points, levels, avatar customization ✅ (XP system done in Task 21)
 7. Could add teacher dashboard for managing quizzes and scores
 8. Could add VLM-powered question image understanding
+
+---
+Task ID: 22
+Agent: UX & Styling Polish Developer
+Task: Improve homepage layout, quiz UX, and overall styling polish
+
+Work Log:
+- Fixed file ownership for home-view.tsx, quiz-view.tsx, and app-header.tsx (root → z user)
+- Improved homepage visual hierarchy in home-view.tsx:
+  - Changed main spacing from space-y-8 to space-y-10 for better breathing room
+  - Grouped announcement ticker and daily challenge card together in a space-y-4 wrapper
+  - Added subtle gradient section dividers between all major sections
+  - Enhanced hero section with glassmorphism text area (bg-white/30 backdrop-blur)
+  - Improved text contrast: text-orange-900 dark:text-orange-100 with font-medium
+  - Increased hero padding from p-6 to p-8/p-10
+- Enhanced Popular Quizzes "Làm bài" CTA:
+  - Changed from small text link to prominent orange button (bg-orange-500 text-white text-sm font-bold px-4 py-2 rounded-xl shadow-md)
+  - Larger ChevronRight icon (w-4 h-4)
+- Simplified app header during quiz mode (app-header.tsx):
+  - When isStudying is true, desktop nav shows only back button (no nav items like Thử thách, Huy hiệu, Bảng điểm, etc.)
+  - XP Widget hidden during quiz mode to reduce clutter
+  - Mobile: replaced hamburger menu with "Quay lại" back button during quiz
+- Improved quiz view UX in quiz-view.tsx:
+  - CircularTimer: enlarged from 52px to 56px with gradient stroke (orange→green), thicker ring (5px), dark mode variants
+  - Mini-map buttons: increased from 3.5 to 4px with better state colors (green-400 for answered, orange ring for current)
+  - Progress bar: thicker (h-2.5) with gradient from orange to green via yellow
+  - Question area: increased padding from p-5 to p-6
+  - Question-to-answer gap: increased from mb-6 to mb-8
+  - Answer options: enhanced with p-5 padding, ring-2 ring-orange-300 selected state, hover:border-orange-300 hover:shadow-md, larger option circles (w-9 h-9), focus-visible ring, transition-all duration-200
+  - Question navigation: larger buttons (w-9/w-10), colored borders (orange for current, green for answered, gray for unanswered), ✓ text for answered questions instead of number
+- Added overall styling polish in globals.css:
+  - Enhanced focus-visible styles for buttons, links, and role="button" elements
+  - .card-polish class with consistent border-radius and hover shadow
+  - Active press feedback (scale 0.97) for all buttons and interactive elements
+  - .interactive-transition utility class
+  - .section-divider and .dark .section-divider gradient styles
+- Fixed quiz-view.tsx syntax error (typo `)>` → `)}`)
+- All lint checks pass with no errors
+
+Stage Summary:
+**Homepage Improvements:**
+1. Better visual hierarchy with section dividers and increased spacing (space-y-10)
+2. Glassmorphism hero text area with improved text contrast
+3. Prominent "Làm bài" CTA buttons (orange bg, white text, rounded-xl)
+4. Grouped ticker + daily challenge together
+
+**Quiz View Improvements:**
+1. Larger CircularTimer (56px) with gradient stroke (orange→green)
+2. Enhanced answer option states: ring-2 selected state, hover shadows, larger padding, focus-visible ring
+3. Question navigation: colored borders, ✓ indicator for answered, larger buttons
+4. Progress bar: thicker with orange→yellow→green gradient
+5. Better spacing throughout (mb-8 for question area)
+
+**Header Simplification During Quiz:**
+1. Desktop: only back button shown (no nav items)
+2. XP Widget hidden during quiz
+3. Mobile: back button instead of hamburger menu
+
+**Styling Polish:**
+1. Global active:scale-[0.97] for buttons
+2. Enhanced focus-visible for all interactive elements
+3. Card consistency classes (.card-polish)
+4. Section divider gradients
+
+---
+Task ID: 21
+Agent: Feature Developer - Leaderboard + XP System
+Task: Add XP points system and leaderboard feature
+
+Work Log:
+- Created `/api/xp/route.ts` backend API for calculating XP
+  - GET endpoint accepting studentName and className query params
+  - XP Rules: +10 base, +5 bonus (score≥7), +10 bonus (score≥9), +15 bonus (score=10), +20 daily challenge, +5/streak day (max +25)
+  - Queries StudentResult table with quiz relation data
+  - Detects daily challenge completions by matching quiz selection algorithm
+  - Calculates streaks across consecutive days
+  - Returns total XP, level, level name, XP history, average score, etc.
+- Created `/api/leaderboard/route.ts` backend API for leaderboard rankings
+  - GET endpoint with optional `grade` filter
+  - Queries all StudentResults grouped by studentName+className
+  - Calculates XP for each student using same rules
+  - Returns top 20 students sorted by XP
+  - Privacy-friendly: only shows first name (displayName)
+  - Includes rank, displayName, className, totalXP, level, quizCount, averageScore, badgesCount
+  - Simplified badge counting for leaderboard display
+- Created `/src/components/xp-widget.tsx` XP display widget
+  - Shows current XP total with star icon, level number, and mini progress bar
+  - Appears in header only when student is logged in
+  - Animated XP gain notification (floating "+N XP!" text)
+  - Caches XP data in localStorage for quick access
+  - Exports helper functions: triggerXPGain(), calculateQuizXP(), calculateDailyChallengeXP()
+  - Listens for 'xp-gained' custom events to refresh
+- Created `/src/components/leaderboard-view.tsx` leaderboard view
+  - Title "Bảng Xếp Hạng 🏆" with crown decorations
+  - Top 3 podium visualization (2nd-1st-3rd layout) with animated entrance
+  - Medal emojis (🥇🥈🥉) and crown for 1st place
+  - Full ranking table (4th-20th) with alternating row colors
+  - Current user highlighted with amber accent
+  - Grade filter tabs (All, Lớp 1-5)
+  - "Your ranking" card at bottom
+  - XP rules info section
+  - Child-friendly design with warm colors and animations
+- Updated `/src/store/app-store.ts`: Added 'leaderboard' to ViewType
+- Updated `/src/app/page.tsx`: Added LeaderboardView import and viewMap entry
+- Updated `/src/components/app-header.tsx`:
+  - Added Crown icon import from lucide-react
+  - Added XPWidget import
+  - Added "Xếp hạng" navigation button with Crown icon (between Bảng điểm and Tiến độ)
+  - Added XPWidget component next to theme toggle
+  - Added 'leaderboard' to breadcrumb exclusion list
+- Updated `/src/components/home-view.tsx`:
+  - Added Crown, Medal imports and Button component import
+  - Added "Top Học Sinh" mini leaderboard section (showing top 3)
+  - Fetches leaderboard data from /api/leaderboard on mount
+  - Clicking navigates to full leaderboard view
+  - Gold/silver/bronze styling with medal emojis
+- Updated `/src/components/result-view.tsx`:
+  - Added Star import from lucide-react
+  - Added calculateQuizXP and triggerXPGain imports
+  - Created XPDisplay component showing XP earned after quiz
+  - Shows "+N XP" with star decorations and breakdown (Base + Bonus)
+  - Floating XP animation (+N XP! ⭐)
+  - Triggers XP gain event for widget update
+- Updated `/src/components/daily-challenge-view.tsx`:
+  - Added calculateDailyChallengeXP and triggerXPGain imports
+  - Added XP reward info card (+20 XP with streak bonus display)
+  - Updated subtitle to include XP info
+  - Updated tips section with XP reward descriptions
+- Fixed pre-existing bug in chapter-view.tsx: missing self-closing tag on input element
+
+Stage Summary:
+**New Feature 1: XP Points System (Hệ Thống Điểm Kinh Nghiệm)**
+1. Backend: GET /api/xp route with full XP calculation including daily challenges and streaks
+2. XP Widget in header showing total XP, level, progress bar, and gain animations
+3. XP display in result view with breakdown (Base + Bonus)
+4. XP display in daily challenge view (+20 XP base, streak bonus)
+5. Level names in Vietnamese: Học sinh mới → Học sinh chăm chỉ → Học sinh giỏi → Học sinh xuất sắc → Cao thủ
+6. localStorage caching for quick access
+
+**New Feature 2: Leaderboard (Bảng Xếp Hạng)**
+1. Backend: GET /api/leaderboard route with grade filter and XP-based ranking
+2. Leaderboard view with podium (top 3), full ranking table (4th-20th)
+3. Privacy-friendly: first name only display
+4. Grade filter tabs, current user highlight, "Your ranking" card
+5. "Top Học Sinh" mini leaderboard on homepage
+6. "Xếp hạng" navigation button with Crown icon in header
+
+**Files Created:**
+- `/src/app/api/xp/route.ts`
+- `/src/app/api/leaderboard/route.ts`
+- `/src/components/xp-widget.tsx`
+- `/src/components/leaderboard-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added 'leaderboard' ViewType
+- `/src/app/page.tsx` - Added LeaderboardView
+- `/src/components/app-header.tsx` - Crown nav button, XP widget, breadcrumb fix
+- `/src/components/home-view.tsx` - Top Học Sinh mini leaderboard section
+- `/src/components/result-view.tsx` - XP earned display with animation
+- `/src/components/daily-challenge-view.tsx` - XP display and streak info
+- `/src/components/chapter-view.tsx` - Fixed pre-existing input tag bug
+
+---
+Task ID: 20
+Agent: Dark Mode & Styling Fix Developer
+Task: Fix dark mode across all components + improve styling
+
+Work Log:
+- Fixed dark mode across ALL 11 component files with warm brown/amber dark colors
+- app-header.tsx: Header gradient dark variant, pill logo, text colors, drawer gradient, nav buttons
+- home-view.tsx: gradeColors dark variants, popularQuizzes, feature cards, quick stats gradient
+- subject-view.tsx: gradeColors, stats mini-cards text colors, removed dark:bg-opacity-20
+- chapter-view.tsx: gradeColors, form input borders/bg, progress bar, study tips text colors
+- quiz-view.tsx: Error state, decorative corners, hint label/body dark text colors
+- result-view.tsx: Badge notification, achievement section dark text colors for all score tiers
+- scoreboard-view.tsx: Table header, student ranking cards, section heading dark text colors
+- progress-view.tsx: Subject breakdown cards, recent results cards, section headings
+- badges-view.tsx: Header summary card, locked badges, progress bars, all text colors
+- daily-challenge-view.tsx: Challenge details card, detail cards, quiz info, completed section, tips
+- app-footer.tsx: Footer gradient dark variant
+- Ran bun run lint - all checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+- Key dark mode pattern: bg-white → dark:bg-card, bg-{color}-50 → dark:bg-{color}-950/30, text-{color}-700 → dark:text-{color}-300, border-{color}-200 → dark:border-{color}-800
+- Header/footer gradients: dark:from-amber-800 dark:via-orange-900 dark:to-amber-800
+- All form inputs: dark:border-orange-800 and dark:bg-card
+- No lint errors, no runtime errors
+
+---
+Task ID: 23 (Main Agent - Round 3)
+Agent: Main
+Task: QA Testing + Dark Mode Fix + XP/Leaderboard Features + UX Polish
+
+Work Log:
+- Reviewed /home/z/my-project/worklog.md to understand project status (872 lines of history)
+- Performed comprehensive QA testing with agent-browser across all 10 views
+- Took screenshots and used VLM (Vision Language Model) to analyze visual quality
+- VLM identified critical dark mode issues: header stays bright orange, cards remain white, poor contrast (scored 3/10)
+- VLM identified homepage issues: cluttered hierarchy, small CTAs, spacing problems
+- VLM identified quiz UX issues: busy header during quiz, cramped answer spacing, poor feedback states
+- Launched 3 parallel sub-agents for fixes and features:
+  - Task 20: Fix dark mode across all 11 component files (completed, dark mode now 8/10)
+  - Task 21: Add XP Points System + Leaderboard feature (completed, all APIs working)
+  - Task 22: Homepage layout + Quiz UX + styling polish (completed, quiz rated 8/10)
+- Verified all changes with lint (passes), dev server (no errors), and browser testing
+- Final VLM ratings: Homepage 7/10, Dark Mode 8/10, Quiz 8/10, Leaderboard 8/10
+
+Stage Summary:
+**Bug Fixes & Improvements:**
+1. Dark mode completely overhauled across all 11 component files (from 3/10 → 8/10)
+   - Header gradient adapts to warm brown/amber in dark mode
+   - All cards use dark:bg-card instead of hardcoded bg-white
+   - All text colors have proper dark: variants with warm tones
+   - All form inputs, borders, and decorative elements adapt to dark mode
+2. Homepage layout improved:
+   - Better visual hierarchy with section dividers
+   - More spacing between sections (space-y-10)
+   - Glassmorphism effect on hero text area
+   - Prominent "Làm bài" CTAs with bright orange buttons
+3. Quiz UX significantly improved:
+   - Header simplified during quiz (nav items hidden, only back + timer shown)
+   - Enhanced answer option states (ring-2 on selected, shadow on hover)
+   - Better question navigation (colored states: green=answered, orange=current, gray=unanswered)
+   - Larger timer with SVG gradient progress
+   - More spacing between question and answer options
+   - Focus-visible accessibility states added
+
+**New Features:**
+1. XP Points System (Hệ Thống Điểm Kinh Nghiệm):
+   - Backend: /api/xp route with XP calculation rules
+   - XP Rules: +10 base per quiz, +5 (score≥7), +10 (score≥9), +15 (perfect 10), +20 daily challenge, +5/streak day
+   - Level system: Level 1 "Học sinh mới" → Level 5+ "Cao thủ"
+   - XP Widget in header showing current XP, level, and progress bar
+   - XP gain notification in result view with breakdown
+   - Daily challenge shows +20 XP reward
+
+2. Leaderboard (Bảng Xếp Hạng):
+   - Backend: /api/leaderboard route with grade filtering
+   - Frontend: Full leaderboard view with top 3 podium, ranking table (4th-20th)
+   - Grade filter tabs (All, Lớp 1-5)
+   - "Your ranking" card for current student
+   - Mini leaderboard on homepage showing top 3
+   - Navigation: "Xếp hạng" button with Crown icon
+
+**Current Project Status:**
+- 11 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard
+- 10 API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge, /xp, /leaderboard
+- Full dark mode support with warm brown/amber colors
+- XP points + level system + leaderboard
+- 12 achievement badges + daily challenge + streak tracking
+- Simplified quiz header, improved answer states
+- VLM QA scores: Dark Mode 8/10, Quiz UX 8/10, Leaderboard 8/10, Homepage 7/10
+
+**Unresolved / Future Recommendations:**
+1. Homepage could still benefit from further decluttering (scored 7/10)
+2. Could add teacher dashboard for managing quizzes and scores
+3. Could add batch score import for teachers (CSV upload)
+4. Could add more quiz questions (currently 248 for 27 quizzes)
+5. Could add parent notification system for low scores
+6. Could add VLM-powered question image understanding
+7. Could add social features: study groups, friend challenges
+8. Could add printable certificates with QR codes for verification
+9. Could add more gamification: avatar customization, classroom competitions
+10. XP widget could show more detailed XP breakdown history

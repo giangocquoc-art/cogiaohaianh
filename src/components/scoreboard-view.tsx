@@ -412,14 +412,14 @@ export function ScoreboardView() {
               <span className="text-muted-foreground">Đang tải...</span>
             </div>
           ) : allScores.length === 0 ? (
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-8 text-center">
+            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-8 text-center">
               <p className="text-4xl mb-3">📭</p>
               <p className="text-amber-700 font-medium">Chưa có điểm nào. Hãy thay đổi bộ lọc hoặc nhập điểm mới.</p>
             </div>
           ) : (
             <div className="bg-white dark:bg-card rounded-2xl shadow-sm border dark:border-border overflow-hidden">
               <div className="px-4 py-3 bg-gradient-to-r from-orange-50 to-amber-50 border-b">
-                <p className="text-sm text-orange-700 font-medium">
+                <p className="text-sm text-orange-700 dark:text-orange-300 font-medium">
                   📋 Có <span className="font-bold">{allScores.length}</span> kết quả
                   {allScores.some((s) => s.source === 'online') && (
                     <span className="ml-2 inline-flex items-center gap-1 text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
@@ -436,20 +436,20 @@ export function ScoreboardView() {
               <div className="max-h-[28rem] overflow-y-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-orange-50">
-                      <TableHead className="font-bold text-orange-700">Họ tên</TableHead>
-                      <TableHead className="font-bold text-orange-700">Lớp</TableHead>
-                      <TableHead className="font-bold text-orange-700 hidden sm:table-cell">Trường</TableHead>
-                      <TableHead className="font-bold text-orange-700">Môn</TableHead>
-                      <TableHead className="font-bold text-orange-700">Bài kiểm tra</TableHead>
-                      <TableHead className="font-bold text-orange-700 text-center">Điểm</TableHead>
-                      <TableHead className="font-bold text-orange-700 text-center">Nguồn</TableHead>
-                      <TableHead className="font-bold text-orange-700">Ngày</TableHead>
+                    <TableRow className="bg-orange-50 dark:bg-orange-950/20">
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Họ tên</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Lớp</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300 hidden sm:table-cell">Trường</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Môn</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Bài kiểm tra</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300 text-center">Điểm</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300 text-center">Nguồn</TableHead>
+                      <TableHead className="font-bold text-orange-700 dark:text-orange-300">Ngày</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {allScores.map((entry, idx) => (
-                      <TableRow key={idx} className="hover:bg-orange-50/50 transition-colors">
+                      <TableRow key={idx} className="hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-colors">
                         <TableCell className="font-medium">{entry.studentName}</TableCell>
                         <TableCell>{entry.className}</TableCell>
                         <TableCell className="hidden sm:table-cell text-muted-foreground text-xs">
@@ -530,7 +530,7 @@ export function ScoreboardView() {
             )}
           </AnimatePresence>
 
-          <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-orange-700 mb-4">
+          <h3 className="font-[family-name:var(--font-patrick-hand)] text-2xl text-orange-700 dark:text-orange-300 mb-4">
             Nhập điểm học sinh ✏️
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -644,7 +644,7 @@ export function ScoreboardView() {
           className="space-y-4"
         >
           {allScores.length === 0 ? (
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-8 text-center">
+            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-8 text-center">
               <p className="text-4xl mb-3">📊</p>
               <p className="text-amber-700 font-medium">Chưa có dữ liệu để thống kê. Hãy làm bài kiểm tra hoặc nhập điểm trước nhé!</p>
             </div>
@@ -699,7 +699,7 @@ export function ScoreboardView() {
               {/* Top 3 Podium */}
               {topStudents.length > 0 && (
                 <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
-                  <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
+                  <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2">
                     <Trophy className="w-5 h-5" />
                     Top 3 Học sinh 🏆
                   </h3>
@@ -797,7 +797,7 @@ export function ScoreboardView() {
                 <>
                   {/* Score distribution chart */}
                   <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
-                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
+                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2">
                       <BarChart3 className="w-5 h-5" />
                       Phân bố điểm 📊
                     </h3>
@@ -848,7 +848,7 @@ export function ScoreboardView() {
 
                   {/* Full top students list */}
                   <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
-                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
+                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2">
                       <Star className="w-5 h-5" />
                       Học sinh xuất sắc 🏆
                     </h3>
@@ -877,11 +877,11 @@ export function ScoreboardView() {
                               key={student.name}
                               className={`flex items-center gap-3 p-3 rounded-xl transition-colors hover-lift ${
                                 idx === 0
-                                  ? 'bg-amber-50 border border-amber-200'
+                                  ? 'bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800'
                                   : idx === 1
-                                    ? 'bg-gray-50 border border-gray-200'
+                                    ? 'bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700'
                                     : idx === 2
-                                      ? 'bg-orange-50 border border-orange-200'
+                                      ? 'bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800'
                                       : 'bg-muted/50'
                               }`}
                             >
@@ -913,7 +913,7 @@ export function ScoreboardView() {
 
                   {/* Subject breakdown */}
                   <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
-                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
+                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2">
                       <TrendingUp className="w-5 h-5" />
                       Theo môn học 📚
                     </h3>
@@ -964,7 +964,7 @@ export function ScoreboardView() {
               ) : (
                 /* Timeline View - Lịch sử điểm */
                 <div className="bg-white dark:bg-card rounded-2xl p-5 shadow-sm border dark:border-border">
-                  <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 mb-4 flex items-center gap-2">
+                  <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2">
                     <History className="w-5 h-5" />
                     Lịch sử điểm 📅
                   </h3>

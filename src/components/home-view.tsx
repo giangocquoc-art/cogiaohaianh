@@ -3,15 +3,16 @@
 import { useAppStore } from '@/store/app-store'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
-import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap } from 'lucide-react'
+import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap, Crown, Medal } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 
 const gradeColors = [
-  { bg: 'bg-rose-100', border: 'border-rose-300', text: 'text-rose-700', hover: 'hover:bg-rose-200', accent: 'bg-rose-500', gradient: 'from-rose-400 to-pink-500', gradientSubtle: 'from-rose-50 to-pink-50', glow: 'hover:shadow-rose-200/50' },
-  { bg: 'bg-orange-100', border: 'border-orange-300', text: 'text-orange-700', hover: 'hover:bg-orange-200', accent: 'bg-orange-500', gradient: 'from-orange-400 to-amber-500', gradientSubtle: 'from-orange-50 to-amber-50', glow: 'hover:shadow-orange-200/50' },
-  { bg: 'bg-amber-100', border: 'border-amber-300', text: 'text-amber-700', hover: 'hover:bg-amber-200', accent: 'bg-amber-500', gradient: 'from-amber-400 to-yellow-500', gradientSubtle: 'from-amber-50 to-yellow-50', glow: 'hover:shadow-amber-200/50' },
-  { bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-700', hover: 'hover:bg-emerald-200', accent: 'bg-emerald-500', gradient: 'from-emerald-400 to-green-500', gradientSubtle: 'from-emerald-50 to-green-50', glow: 'hover:shadow-emerald-200/50' },
-  { bg: 'bg-teal-100', border: 'border-teal-300', text: 'text-teal-700', hover: 'hover:bg-teal-200', accent: 'bg-teal-500', gradient: 'from-teal-400 to-cyan-500', gradientSubtle: 'from-teal-50 to-cyan-50', glow: 'hover:shadow-teal-200/50' },
+  { bg: 'bg-rose-100 dark:bg-rose-950/30', border: 'border-rose-300 dark:border-rose-700', text: 'text-rose-700 dark:text-rose-300', hover: 'hover:bg-rose-200 dark:hover:bg-rose-900/40', accent: 'bg-rose-500', gradient: 'from-rose-400 to-pink-500', gradientSubtle: 'from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20', glow: 'hover:shadow-rose-200/50 dark:hover:shadow-rose-800/30' },
+  { bg: 'bg-orange-100 dark:bg-orange-950/30', border: 'border-orange-300 dark:border-orange-700', text: 'text-orange-700 dark:text-orange-300', hover: 'hover:bg-orange-200 dark:hover:bg-orange-900/40', accent: 'bg-orange-500', gradient: 'from-orange-400 to-amber-500', gradientSubtle: 'from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20', glow: 'hover:shadow-orange-200/50 dark:hover:shadow-orange-800/30' },
+  { bg: 'bg-amber-100 dark:bg-amber-950/30', border: 'border-amber-300 dark:border-amber-700', text: 'text-amber-700 dark:text-amber-300', hover: 'hover:bg-amber-200 dark:hover:bg-amber-900/40', accent: 'bg-amber-500', gradient: 'from-amber-400 to-yellow-500', gradientSubtle: 'from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20', glow: 'hover:shadow-amber-200/50 dark:hover:shadow-amber-800/30' },
+  { bg: 'bg-emerald-100 dark:bg-emerald-950/30', border: 'border-emerald-300 dark:border-emerald-700', text: 'text-emerald-700 dark:text-emerald-300', hover: 'hover:bg-emerald-200 dark:hover:bg-emerald-900/40', accent: 'bg-emerald-500', gradient: 'from-emerald-400 to-green-500', gradientSubtle: 'from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20', glow: 'hover:shadow-emerald-200/50 dark:hover:shadow-emerald-800/30' },
+  { bg: 'bg-teal-100 dark:bg-teal-950/30', border: 'border-teal-300 dark:border-teal-700', text: 'text-teal-700 dark:text-teal-300', hover: 'hover:bg-teal-200 dark:hover:bg-teal-900/40', accent: 'bg-teal-500', gradient: 'from-teal-400 to-cyan-500', gradientSubtle: 'from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20', glow: 'hover:shadow-teal-200/50 dark:hover:shadow-teal-800/30' },
 ]
 
 const gradeEmojis = ['🌸', '🍊', '🌻', '🌿', '🐬']
@@ -84,10 +85,10 @@ const tickerMessages = [
 
 /* Popular quizzes data */
 const popularQuizzes = [
-  { grade: 1, subject: 'toan', chapterName: 'Số từ 1 đến 10', icon: '🔢', emoji: '🌸', color: 'from-rose-400 to-pink-500', bgLight: 'bg-rose-50', textColor: 'text-rose-700' },
-  { grade: 3, subject: 'toan', chapterName: 'Bảng cửu chương', icon: '✖️', emoji: '🌻', color: 'from-amber-400 to-yellow-500', bgLight: 'bg-amber-50', textColor: 'text-amber-700' },
-  { grade: 2, subject: 'toan', chapterName: 'Phép cộng có nhớ', icon: '➕', emoji: '🍊', color: 'from-orange-400 to-amber-500', bgLight: 'bg-orange-50', textColor: 'text-orange-700' },
-  { grade: 1, subject: 'ngu-van', chapterName: 'Tập đọc - Ghép chữ', icon: '📖', emoji: '🌸', color: 'from-pink-400 to-rose-500', bgLight: 'bg-pink-50', textColor: 'text-pink-700' },
+  { grade: 1, subject: 'toan', chapterName: 'Số từ 1 đến 10', icon: '🔢', emoji: '🌸', color: 'from-rose-400 to-pink-500', bgLight: 'bg-rose-50 dark:bg-rose-950/30', textColor: 'text-rose-700 dark:text-rose-300' },
+  { grade: 3, subject: 'toan', chapterName: 'Bảng cửu chương', icon: '✖️', emoji: '🌻', color: 'from-amber-400 to-yellow-500', bgLight: 'bg-amber-50 dark:bg-amber-950/30', textColor: 'text-amber-700 dark:text-amber-300' },
+  { grade: 2, subject: 'toan', chapterName: 'Phép cộng có nhớ', icon: '➕', emoji: '🍊', color: 'from-orange-400 to-amber-500', bgLight: 'bg-orange-50 dark:bg-orange-950/30', textColor: 'text-orange-700 dark:text-orange-300' },
+  { grade: 1, subject: 'ngu-van', chapterName: 'Tập đọc - Ghép chữ', icon: '📖', emoji: '🌸', color: 'from-pink-400 to-rose-500', bgLight: 'bg-pink-50 dark:bg-pink-950/30', textColor: 'text-pink-700 dark:text-pink-300' },
 ]
 
 /* School-themed emoji composition for hero decoration */
@@ -153,6 +154,31 @@ export function HomeView() {
   } | null>(null)
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 })
 
+  // Mini leaderboard state
+  const [topStudents, setTopStudents] = useState<Array<{
+    rank: number
+    displayName: string
+    className: string
+    totalXP: number
+    level: number
+    levelName: string
+  }>>([])
+
+  useEffect(() => {
+    const fetchTopStudents = async () => {
+      try {
+        const res = await fetch('/api/leaderboard')
+        if (res.ok) {
+          const data = await res.json()
+          setTopStudents(data.leaderboard.slice(0, 3))
+        }
+      } catch (err) {
+        console.error('Failed to fetch top students:', err)
+      }
+    }
+    fetchTopStudents()
+  }, [])
+
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
@@ -194,7 +220,9 @@ export function HomeView() {
   }, [])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
+      {/* ===== TOP GROUP: Ticker + Daily Challenge ===== */}
+      <div className="space-y-4">
       {/* ===== SCROLLING ANNOUNCEMENT BANNER ===== */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -231,7 +259,7 @@ export function HomeView() {
         whileHover={{ scale: 1.01, y: -2 }}
         whileTap={{ scale: 0.99 }}
         onClick={() => setView('dailyChallenge')}
-        className="w-full text-left relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 p-5 sm:p-6 shadow-lg group cursor-pointer"
+        className="w-full text-left relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 p-5 sm:p-6 shadow-lg group cursor-pointer active:scale-[0.99]"
       >
         {/* Animated shimmer overlay */}
         <div className="absolute inset-0 animate-shimmer opacity-20 pointer-events-none" />
@@ -286,6 +314,10 @@ export function HomeView() {
           </div>
         </div>
       </motion.button>
+      </div>
+
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-orange-200 dark:via-orange-800 to-transparent" />
 
       {/* ===== HERO SECTION ===== */}
       <motion.section
@@ -293,7 +325,7 @@ export function HomeView() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-200 via-amber-100 to-yellow-200 dark:from-orange-950 dark:via-amber-950 dark:to-yellow-950 p-6 sm:p-8 shadow-lg wave-separator"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-200 via-amber-100 to-yellow-200 dark:from-orange-950 dark:via-amber-950 dark:to-yellow-950 p-8 sm:p-10 shadow-lg wave-separator"
       >
         {/* Layered background patterns */}
         <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-10" />
@@ -386,20 +418,23 @@ export function HomeView() {
           </div>
 
           <div className="text-center sm:text-left flex-1">
+            {/* Glassmorphism text area */}
+            <div className="bg-white/30 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-4 sm:p-6 -m-4 sm:-m-6">
             {/* Welcome text with sparkles */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
               <span className="text-xl animate-sparkle">🌟</span>
               <span className="text-xl animate-sparkle" style={{ animationDelay: '0.5s' }}>🌟</span>
               <span className="text-xl animate-sparkle" style={{ animationDelay: '1s' }}>🌟</span>
             </div>
-            <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-800 dark:text-orange-200 mb-2 leading-tight min-h-[1.3em]">
+            <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-900 dark:text-orange-100 mb-2 leading-tight min-h-[1.3em] drop-shadow-sm">
               {welcomeText}
               {isTyping && <span className="typing-cursor" />}
             </h2>
-            <p className="text-orange-700 dark:text-orange-300 text-base sm:text-lg leading-relaxed max-w-lg">
+            <p className="text-orange-800 dark:text-orange-200 text-base sm:text-lg leading-relaxed max-w-lg font-medium">
               Cô Giáo Hải Anh chúc các em có những giờ học thật vui vẻ và thú vị!
               Hãy chọn lớp của các em để bắt đầu nhé!
             </p>
+            </div>
             <div className="flex items-center gap-2 mt-3 justify-center sm:justify-start flex-wrap">
               <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400 animate-sparkle" />
               <span className="text-amber-700 dark:text-amber-300 font-semibold text-sm">Kiểm tra online</span>
@@ -413,8 +448,11 @@ export function HomeView() {
         </div>
       </motion.section>
 
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-amber-200 dark:via-amber-800 to-transparent" />
+
       {/* ===== POPULAR QUIZZES SECTION ===== */}
-      <section>
+      <section className="py-2">
         <div className="flex items-center gap-2 mb-5">
           <Flame className="w-6 h-6 text-orange-500" />
           <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
@@ -459,18 +497,102 @@ export function HomeView() {
                 {quiz.chapterName}
               </h3>
 
-              {/* CTA */}
-              <div className="flex items-center gap-1 mt-3 text-orange-500 text-xs font-semibold group-hover:text-orange-600 transition-colors">
-                <span>Làm bài</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              {/* CTA - Prominent button */}
+              <div className="mt-4">
+                <span className="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-500 text-white text-sm font-bold px-4 py-2 rounded-xl shadow-md group-hover:shadow-lg transition-all group-hover:translate-x-0.5">
+                  Làm bài
+                  <ChevronRight className="w-4 h-4" />
+                </span>
               </div>
             </motion.button>
           ))}
         </motion.div>
       </section>
 
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-amber-200 dark:via-amber-800 to-transparent" />
+
+      {/* ===== TOP STUDENTS MINI LEADERBOARD ===== */}
+      {topStudents.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+              <Crown className="w-6 h-6 text-amber-500" />
+              <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
+                Top Học Sinh
+              </h2>
+              <span className="text-xl animate-sparkle">👑</span>
+            </div>
+            <Button
+              onClick={() => setView('leaderboard')}
+              variant="ghost"
+              className="text-amber-600 dark:text-amber-400 text-sm gap-1 hover:bg-amber-50 dark:hover:bg-amber-950/30"
+            >
+              Xem tất cả
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <motion.button
+            onClick={() => setView('leaderboard')}
+            className="w-full text-left cursor-pointer group"
+          >
+            <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-yellow-950/30 rounded-2xl border-2 border-amber-200 dark:border-amber-800 p-5 shadow-sm group-hover:shadow-md group-hover:border-amber-300 dark:group-hover:border-amber-700 transition-all relative overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-2 right-4 text-xl animate-sparkle opacity-30">✨</div>
+              <div className="absolute bottom-2 left-6 text-lg animate-sparkle opacity-30" style={{ animationDelay: '1s' }}>⭐</div>
+
+              <div className="space-y-3">
+                {topStudents.map((student, index) => {
+                  const medals = ['🥇', '🥈', '🥉']
+                  const bgColors = [
+                    'bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30',
+                    'bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800/30 dark:to-gray-700/30',
+                    'bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30',
+                  ]
+
+                  return (
+                    <motion.div
+                      key={student.rank}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className={`flex items-center gap-3 ${bgColors[index]} rounded-xl p-3`}
+                    >
+                      <span className="text-2xl">{medals[index]}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground text-sm truncate">{student.displayName}</p>
+                        <p className="text-xs text-muted-foreground">{student.className}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Star className="w-3.5 h-3.5 text-amber-500" fill="currentColor" />
+                        <span className="font-bold text-amber-600 dark:text-amber-400 text-sm">{student.totalXP}</span>
+                        <span className="text-xs text-muted-foreground">XP</span>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+
+              <div className="mt-3 flex items-center justify-center gap-1 text-amber-600 dark:text-amber-400 text-xs font-medium group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
+                <Trophy className="w-3.5 h-3.5" />
+                <span>Xem bảng xếp hạng đầy đủ</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          </motion.button>
+        </motion.section>
+      )}
+
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-orange-200 dark:via-orange-800 to-transparent" />
+
       {/* ===== GRADE CARDS SECTION ===== */}
-      <section>
+      <section className="py-2">
         <div className="flex items-center gap-2 mb-5">
           <BookOpen className="w-6 h-6 text-orange-500" />
           <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
@@ -550,8 +672,11 @@ export function HomeView() {
         </motion.div>
       </section>
 
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-emerald-200 dark:via-emerald-800 to-transparent" />
+
       {/* ===== FEATURES SECTION ===== */}
-      <section>
+      <section className="py-2">
         <div className="flex items-center gap-2 mb-5">
           <GraduationCap className="w-6 h-6 text-emerald-500" />
           <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
@@ -573,7 +698,7 @@ export function HomeView() {
               title: 'Kiểm tra online',
               description: 'Làm bài kiểm tra trực tiếp trên máy tính',
               gradient: 'from-rose-400 to-orange-400',
-              bgLight: 'bg-rose-50',
+              bgLight: 'bg-rose-50 dark:bg-rose-950/30',
               emoji: '📝',
             },
             {
@@ -581,7 +706,7 @@ export function HomeView() {
               title: 'Tính thời gian',
               description: 'Luyện tập quản lý thời gian làm bài',
               gradient: 'from-amber-400 to-yellow-400',
-              bgLight: 'bg-amber-50',
+              bgLight: 'bg-amber-50 dark:bg-amber-950/30',
               emoji: '⏱️',
             },
             {
@@ -589,7 +714,7 @@ export function HomeView() {
               title: 'Xem kết quả',
               description: 'Kết quả chấm ngay lập tức',
               gradient: 'from-emerald-400 to-green-400',
-              bgLight: 'bg-emerald-50',
+              bgLight: 'bg-emerald-50 dark:bg-emerald-950/30',
               emoji: '📊',
             },
             {
@@ -597,7 +722,7 @@ export function HomeView() {
               title: 'Thành tích',
               description: 'Theo dõi tiến độ học tập',
               gradient: 'from-teal-400 to-cyan-400',
-              bgLight: 'bg-teal-50',
+              bgLight: 'bg-teal-50 dark:bg-teal-950/30',
               emoji: '🏆',
             },
           ].map((feature, index) => (
@@ -629,6 +754,9 @@ export function HomeView() {
         </motion.div>
       </section>
 
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-amber-200 dark:via-amber-800 to-transparent" />
+
       {/* ===== QUICK STATS BANNER ===== */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -637,7 +765,7 @@ export function HomeView() {
         transition={{ duration: 0.5 }}
         className="rounded-3xl overflow-hidden shadow-lg"
       >
-        <div className="relative bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 p-6 sm:p-8 animate-gradient-shift">
+        <div className="relative bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 p-6 sm:p-8 animate-gradient-shift">
           {/* Decorative pattern */}
           <div className="absolute inset-0 pattern-dots opacity-20" />
 
@@ -665,6 +793,9 @@ export function HomeView() {
           </div>
         </div>
       </motion.section>
+
+      {/* ===== SECTION DIVIDER ===== */}
+      <div className="h-px bg-gradient-to-r from-transparent via-emerald-200 dark:via-emerald-800 to-transparent" />
 
       {/* ===== TEACHER INTRO SECTION ===== */}
       <motion.section
@@ -738,7 +869,7 @@ export function HomeView() {
                 >
                   <span>{feature.icon}</span>
                   {feature.text}
-                  <span className="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded-full font-bold">
+                  <span className="text-[10px] bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-200 px-1.5 py-0.5 rounded-full font-bold">
                     {feature.count}
                   </span>
                 </span>

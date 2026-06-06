@@ -388,6 +388,54 @@ html.theme-transition *::after {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
+/* ===== ADDITIONAL STYLING POLISH ===== */
+
+/* Enhanced focus-visible for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Consistent card border-radius and shadow */
+.card-polish {
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.card-polish:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.dark .card-polish:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Active press feedback for all buttons and interactive elements */
+button:active,
+[role="button"]:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* Smooth transitions for all interactive elements */
+.interactive-transition {
+  transition: all 0.2s ease;
+}
+
+/* Section divider styling */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #fed7aa, transparent);
+}
+
+.dark .section-divider {
+  background: linear-gradient(to right, transparent, #92400e, transparent);
+}
+
 /* ===== BACK TO TOP BUTTON ===== */
 .back-to-top {
   position: fixed;

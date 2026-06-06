@@ -88,11 +88,11 @@ export function SubjectView() {
   if (!selectedGrade) return null
 
   const gradeColors: Record<number, { bg: string; text: string; border: string }> = {
-    1: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
-    2: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
-    3: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
-    4: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-    5: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200' },
+    1: { bg: 'bg-rose-50 dark:bg-rose-950/30', text: 'text-rose-700 dark:text-rose-300', border: 'border-rose-200 dark:border-rose-800' },
+    2: { bg: 'bg-orange-50 dark:bg-orange-950/30', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-800' },
+    3: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-800' },
+    4: { bg: 'bg-emerald-50 dark:bg-emerald-950/30', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-800' },
+    5: { bg: 'bg-teal-50 dark:bg-teal-950/30', text: 'text-teal-700 dark:text-teal-300', border: 'border-teal-200 dark:border-teal-800' },
   }
 
   const gc = gradeColors[selectedGrade]
@@ -103,7 +103,7 @@ export function SubjectView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} ${gc.border} border-2 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden dark:bg-opacity-20`}
+        className={`${gc.bg} ${gc.border} border-2 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
       >
         {/* Decorative floating elements */}
         <div className="absolute top-2 left-4 text-lg opacity-20 animate-float" style={{ animationDelay: '0s' }}>📚</div>
@@ -196,23 +196,23 @@ export function SubjectView() {
 
             {/* Quick Stats mini card */}
             <div className="bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-xl p-3 w-full border border-orange-200/50 dark:border-orange-800/30">
-              <div className="flex items-center gap-1 mb-2 text-orange-700">
+              <div className="flex items-center gap-1 mb-2 text-orange-700 dark:text-orange-300">
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span className="text-xs font-bold">Thống kê nhanh</span>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
-                  <p className="text-lg font-bold text-orange-700">{stats.toan.quizCount}</p>
-                  <p className="text-[10px] text-orange-500 font-medium">Bài kiểm tra</p>
+                  <p className="text-lg font-bold text-orange-700 dark:text-orange-300">{stats.toan.quizCount}</p>
+                  <p className="text-[10px] text-orange-500 dark:text-orange-400 font-medium">Bài kiểm tra</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-orange-700">{stats.toan.totalQuestions}</p>
-                  <p className="text-[10px] text-orange-500 font-medium">Câu hỏi</p>
+                  <p className="text-lg font-bold text-orange-700 dark:text-orange-300">{stats.toan.totalQuestions}</p>
+                  <p className="text-[10px] text-orange-500 dark:text-orange-400 font-medium">Câu hỏi</p>
                 </div>
                 <div>
                   <div className="flex items-center justify-center gap-0.5">
                     <Clock className="w-3 h-3 text-orange-500" />
-                    <p className="text-lg font-bold text-orange-700">{stats.toan.avgDuration}</p>
+                    <p className="text-lg font-bold text-orange-700 dark:text-orange-300">{stats.toan.avgDuration}</p>
                   </div>
                   <p className="text-[10px] text-orange-500 font-medium">Phút TB</p>
                 </div>
@@ -291,23 +291,23 @@ export function SubjectView() {
 
             {/* Quick Stats mini card */}
             <div className="bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-xl p-3 w-full border border-pink-200/50 dark:border-pink-800/30">
-              <div className="flex items-center gap-1 mb-2 text-pink-700">
+              <div className="flex items-center gap-1 mb-2 text-pink-700 dark:text-pink-300">
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span className="text-xs font-bold">Thống kê nhanh</span>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
-                  <p className="text-lg font-bold text-pink-700">{stats['ngu-van'].quizCount}</p>
-                  <p className="text-[10px] text-pink-500 font-medium">Bài kiểm tra</p>
+                  <p className="text-lg font-bold text-pink-700 dark:text-pink-300">{stats['ngu-van'].quizCount}</p>
+                  <p className="text-[10px] text-pink-500 dark:text-pink-400 font-medium">Bài kiểm tra</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-pink-700">{stats['ngu-van'].totalQuestions}</p>
-                  <p className="text-[10px] text-pink-500 font-medium">Câu hỏi</p>
+                  <p className="text-lg font-bold text-pink-700 dark:text-pink-300">{stats['ngu-van'].totalQuestions}</p>
+                  <p className="text-[10px] text-pink-500 dark:text-pink-400 font-medium">Câu hỏi</p>
                 </div>
                 <div>
                   <div className="flex items-center justify-center gap-0.5">
                     <Clock className="w-3 h-3 text-pink-500" />
-                    <p className="text-lg font-bold text-pink-700">{stats['ngu-van'].avgDuration}</p>
+                    <p className="text-lg font-bold text-pink-700 dark:text-pink-300">{stats['ngu-van'].avgDuration}</p>
                   </div>
                   <p className="text-[10px] text-pink-500 font-medium">Phút TB</p>
                 </div>
