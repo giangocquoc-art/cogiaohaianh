@@ -1167,6 +1167,413 @@ textarea:focus-visible {
   background: #10b981;
 }
 
+/* ===== TASK 25: NEW CSS UTILITIES ===== */
+
+/* Animated border glow - cycling border colors for card hover */
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(249, 115, 22, 0.4); }
+  25% { border-color: rgba(245, 158, 11, 0.5); }
+  50% { border-color: rgba(251, 146, 60, 0.6); }
+  75% { border-color: rgba(244, 63, 94, 0.4); }
+}
+
+.animate-border-glow {
+  animation: border-glow 3s ease-in-out infinite;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.dark .animate-border-glow {
+  animation: border-glow-dark 3s ease-in-out infinite;
+}
+
+@keyframes border-glow-dark {
+  0%, 100% { border-color: rgba(251, 146, 60, 0.3); }
+  25% { border-color: rgba(245, 158, 11, 0.4); }
+  50% { border-color: rgba(251, 191, 36, 0.4); }
+  75% { border-color: rgba(251, 146, 60, 0.3); }
+}
+
+/* Enhanced shimmer - sweep effect for loading states and progress bars */
+@keyframes shimmer-sweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer-enhanced {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 25%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.3) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2s ease-in-out infinite;
+}
+
+.dark .animate-shimmer-enhanced {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(251, 146, 60, 0.08) 25%,
+    rgba(251, 146, 60, 0.15) 50%,
+    rgba(251, 146, 60, 0.08) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* Softer pulse animation (less aggressive than Tailwind's default) */
+@keyframes pulse-soft-gentle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+.animate-pulse-soft-gentle {
+  animation: pulse-soft-gentle 3s ease-in-out infinite;
+}
+
+/* Celebration animation - scale + rotate + color */
+@keyframes celebration {
+  0% { transform: scale(1) rotate(0deg); }
+  15% { transform: scale(1.15) rotate(-5deg); }
+  30% { transform: scale(1.05) rotate(3deg); }
+  45% { transform: scale(1.1) rotate(-2deg); }
+  60% { transform: scale(1.02) rotate(1deg); }
+  75% { transform: scale(1.05) rotate(-0.5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.animate-celebration {
+  animation: celebration 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Celebration pulse for score circle */
+@keyframes celebration-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.4); }
+  50% { box-shadow: 0 0 0 15px rgba(251, 146, 60, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0); }
+}
+
+.animate-celebration-pulse {
+  animation: celebration-pulse 2s ease-out 1.5s 3;
+}
+
+/* Thinking dots animation - three dots appearing one by one */
+@keyframes thinking-dot-1 {
+  0%, 20% { opacity: 0.2; }
+  30%, 100% { opacity: 1; }
+}
+
+@keyframes thinking-dot-2 {
+  0%, 40% { opacity: 0.2; }
+  50%, 100% { opacity: 1; }
+}
+
+@keyframes thinking-dot-3 {
+  0%, 60% { opacity: 0.2; }
+  70%, 100% { opacity: 1; }
+}
+
+.animate-thinking-dots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.animate-thinking-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+
+.animate-thinking-dots .dot:nth-child(1) {
+  animation: thinking-dot-1 1.4s ease-in-out infinite;
+}
+
+.animate-thinking-dots .dot:nth-child(2) {
+  animation: thinking-dot-2 1.4s ease-in-out infinite;
+}
+
+.animate-thinking-dots .dot:nth-child(3) {
+  animation: thinking-dot-3 1.4s ease-in-out infinite;
+}
+
+.dark .animate-thinking-dots .dot {
+  background: #fbbf24;
+}
+
+/* Score ring - circular progress ring SVG-based animation */
+.score-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-ring svg {
+  transform: rotate(-90deg);
+}
+
+.score-ring .ring-bg {
+  fill: none;
+  stroke: currentColor;
+  opacity: 0.15;
+}
+
+.score-ring .ring-progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating "+XP" animation */
+@keyframes xp-float {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  50% { opacity: 0.8; transform: translateY(-25px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(0.8); }
+}
+
+.animate-xp-float {
+  animation: xp-float 2s ease-out forwards;
+}
+
+/* Badge shimmer/sparkle effect */
+@keyframes badge-sparkle {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-badge-sparkle {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: badge-sparkle 2s ease-in-out infinite;
+}
+
+/* Answer pop animation for quiz selection */
+@keyframes answer-pop {
+  0% { transform: scale(0.98); }
+  40% { transform: scale(1.03); }
+  70% { transform: scale(0.99); }
+  100% { transform: scale(1); }
+}
+
+.animate-answer-pop {
+  animation: answer-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Submit button gradient animation */
+@keyframes submit-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-submit-gradient {
+  background-size: 200% 200%;
+  animation: submit-gradient 3s ease infinite;
+}
+
+/* Countdown timer glow pulse */
+@keyframes countdown-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(251, 146, 60, 0.3), inset 0 0 4px rgba(251, 146, 60, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(251, 146, 60, 0.6), 0 0 40px rgba(251, 146, 60, 0.2), inset 0 0 8px rgba(251, 146, 60, 0.2); }
+}
+
+.animate-countdown-glow {
+  animation: countdown-glow 2s ease-in-out infinite;
+}
+
+/* Question nav ripple effect */
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn-ripple:active::after {
+  animation: ripple 0.6s ease-out;
+}
+
+/* Icon bounce on hover for feature cards */
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+  60% { transform: translateY(-2px); }
+}
+
+.icon-bounce-hover:hover .icon-bounce-target {
+  animation: icon-bounce 0.5s ease;
+}
+
+/* Flame animation for popular quizzes section */
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  25% { transform: scale(1.1) rotate(2deg); }
+  50% { transform: scale(1.05) rotate(-1deg); }
+  75% { transform: scale(1.12) rotate(1deg); }
+}
+
+.animate-flame {
+  animation: flame-flicker 0.8s ease-in-out infinite;
+  display: inline-block;
+  transform-origin: bottom center;
+}
+
+/* Podium style decoration for leaderboard */
+@keyframes podium-decor-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(5deg); }
+}
+
+.animate-podium-decor {
+  animation: podium-decor-float 2s ease-in-out infinite;
+}
+
+/* Scroll fade-in for Intersection Observer */
+@keyframes scroll-fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scroll-fade-in {
+  opacity: 0;
+}
+
+.scroll-fade-in.visible {
+  animation: scroll-fade-in 0.5s ease-out forwards;
+}
+
+/* ===== DARK MODE POLISH ===== */
+
+/* Dark mode header gradient - more night-like */
+.dark .header-night-gradient {
+  background: linear-gradient(135deg, #78350f, #92400e, #78350f);
+}
+
+/* Dark mode card border glow on hover */
+.dark .dark-card-glow-hover {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.dark .dark-card-glow-hover:hover {
+  box-shadow: 0 0 15px rgba(251, 146, 60, 0.15);
+  border-color: rgba(251, 146, 60, 0.3);
+}
+
+/* Dark mode scoreboard stats gradient */
+.dark .dark-stats-gradient {
+  background: linear-gradient(135deg, rgba(30, 20, 10, 0.8), rgba(50, 30, 15, 0.6));
+}
+
+/* Dark mode button hover visibility */
+.dark .dark-btn-hover {
+  transition: all 0.2s ease;
+}
+
+.dark .dark-btn-hover:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+
+/* Dark mode answer review correct/incorrect border glow */
+.dark .dark-correct-border {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.15);
+}
+
+.dark .dark-incorrect-border {
+  border-color: rgba(244, 63, 94, 0.5);
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.15);
+}
+
+/* Dark mode correct/incorrect animated borders */
+@keyframes correct-border-pulse {
+  0%, 100% { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 5px rgba(16, 185, 129, 0.1); }
+  50% { border-color: rgba(16, 185, 129, 0.8); box-shadow: 0 0 12px rgba(16, 185, 129, 0.2); }
+}
+
+@keyframes incorrect-border-pulse {
+  0%, 100% { border-color: rgba(244, 63, 94, 0.5); box-shadow: 0 0 5px rgba(244, 63, 94, 0.1); }
+  50% { border-color: rgba(244, 63, 94, 0.8); box-shadow: 0 0 12px rgba(244, 63, 94, 0.2); }
+}
+
+.animate-correct-border {
+  animation: correct-border-pulse 2s ease-in-out infinite;
+}
+
+.animate-incorrect-border {
+  animation: incorrect-border-pulse 2s ease-in-out infinite;
+}
+
+/* Dark mode drawer backdrop blur */
+.dark .drawer-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Skeleton loading state */
+.skeleton-loading {
+  position: relative;
+  overflow: hidden;
+  background: var(--muted);
+  border-radius: 8px;
+}
+
+.skeleton-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton-loading::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(251, 146, 60, 0.08) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
 /* Print styles for score report */
 @media print {
   /* Hide non-essential elements */

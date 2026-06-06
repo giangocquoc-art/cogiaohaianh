@@ -89,7 +89,7 @@ function CircularTimer({ timeLeft, totalTime }: { timeLeft: number; totalTime: n
         </div>
       </div>
       <span className={`font-mono text-sm font-bold ${
-        isCritical ? 'text-red-600 dark:text-red-400 animate-pulse' : isLow ? 'text-amber-600 dark:text-amber-400' : 'text-green-700 dark:text-green-400'
+        isCritical ? 'text-red-600 dark:text-red-400 animate-pulse' : isLow ? 'text-amber-600 dark:text-amber-400 animate-pulse-soft-gentle' : 'text-green-700 dark:text-green-400'
       }`}>
         {formatTime(timeLeft)}
       </span>
@@ -457,14 +457,17 @@ export function QuizView() {
           {/* Progress ring bar - gradient from orange to green */}
           <div className="relative h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <motion.div
-              className="h-full rounded-full"
+              className="h-full rounded-full relative"
               style={{
                 background: 'linear-gradient(to right, #F97316, #EAB308, #22C55E)',
               }}
               initial={{ width: 0 }}
               animate={{ width: `${(answeredCount / questions.length) * 100}%` }}
               transition={{ duration: 0.3 }}
-            />
+            >
+              {/* Shimmer effect on progress */}
+              <div className="absolute inset-0 animate-shimmer-enhanced rounded-full" />
+            </motion.div>
           </div>
         </div>
       </div>
@@ -535,15 +538,22 @@ export function QuizView() {
                 title={(hintStates[q.id]?.hintsUsed ?? 0) >= 2 ? 'Đã hết gợi ý cho câu này' : 'Nhận gợi ý từ cô giáo'}
               >
                 {hintStates[q.id]?.loading ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span className="animate-thinking-dots">
+                      <span className="dot" />
+                      <span className="dot" />
+                      <span className="dot" />
+                    </span>
+                  </>
                 ) : (
                   <Lightbulb className="w-3.5 h-3.5" />
                 )}
-                <span>
+                {!hintStates[q.id]?.loading && <span>
                   {(hintStates[q.id]?.hintsUsed ?? 0) >= 2
                     ? 'Hết gợi ý'
                     : `Gợi ý (${(hintStates[q.id]?.hintsUsed ?? 0) + 1}/2)`}
-                </span>
+                </span>}
               </Button>
             </div>
           </div>
@@ -584,7 +594,7 @@ export function QuizView() {
                 return (
                   <motion.button
                     key={idx}
-                    whileHover={{ scale: 1.01 }}
+                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
                       playClickSound()
@@ -592,8 +602,8 @@ export function QuizView() {
                     }}
                     className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
                       isSelected
-                        ? 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600'
-                        : 'border-gray-200 dark:border-gray-700 hover:bg-orange-50 hover:border-orange-300 hover:shadow-md dark:hover:bg-orange-950/30 dark:hover:border-orange-700'
+                        ? 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'
+                        : 'border-gray-200 dark:border-gray-700 hover:bg-orange-50 hover:border-orange-300 hover:shadow-md hover:scale-[1.02] dark:hover:bg-orange-950/30 dark:hover:border-orange-700'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -673,7 +683,7 @@ export function QuizView() {
                 playClickSound()
                 setCurrentQuestion(idx)
               }}
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-1 ${
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-1 btn-ripple ${
                 idx === currentQuestion
                   ? 'bg-orange-100 border-2 border-orange-500 text-orange-700 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:text-orange-300'
                   : isAnswered
@@ -699,7 +709,7 @@ export function QuizView() {
           <Button
             onClick={() => handleSubmit()}
             disabled={submitting}
-            className="gap-1 bg-emerald-500 hover:bg-emerald-600 text-white shrink-0"
+            className="gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white shrink-0 animate-submit-gradient shadow-lg hover:shadow-xl"
           >
             <Send className="w-4 h-4" />
             {submitting ? 'Đang nộp...' : 'Nộp bài'}

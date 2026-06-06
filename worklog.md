@@ -947,3 +947,178 @@ Stage Summary:
 8. Could add printable certificates with QR codes for verification
 9. Could add more gamification: avatar customization, classroom competitions
 10. XP widget could show more detailed XP breakdown history
+
+---
+Task ID: 24
+Agent: Feature Developer - AI Review Mode + Teacher Dashboard
+Task: Add AI Quiz Review Mode and Teacher Dashboard
+
+Work Log:
+- Created `/src/app/api/explain/route.ts` backend API using z-ai-web-dev-sdk LLM
+  - POST endpoint accepting: questionText, questionType, options, correctAnswer, studentAnswer, grade, subject
+  - System prompt: "Cô Giáo Hải Anh" persona explaining why answers are correct/incorrect
+  - Different explanation lengths by grade (2-4 sentences for grade 1-2, 3-6 sentences for grade 3-5)
+  - Correct answers: congratulate then explain WHY it's correct
+  - Wrong answers: gently explain the correct answer with step-by-step reasoning
+  - Error handling with Vietnamese error messages
+- Created `/src/app/api/teacher/route.ts` backend API for teacher dashboard
+  - GET endpoint accepting schoolName and optional className query params
+  - Queries StudentResult and ScoreEntry for aggregated statistics
+  - Returns: totalStudents, totalQuizzes, averageScore, passRate, subjectBreakdown, gradeBreakdown, topStudents (top 10, min 2 quizzes), recentActivity (last 10), scoreDistribution (excellent/good/average/poor)
+- Updated `/src/components/result-view.tsx` with AI Review Mode (Ôn Tập Cùng AI)
+  - Added "Ôn tập cùng AI 🤖" button with teal/emerald gradient
+  - Review mode shows questions one at a time with navigation
+  - Each question shows: question text, all options, correct answer (green), student answer (red if wrong)
+  - "Giải thích" button calls /api/explain for AI-generated explanation
+  - Loading spinner while AI generates explanation
+  - Explanation card with warm amber/orange gradient styling
+  - Navigation: "Câu trước" / "Câu sau" buttons with progress bar
+  - Question dots navigation (colored by correct/incorrect)
+  - "Quay lại kết quả" button to exit review mode
+  - Framer Motion smooth transitions between questions
+- Created `/src/components/teacher-dashboard-view.tsx` component
+  - Title: "Bảng Điều Khiển Giáo Viên 📋" with ClipboardList icon
+  - Search form: school name + optional class name + "Xem thống kê" button
+  - Summary cards: Total Students, Total Quizzes, Average Score, Pass Rate
+  - Subject comparison: Toán vs Ngữ văn with CSS bar charts
+  - Grade performance breakdown: Cards for each grade (1-5) with count and avg score
+  - Score distribution: Visual chart showing Excellent/Good/Average/Poor segments
+  - Top 10 students table: Rank, Name, Class, Quiz Count, Avg Score
+  - Recent activity: Last 10 quiz completions with student name, quiz title, score, date
+  - Empty state: Friendly message when no data found
+  - Professional but warm emerald/teal color scheme
+  - Dark mode support with warm dark variants
+  - Responsive design (mobile-first)
+- Updated `/src/store/app-store.ts`: Added 'teacherDashboard' to ViewType
+- Updated `/src/app/page.tsx`: Added TeacherDashboardView import and viewMap entry
+- Updated `/src/components/app-header.tsx`:
+  - Added ClipboardList icon import
+  - Added "Giáo viên" navigation button at end of nav items
+  - Updated breadcrumb condition to exclude teacherDashboard
+- Updated `/src/components/home-view.tsx`:
+  - Added ClipboardList icon import
+  - Added "Dành cho giáo viên 📋" link/button near footer area
+- Fixed React hooks rules violation (useCallback handleExplain placed before early return)
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**Feature 1 - AI Quiz Review Mode (Ôn Tập Cùng AI):**
+1. Backend: POST /api/explain route using z-ai-web-dev-sdk for AI-generated explanations
+2. Frontend: Review mode in result-view.tsx with one-at-a-time question review
+3. AI explains WHY answers are correct/incorrect with age-appropriate language
+4. Smooth Framer Motion transitions between questions
+5. Progress indicator, question dot navigation, loading spinner
+6. Warm amber/orange explanation cards matching existing hint card style
+
+**Feature 2 - Teacher Dashboard (Bảng Điều Khiển Giáo Viên):**
+1. Backend: GET /api/teacher route with schoolName/className filtering
+2. Frontend: TeacherDashboardView with search, summary cards, charts, tables
+3. Statistics: total students, quizzes, average score, pass rate
+4. Subject comparison (Toán vs Ngữ văn), grade breakdown, score distribution
+5. Top 10 students table, recent activity feed
+6. Professional emerald/teal color scheme with dark mode
+7. Navigation: "Giáo viên" button in header + link on homepage
+
+**Files Created:**
+- `/src/app/api/explain/route.ts`
+- `/src/app/api/teacher/route.ts`
+- `/src/components/teacher-dashboard-view.tsx`
+
+**Files Modified:**
+- `/src/store/app-store.ts` - Added teacherDashboard ViewType
+- `/src/app/page.tsx` - Added viewMap entry
+- `/src/components/app-header.tsx` - Added Giáo viên nav button
+- `/src/components/home-view.tsx` - Added teacher link
+- `/src/components/result-view.tsx` - Added AI review mode
+
+---
+Task ID: 25
+Agent: Styling & Animation Polish Developer
+Task: Improve styling, animations, and visual polish across all views
+
+Work Log:
+- Added 15+ new CSS keyframe animations and 20+ utility classes to globals.css
+- Added .animate-border-glow (cycling gradient border), .animate-shimmer-enhanced (enhanced sweep), .animate-pulse-soft-gentle (softer pulse), .animate-celebration (scale+rotate), .animate-celebration-pulse (score circle glow), .animate-thinking-dots (3 dots sequential), .score-ring (SVG ring), .animate-xp-float (floating XP), .animate-badge-sparkle (shimmer on badges), .animate-answer-pop (quiz selection pop), .animate-submit-gradient (submit button), .animate-countdown-glow (daily challenge timer), .btn-ripple (nav buttons), .icon-bounce-hover (feature cards), .animate-flame (popular quizzes), .animate-podium-decor (leaderboard), .animate-correct-border/.animate-incorrect-border (answer review), .skeleton-loading (loading states), .scroll-fade-in (IntersectionObserver), .dark-card-glow-hover, .dark-stats-gradient, .dark-btn-hover, .dark-correct-border, .dark-incorrect-border, .header-night-gradient
+- Updated home-view.tsx: grade cards now have .animate-border-glow, popular quizzes 🔥 uses .animate-flame, feature card icons have .icon-bounce-hover/.icon-bounce-target, quick stats numbers enlarged to md:text-5xl, daily challenge countdown has .animate-countdown-glow, mini leaderboard has podium decorations (.animate-podium-decor), popular quiz cards have .dark-card-glow-hover
+- Updated quiz-view.tsx: answer options now have hover:scale-[1.02] and .animate-answer-pop on select, timer uses .animate-pulse-soft-gentle when low, progress bar has .animate-shimmer-enhanced, question nav buttons have .btn-ripple, submit button has gradient + .animate-submit-gradient, hint loading shows .animate-thinking-dots animation
+- Updated result-view.tsx: score circle wrapped with .animate-celebration-pulse, answer review cards have .animate-correct-border/.animate-incorrect-border, floating XP animation travels further (-50px) with larger text (text-xl), badge cards have .animate-badge-sparkle shimmer overlay, XP display container has relative positioning
+- Updated scoreboard-view.tsx: stats cards have .dark-stats-gradient, header card has .dark-card-glow-hover
+- Updated app-header.tsx: dark mode header gradient deepened (amber-900/orange-950/amber-900), drawer header gradient also deepened, mobile drawer overlay has backdrop-blur-sm
+
+Stage Summary:
+- **New CSS utilities**: 15+ keyframe animations, 20+ utility classes for micro-interactions, dark mode polish
+- **Homepage**: Animated gradient borders on grade cards, flame animation on popular quizzes, icon bounce on feature cards, larger stat numbers, glowing countdown timer, podium decorations on leaderboard
+- **Quiz View**: Answer hover scale + pop animation, timer pulse when low, shimmer progress bar, ripple on nav buttons, gradient submit button, thinking dots on hint loading
+- **Result View**: Celebration pulse on score circle, animated correct/incorrect borders, enhanced floating XP, badge shimmer effect
+- **Scoreboard View**: Dark mode gradient stats, card glow hover
+- **Dark Mode**: Deeper header gradient, card border glow, drawer backdrop blur, button hover visibility, answer review border glow
+- **Lint**: All checks pass, no errors
+
+---
+Task ID: 26 (Main Agent - Round 4)
+Agent: Main
+Task: QA Testing + AI Review Mode + Teacher Dashboard + Styling Polish
+
+Work Log:
+- Reviewed /home/z/my-project/worklog.md to understand project status (1000+ lines of history)
+- Performed comprehensive QA testing with agent-browser across all views
+- Used VLM (Vision Language Model) to analyze visual quality of all pages
+- Light mode homepage rated: Visual 7/10, Child-friendliness 8/10, Design 6/10
+- Dark mode rated: 7-8/10 (working properly with warm brown/amber colors)
+- No lint errors, no runtime errors in dev server
+- Launched 2 parallel sub-agents for new features and styling:
+  - Task 24: AI Quiz Review Mode + Teacher Dashboard (completed)
+  - Task 25: Styling & Animation Polish (completed)
+- Verified all new features working via API testing and browser testing
+- Tested AI explain API: returns age-appropriate Vietnamese explanations in "Cô Giáo Hải Anh" persona
+- Tested Teacher Dashboard API: returns aggregated statistics by school name
+- Confirmed lint passes with no errors
+
+Stage Summary:
+**New Features:**
+1. AI Quiz Review Mode (Ôn Tập Cùng AI):
+   - Backend: POST /api/explain route using z-ai-web-dev-sdk LLM
+   - Explains WHY answers are correct/incorrect in age-appropriate Vietnamese
+   - "Cô Giáo Hải Anh" persona congratulates correct, gently guides incorrect
+   - Frontend: "Ôn tập cùng AI 🤖" button in result view
+   - Review mode: questions shown one-at-a-time with navigation
+   - "Giải thích" button per question triggers AI explanation
+   - Warm amber/orange explanation cards with framer-motion animations
+   - Progress bar and question dot navigation
+
+2. Teacher Dashboard (Bảng Điều Khiển Giáo Viên):
+   - Backend: GET /api/teacher route with schoolName + optional className filter
+   - Returns: totalStudents, totalQuizzes, averageScore, passRate, subjectBreakdown, gradeBreakdown, topStudents, recentActivity, scoreDistribution
+   - Frontend: TeacherDashboardView with search form, summary cards, subject comparison, grade performance, score distribution, top 10 students, recent activity
+   - Professional emerald/teal color scheme (teacher-oriented)
+   - Navigation: "Giáo viên" button in header + "Dành cho giáo viên 📋" on homepage
+
+**Styling Improvements:**
+1. Homepage: Animated gradient borders on grade cards, flame animation, icon bounce on feature cards, larger stats (text-4xl/5xl), glowing countdown timer, podium decorations
+2. Quiz: Answer hover scale + pop animation, timer pulse when low, shimmer progress bar, ripple on nav buttons, gradient submit button, thinking dots on hint loading
+3. Result: Celebration pulse on score circle, animated correct/incorrect borders, enhanced floating XP, badge shimmer effect
+4. Dark mode: Deeper header gradient (amber-900/orange-950), card glow hover effects, dark stats gradient, drawer backdrop blur
+5. New CSS animations: border-glow, shimmer-enhanced, pulse-soft-gentle, celebration, thinking-dots, badge-sparkle, answer-pop, submit-gradient, countdown-glow, btn-ripple, icon-bounce, flame, podium-decor
+
+**Current Project Status:**
+- 13 view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard, TeacherDashboard
+- 12 API routes: /quizzes, /quizzes/[id], /results, /scores, /seed, /hint, /progress, /daily-challenge, /xp, /leaderboard, /explain, /teacher
+- Full dark mode support (7-8/10 VLM rating)
+- XP points + level system + leaderboard
+- AI-powered hint system + AI review explanations
+- Teacher dashboard with class performance analytics
+- 12 achievement badges + daily challenge + streak tracking
+- Rich animations, micro-interactions, sound effects
+- No lint errors, no runtime errors
+
+**Unresolved / Future Recommendations:**
+1. Add more quiz questions (currently 248 for 27 quizzes) - seed more data
+2. Teacher Dashboard: Add CSV export for scores, print reports
+3. Could add student avatar customization (earnable through XP/badges)
+4. Could add parent notification system for low scores
+5. Could add VLM-powered question image understanding
+6. Could add classroom competition mode (class vs class)
+7. Could add more subjects beyond Toán and Ngữ văn
+8. Could add batch score import for teachers (CSV upload)
+9. Could improve mobile drawer with better touch targets
+10. Teacher Dashboard could show trends over time (charts)

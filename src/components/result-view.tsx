@@ -2,7 +2,7 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion } from 'framer-motion'
-import { CheckCircle, XCircle, RotateCcw, Home, ClipboardList, Volume2, VolumeX, Printer, Share2, Award, Star } from 'lucide-react'
+import { CheckCircle, XCircle, RotateCcw, Home, ClipboardList, Volume2, VolumeX, Printer, Share2, Award, Star, Bot, Loader2, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState, useCallback } from 'react'
 import { Confetti } from '@/components/confetti'
@@ -176,7 +176,7 @@ function XPDisplay({ score }: { score: number }) {
       initial={{ opacity: 0, y: 10, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 200 }}
-      className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 shadow-sm"
+      className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 shadow-sm relative"
     >
       <div className="flex items-center justify-center gap-2 mb-2">
         <Star className="w-5 h-5 text-amber-500" fill="currentColor" />
@@ -200,9 +200,9 @@ function XPDisplay({ score }: { score: number }) {
       {/* Floating XP animation */}
       <motion.div
         initial={{ opacity: 1, y: 0 }}
-        animate={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 0, y: -50 }}
         transition={{ duration: 2.5, ease: 'easeOut', delay: 0.5 }}
-        className="absolute -top-4 left-1/2 -translate-x-1/2 text-amber-500 font-bold text-lg whitespace-nowrap pointer-events-none"
+        className="absolute -top-2 left-1/2 -translate-x-1/2 text-amber-500 font-bold text-xl whitespace-nowrap pointer-events-none"
       >
         +{xpResult.total} XP! ⭐
       </motion.div>
@@ -218,6 +218,11 @@ export function ResultView() {
   const [showCertificate, setShowCertificate] = useState(false)
   const [newBadges, setNewBadges] = useState<Badge[]>([])
   const [showBadgeNotification, setShowBadgeNotification] = useState(false)
+  // AI Review mode state
+  const [isReviewMode, setIsReviewMode] = useState(false)
+  const [reviewIndex, setReviewIndex] = useState(0)
+  const [explanations, setExplanations] = useState<Record<string, string>>({})
+  const [loadingExplain, setLoadingExplain] = useState<Record<string, boolean>>({})
   const { toast } = useToast()
 
   // Play sound when result loads based on score
@@ -413,6 +418,53 @@ export function ResultView() {
     }
   }, [quizResult, quiz, studentInfo, toast, selectedSubject])
 
+  // AI Explain handler - must be before early return
+  const handleExplain = useCallback(async (q: Question) => {
+    if (!quizResult) return
+    if (loadingExplain[q.id]) return
+
+    setLoadingExplain(prev => ({ ...prev, [q.id]: true }))
+
+    try {
+      const userAnswer = quizResult.answers[q.id] || ''
+      const optStr = q.options
+      let parsedOptions: string[] = []
+      try { parsedOptions = JSON.parse(optStr) } catch { parsedOptions = [] }
+      const options = q.questionType === 'multiple_choice' ? parsedOptions : []
+
+      const res = await fetch('/api/explain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionText: q.questionText,
+          questionType: q.questionType,
+          options,
+          correctAnswer: q.correctAnswer,
+          studentAnswer: userAnswer,
+          grade: selectedGrade || 1,
+          subject: selectedSubject || 'toan',
+        }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Lỗi không xác định')
+      }
+
+      const data = await res.json()
+      setExplanations(prev => ({ ...prev, [q.id]: data.explanation }))
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Không thể tạo giải thích. Thử lại nhé!'
+      toast({
+        title: '❌ Lỗi',
+        description: message,
+        variant: 'destructive',
+      })
+    } finally {
+      setLoadingExplain(prev => ({ ...prev, [q.id]: false }))
+    }
+  }, [quizResult, loadingExplain, selectedGrade, selectedSubject, toast])
+
   if (!quizResult) return null
 
   const score = quizResult.score
@@ -514,7 +566,9 @@ export function ResultView() {
 
           {/* Circular progress with score */}
           <div className="flex justify-center mb-6 relative">
-            <CircularProgress score={score} />
+            <div className="animate-celebration-pulse rounded-full">
+              <CircularProgress score={score} />
+            </div>
             {/* New badge indicator near score */}
             {newBadges.length > 0 && (
               <motion.div
@@ -550,10 +604,12 @@ export function ResultView() {
                 {newBadges.map((badge) => (
                   <div
                     key={badge.id}
-                    className="bg-white dark:bg-card rounded-xl px-3 py-2 shadow-sm flex items-center gap-2 border border-amber-200 dark:border-amber-800"
+                    className="bg-white dark:bg-card rounded-xl px-3 py-2 shadow-sm flex items-center gap-2 border border-amber-200 dark:border-amber-800 relative overflow-hidden"
                   >
-                    <span className="text-xl">{badge.emoji}</span>
-                    <div>
+                    {/* Badge shimmer effect */}
+                    <div className="absolute inset-0 animate-badge-sparkle pointer-events-none" />
+                    <span className="text-xl relative z-10">{badge.emoji}</span>
+                    <div className="relative z-10">
                       <span className="font-semibold text-amber-800 dark:text-amber-200 text-sm">{badge.name}</span>
                       <p className="text-amber-600 text-[10px] leading-tight">{badge.description}</p>
                     </div>
@@ -654,6 +710,13 @@ export function ResultView() {
             {showReview ? 'Ẩn đáp án' : 'Xem đáp án'}
           </Button>
           <Button
+            onClick={() => { setIsReviewMode(true); setShowReview(false); }}
+            className="gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-base py-3"
+          >
+            <Bot className="w-4 h-4" />
+            Ôn tập cùng AI 🤖
+          </Button>
+          <Button
             onClick={handleRetry}
             disabled={!studentInfo || !selectedQuizId}
             className="gap-2 bg-orange-500 hover:bg-orange-600 text-white text-base py-3"
@@ -725,10 +788,10 @@ export function ResultView() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className={`rounded-2xl p-4 sm:p-5 border-2 transition-all ${
+                    className={`rounded-2xl p-4 sm:p-5 border-2 transition-all animate-correct-border ${
                       isCorrect
                         ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-700 shadow-sm'
-                        : 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-700 shadow-sm'
+                        : 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-700 shadow-sm animate-incorrect-border'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -850,6 +913,270 @@ export function ResultView() {
             </p>
           </div>
         </motion.div>
+
+        {/* AI Review Mode */}
+        {isReviewMode && quiz && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-5"
+          >
+            {/* Review mode header */}
+            <div className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-800 dark:to-emerald-800 rounded-2xl p-4 sm:p-5 shadow-lg text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <Bot className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl sm:text-2xl">
+                      Ôn Tập Cùng AI 🤖
+                    </h3>
+                    <p className="text-white/80 text-sm">Cô Hải Anh sẽ giải thích từng câu cho con</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => { setIsReviewMode(false); setReviewIndex(0); }}
+                  variant="ghost"
+                  className="text-white hover:bg-white/20 gap-1.5"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Quay lại kết quả</span>
+                  <span className="sm:hidden">Quay lại</span>
+                </Button>
+              </div>
+              {/* Progress bar */}
+              <div className="mt-3">
+                <div className="flex items-center justify-between text-sm text-white/80 mb-1.5">
+                  <span>Câu {reviewIndex + 1}/{quiz.questions.length}</span>
+                  <span>{Math.round(((reviewIndex + 1) / quiz.questions.length) * 100)}%</span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <motion.div
+                    className="bg-white rounded-full h-2"
+                    initial={false}
+                    animate={{ width: `${((reviewIndex + 1) / quiz.questions.length) * 100}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Current question card */}
+            {[...quiz.questions]
+              .sort((a, b) => a.orderIndex - b.orderIndex)
+              .filter((_, idx) => idx === reviewIndex)
+              .map((q) => {
+                const userAnswer = quizResult.answers[q.id] || ''
+                const isCorrect = userAnswer.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase()
+                const options = q.questionType === 'multiple_choice' ? parseOptions(q.options) : []
+
+                return (
+                  <motion.div
+                    key={q.id}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4"
+                  >
+                    {/* Question display card */}
+                    <div className={`rounded-2xl p-5 sm:p-6 border-2 shadow-md ${
+                      isCorrect
+                        ? 'bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-emerald-300 dark:border-emerald-700'
+                        : 'bg-gradient-to-br from-rose-50 to-orange-50 dark:from-rose-950/30 dark:to-orange-950/30 border-rose-300 dark:border-rose-700'
+                    }`}>
+                      {/* Question header */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                          isCorrect ? 'bg-emerald-500' : 'bg-rose-500'
+                        }`}>
+                          {isCorrect ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+                        </div>
+                        <span className={`text-sm font-bold px-2.5 py-0.5 rounded-full ${
+                          isCorrect ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300' : 'bg-rose-200 dark:bg-rose-800 text-rose-700 dark:text-rose-300'
+                        }`}>
+                          Câu {reviewIndex + 1}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {q.questionType === 'multiple_choice' ? '📌 Trắc nghiệm' : '✏️ Điền đáp án'}
+                        </span>
+                        <span className={`ml-auto text-xs font-bold px-2 py-0.5 rounded-full ${
+                          isCorrect ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
+                        }`}>
+                          {isCorrect ? '✓ Đúng' : '✗ Sai'}
+                        </span>
+                      </div>
+
+                      {/* Question text */}
+                      <p className="font-semibold text-foreground text-lg mb-4">
+                        {q.questionText}
+                      </p>
+
+                      {/* Multiple choice options */}
+                      {q.questionType === 'multiple_choice' && options.length > 0 && (
+                        <div className="space-y-2 mb-4">
+                          {options.map((opt, oi) => {
+                            const optKey = String.fromCharCode(65 + oi)
+                            const isThisCorrect = optKey === q.correctAnswer
+                            const isThisUser = optKey === userAnswer
+                            return (
+                              <div
+                                key={oi}
+                                className={`text-sm px-4 py-2.5 rounded-xl border-2 transition-all ${
+                                  isThisCorrect
+                                    ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-semibold border-emerald-400 dark:border-emerald-600'
+                                    : isThisUser && !isThisCorrect
+                                      ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 line-through border-rose-400 dark:border-rose-600'
+                                      : 'text-muted-foreground border-gray-200 dark:border-gray-700'
+                                }`}
+                              >
+                                <span className="font-bold mr-2">{optKey}.</span>
+                                {opt.replace(/^[A-D]\.\s*/, '')}
+                                {isThisCorrect && ' ✓ Đáp án đúng'}
+                                {isThisUser && !isThisCorrect && ' ✗ Câu chọn'}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+
+                      {/* Fill blank answer display */}
+                      {q.questionType === 'fill_blank' && (
+                        <div className="space-y-2 mb-4">
+                          <div className={`inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl border-2 ${
+                            userAnswer
+                              ? isCorrect
+                                ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-400 dark:border-emerald-600'
+                                : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 border-rose-400 dark:border-rose-600'
+                              : 'text-muted-foreground border-gray-200'
+                          }`}>
+                            ✏️ Trả lời của bạn: <span className="font-semibold">{userAnswer || '(chưa trả lời)'}</span>
+                          </div>
+                          {!isCorrect && (
+                            <div className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl border-2 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-400 dark:border-emerald-600">
+                              ✅ Đáp án đúng: <span className="font-semibold">{q.correctAnswer}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Explain button */}
+                      {!explanations[q.id] && !loadingExplain[q.id] && (
+                        <Button
+                          onClick={() => handleExplain(q)}
+                          className="gap-2 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 dark:from-amber-600 dark:to-orange-600 dark:hover:from-amber-700 dark:hover:to-orange-700 text-white shadow-md"
+                        >
+                          <Bot className="w-4 h-4" />
+                          Giải thích
+                        </Button>
+                      )}
+
+                      {/* Loading state */}
+                      {loadingExplain[q.id] && (
+                        <div className="flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-xl p-4">
+                          <Loader2 className="w-5 h-5 text-amber-500 animate-spin" />
+                          <span className="text-amber-700 dark:text-amber-300 text-sm font-medium">
+                            Cô Hải Anh đang giải thích... 🤔
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Explanation card */}
+                      {explanations[q.id] && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                          className="mt-4 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-yellow-950/30 border-2 border-amber-300 dark:border-amber-700 rounded-2xl p-4 sm:p-5 shadow-md"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">💡</span>
+                            <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-amber-700 dark:text-amber-300">
+                              Giải thích của Cô Hải Anh
+                            </span>
+                          </div>
+                          <p className="text-amber-800 dark:text-amber-200 text-sm leading-relaxed whitespace-pre-wrap">
+                            {explanations[q.id]}
+                          </p>
+                        </motion.div>
+                      )}
+                    </div>
+
+                    {/* Navigation buttons */}
+                    <div className="flex items-center justify-between">
+                      <Button
+                        onClick={() => setReviewIndex(Math.max(0, reviewIndex - 1))}
+                        disabled={reviewIndex === 0}
+                        variant="outline"
+                        className="gap-2 border-2"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        Câu trước
+                      </Button>
+
+                      {/* Question dots */}
+                      <div className="hidden sm:flex items-center gap-1.5">
+                        {[...quiz.questions]
+                          .sort((a, b) => a.orderIndex - b.orderIndex)
+                          .map((qd, i) => {
+                            const isAnsweredCorrect = quizResult.answers[qd.id]?.trim().toLowerCase() === qd.correctAnswer.trim().toLowerCase()
+                            return (
+                              <button
+                                key={qd.id}
+                                onClick={() => setReviewIndex(i)}
+                                className={`w-3 h-3 rounded-full transition-all ${
+                                  i === reviewIndex
+                                    ? 'bg-teal-500 scale-125 ring-2 ring-teal-300'
+                                    : isAnsweredCorrect
+                                      ? 'bg-emerald-400 hover:bg-emerald-500'
+                                      : 'bg-rose-400 hover:bg-rose-500'
+                                }`}
+                                title={`Câu ${i + 1}`}
+                              />
+                            )
+                          })}
+                      </div>
+
+                      <Button
+                        onClick={() => setReviewIndex(Math.min(quiz.questions.length - 1, reviewIndex + 1))}
+                        disabled={reviewIndex === quiz.questions.length - 1}
+                        variant="outline"
+                        className="gap-2 border-2"
+                      >
+                        Câu sau
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+
+                    {/* Mobile question dots */}
+                    <div className="flex sm:hidden items-center justify-center gap-1.5">
+                      {[...quiz.questions]
+                        .sort((a, b) => a.orderIndex - b.orderIndex)
+                        .map((qd, i) => {
+                          const isAnsweredCorrect = quizResult.answers[qd.id]?.trim().toLowerCase() === qd.correctAnswer.trim().toLowerCase()
+                          return (
+                            <button
+                              key={qd.id}
+                              onClick={() => setReviewIndex(i)}
+                              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                                i === reviewIndex
+                                  ? 'bg-teal-500 scale-125 ring-2 ring-teal-300'
+                                  : isAnsweredCorrect
+                                    ? 'bg-emerald-400'
+                                    : 'bg-rose-400'
+                              }`}
+                              title={`Câu ${i + 1}`}
+                            />
+                          )
+                        })}
+                    </div>
+                  </motion.div>
+                )
+              })}
+          </motion.div>
+        )}
       </div>
 
       {/* Print-only report card (hidden on screen, shown in print) */}

@@ -296,7 +296,7 @@ export function ScoreboardView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden"
+        className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden dark-card-glow-hover"
       >
         <div className="absolute top-2 left-4 text-lg opacity-10 animate-float">🏆</div>
         <div className="absolute bottom-2 right-4 text-lg opacity-10 animate-float" style={{ animationDelay: '0.5s' }}>📊</div>
@@ -652,42 +652,42 @@ export function ScoreboardView() {
             <>
               {/* Stats cards with animated counters */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">📝</div>
                   <p className="text-2xl font-bold text-amber-700">
                     <AnimatedNumber target={stats.totalResults} />
                   </p>
                   <p className="text-xs text-amber-600 font-medium">Tổng bài làm</p>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">📈</div>
                   <p className="text-2xl font-bold text-emerald-700">
                     <AnimatedNumber target={stats.averageScore} />
                   </p>
                   <p className="text-xs text-emerald-600 font-medium">Điểm trung bình</p>
                 </div>
-                <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">🌟</div>
                   <p className="text-2xl font-bold text-rose-700">
                     <AnimatedNumber target={stats.highestScore} />
                   </p>
                   <p className="text-xs text-rose-600 font-medium">Điểm cao nhất</p>
                 </div>
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 border border-teal-200 dark:border-teal-800 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 border border-teal-200 dark:border-teal-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">👥</div>
                   <p className="text-2xl font-bold text-teal-700">
                     <AnimatedNumber target={stats.uniqueStudents} />
                   </p>
                   <p className="text-xs text-teal-600 font-medium">Học sinh</p>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">🟢</div>
                   <p className="text-2xl font-bold text-emerald-700">
                     <AnimatedNumber target={stats.onlineCount} />
                   </p>
                   <p className="text-xs text-emerald-600 font-medium">Làm online</p>
                 </div>
-                <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 text-center hover-lift">
+                <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 text-center hover-lift dark-stats-gradient">
                   <div className="text-2xl mb-1">✏️</div>
                   <p className="text-2xl font-bold text-violet-700">
                     <AnimatedNumber target={stats.manualCount} />

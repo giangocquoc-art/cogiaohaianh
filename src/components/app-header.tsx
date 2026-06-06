@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppStore } from '@/store/app-store'
-import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown } from 'lucide-react'
+import { BookOpen, Home, Trophy, ArrowLeft, BookCheck, BarChart3, Menu, X, GraduationCap, Sun, Moon, Award, Flame, Crown, ClipboardList } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -61,12 +61,13 @@ export function AppHeader() {
     { view: 'scoreboard' as const, icon: Trophy, label: 'Bảng điểm', action: () => useAppStore.getState().setView('scoreboard') },
     { view: 'leaderboard' as const, icon: Crown, label: 'Xếp hạng', action: () => useAppStore.getState().setView('leaderboard') },
     { view: 'progress' as const, icon: BarChart3, label: 'Tiến độ', action: () => useAppStore.getState().setView('progress') },
+    { view: 'teacherDashboard' as const, icon: ClipboardList, label: 'Giáo viên', action: () => useAppStore.getState().setView('teacherDashboard') },
   ]
 
   return (
     <>
       <header
-        className={`sticky top-0 z-50 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 animate-gradient-shift transition-shadow duration-300 ${scrolled ? 'header-shadow' : 'shadow-lg'}`}
+        className={`sticky top-0 z-50 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-900 dark:via-orange-950 dark:to-amber-900 animate-gradient-shift transition-shadow duration-300 ${scrolled ? 'header-shadow' : 'shadow-lg'}`}
       >
         {/* Subtle wave pattern overlay */}
         <div className="absolute inset-0 pattern-wave opacity-30 pointer-events-none" />
@@ -235,7 +236,7 @@ export function AppHeader() {
           </div>
 
           {/* Breadcrumb for deeper views */}
-          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && selectedGrade && (
+          {currentView !== 'home' && currentView !== 'scoreboard' && currentView !== 'progress' && currentView !== 'dailyChallenge' && currentView !== 'badges' && currentView !== 'leaderboard' && currentView !== 'teacherDashboard' && selectedGrade && (
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -284,7 +285,7 @@ export function AppHeader() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 z-[60]"
+              className="fixed inset-0 bg-black/50 z-[60] backdrop-blur-sm"
               onClick={() => setDrawerOpen(false)}
             />
 
@@ -297,7 +298,7 @@ export function AppHeader() {
               className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white dark:bg-[#1a1208] z-[70] shadow-2xl overflow-y-auto"
             >
               {/* Drawer header */}
-              <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 p-5">
+              <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-900 dark:via-orange-950 dark:to-amber-900 p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white shadow-md">

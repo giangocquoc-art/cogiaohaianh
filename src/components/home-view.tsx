@@ -3,7 +3,7 @@
 import { useAppStore } from '@/store/app-store'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
-import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap, Crown, Medal } from 'lucide-react'
+import { BookOpen, Star, Sparkles, Clock, Trophy, BarChart3, PenTool, Users, GraduationCap, BookCheck, Flame, ChevronRight, Zap, Crown, Medal, ClipboardList } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 
@@ -301,7 +301,7 @@ export function HomeView() {
                 <span className="text-white text-sm font-semibold">✓ Đã xong</span>
               </div>
             )}
-            <div className="flex items-center gap-2 bg-white/15 rounded-xl px-3 py-2">
+            <div className="flex items-center gap-2 bg-white/15 rounded-xl px-3 py-2 animate-countdown-glow">
               <Clock className="w-4 h-4 text-white/70" />
               <span className="font-mono text-sm text-white font-bold">
                 {String(countdown.hours).padStart(2, '0')}:{String(countdown.minutes).padStart(2, '0')}:{String(countdown.seconds).padStart(2, '0')}
@@ -458,7 +458,7 @@ export function HomeView() {
           <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl text-foreground">
             Bài Kiểm Tra Phổ Biến
           </h2>
-          <span className="text-xl animate-sparkle">🔥</span>
+          <span className="text-xl animate-flame">🔥</span>
         </div>
 
         <motion.div
@@ -474,7 +474,7 @@ export function HomeView() {
               whileHover={{ scale: 1.04, y: -4 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => selectGrade(quiz.grade)}
-              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-white dark:bg-card border-2 border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700 shadow-sm hover:shadow-lg transition-all text-left p-4 sm:p-5 card-glow"
+              className="group cursor-pointer relative overflow-hidden rounded-2xl bg-white dark:bg-card border-2 border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700 shadow-sm hover:shadow-lg transition-all text-left p-4 sm:p-5 card-glow dark-card-glow-hover"
             >
               {/* Gradient accent top strip */}
               <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${quiz.color}`} />
@@ -545,6 +545,9 @@ export function HomeView() {
               {/* Decorative elements */}
               <div className="absolute top-2 right-4 text-xl animate-sparkle opacity-30">✨</div>
               <div className="absolute bottom-2 left-6 text-lg animate-sparkle opacity-30" style={{ animationDelay: '1s' }}>⭐</div>
+              {/* Podium decoration */}
+              <div className="absolute top-3 left-3 text-2xl animate-podium-decor">🏆</div>
+              <div className="absolute bottom-3 right-3 text-lg animate-podium-decor opacity-50" style={{ animationDelay: '0.5s' }}>🥇</div>
 
               <div className="space-y-3">
                 {topStudents.map((student, index) => {
@@ -620,7 +623,7 @@ export function HomeView() {
                 whileHover={{ scale: 1.07, y: -6 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => selectGrade(grade)}
-                className={`${colors.bg} dark:bg-opacity-20 ${colors.border} border-2 ${colors.hover} rounded-2xl p-5 sm:p-7 flex flex-col items-center gap-2 transition-all shadow-md hover:shadow-xl cursor-pointer group relative overflow-hidden card-glow ${colors.glow}`}
+                className={`${colors.bg} dark:bg-opacity-20 ${colors.border} border-2 ${colors.hover} rounded-2xl p-5 sm:p-7 flex flex-col items-center gap-2 transition-all shadow-md hover:shadow-xl cursor-pointer group relative overflow-hidden card-glow animate-border-glow ${colors.glow}`}
               >
                 {/* Subtle gradient background */}
                 <div className={`absolute inset-0 bg-gradient-to-b ${colors.gradientSubtle} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -738,8 +741,8 @@ export function HomeView() {
               {/* Shimmer on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity animate-shimmer pointer-events-none" />
 
-              <div className="relative z-10">
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} text-white shadow-md mb-3`}>
+              <div className="relative z-10 icon-bounce-hover">
+                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} text-white shadow-md mb-3 icon-bounce-target`}>
                   {feature.icon}
                 </div>
                 <h3 className="font-[family-name:var(--font-patrick-hand)] text-lg sm:text-xl text-foreground mb-1">
@@ -782,7 +785,7 @@ export function HomeView() {
                 className="flex flex-col items-center gap-1 bg-white/15 glass-card rounded-2xl py-4 px-3 hover:bg-white/25 transition-colors"
               >
                 <div className={`${stat.color} mb-1`}>{stat.icon}</div>
-                <span className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl text-white font-bold drop-shadow-sm">
+                <span className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl md:text-5xl text-white font-bold drop-shadow-sm">
                   {stat.count}
                 </span>
                 <span className="text-white/80 text-xs sm:text-sm font-medium">
@@ -911,6 +914,24 @@ export function HomeView() {
           </div>
         </div>
       </motion.section>
+
+      {/* ===== TEACHER LINK SECTION ===== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className="flex justify-center"
+      >
+        <button
+          onClick={() => setView('teacherDashboard')}
+          className="group flex items-center gap-2 bg-teal-50 dark:bg-teal-950/30 border-2 border-teal-200 dark:border-teal-800 rounded-2xl px-5 py-3 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-950/50 hover:border-teal-300 dark:hover:border-teal-700 transition-all shadow-sm hover:shadow-md"
+        >
+          <ClipboardList className="w-5 h-5" />
+          <span className="font-medium text-sm">Dành cho giáo viên 📋</span>
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+      </motion.div>
     </div>
   )
 }
