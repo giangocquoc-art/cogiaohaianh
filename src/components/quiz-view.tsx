@@ -2,10 +2,10 @@
 
 import { useAppStore } from '@/store/app-store'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Clock, ChevronLeft, ChevronRight, Send, AlertCircle } from 'lucide-react'
+import { Clock, ChevronLeft, ChevronRight, Send, AlertCircle, Pencil, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useToast } from '@/hooks/use-toast'
 
 interface Question {
@@ -25,6 +25,61 @@ interface QuizData {
   questions: Question[]
 }
 
+function CircularTimer({ timeLeft, totalTime }: { timeLeft: number; totalTime: number }) {
+  const percentage = totalTime > 0 ? (timeLeft / totalTime) * 100 : 0
+  const isLow = timeLeft < 60
+  const isCritical = timeLeft < 30
+
+  const radius = 22
+  const strokeWidth = 4
+  const circumference = radius * 2 * Math.PI
+  const offset = circumference - (percentage / 100) * circumference
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
+  return (
+    <div className="relative flex items-center gap-2">
+      <div className="relative" style={{ width: 52, height: 52 }}>
+        <svg width={52} height={52} className="-rotate-90">
+          <circle
+            cx={26}
+            cy={26}
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            className={isCritical ? 'text-red-100' : isLow ? 'text-amber-100' : 'text-orange-100'}
+          />
+          <motion.circle
+            cx={26}
+            cy={26}
+            r={radius}
+            fill="none"
+            stroke={isCritical ? '#EF4444' : isLow ? '#F97316' : '#F97316'}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            animate={{ strokeDashoffset: offset }}
+            transition={{ duration: 0.5 }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Clock className={`w-4 h-4 ${isCritical ? 'text-red-500' : isLow ? 'text-amber-500' : 'text-orange-500'}`} />
+        </div>
+      </div>
+      <span className={`font-mono text-sm font-bold ${
+        isCritical ? 'text-red-600 animate-pulse' : isLow ? 'text-amber-600' : 'text-orange-700'
+      }`}>
+        {formatTime(timeLeft)}
+      </span>
+    </div>
+  )
+}
+
 export function QuizView() {
   const { selectedQuizId, studentInfo, setQuizResult, goBack } = useAppStore()
   const { toast } = useToast()
@@ -35,8 +90,10 @@ export function QuizView() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [timeLeft, setTimeLeft] = useState(0)
+  const [totalTime, setTotalTime] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const questionAreaRef = useRef<HTMLDivElement>(null)
 
   // Fetch quiz data
   useEffect(() => {
@@ -50,7 +107,9 @@ export function QuizView() {
         if (!res.ok) throw new Error('Không thể tải bài kiểm tra')
         const data = await res.json()
         setQuiz(data)
-        setTimeLeft(data.duration * 60)
+        const totalSecs = data.duration * 60
+        setTimeLeft(totalSecs)
+        setTotalTime(totalSecs)
       } catch (err) {
         setError('Không thể tải bài kiểm tra. Vui lòng thử lại.')
         console.error(err)
@@ -81,11 +140,14 @@ export function QuizView() {
     return () => clearInterval(timer)
   }, [quiz, timeLeft > 0])
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
+  // Scroll to top when changing questions
+  useEffect(() => {
+    if (questionAreaRef.current) {
+      questionAreaRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    // Also scroll the window to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentQuestion])
 
   const parseOptions = (optionsStr: string): string[] => {
     try {
@@ -241,45 +303,64 @@ export function QuizView() {
         )}
       </AnimatePresence>
 
-      {/* Quiz header */}
-      <div className="sticky top-16 z-40 bg-white/80 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700">
-              {quiz.title}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${
-              timeLeft < 60 ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-amber-100 text-amber-700'
-            }`}>
-              <Clock className="w-4 h-4" />
-              {formatTime(timeLeft)}
+      {/* Quiz header with student name */}
+      <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-700 truncate">
+                {quiz.title}
+              </span>
             </div>
-            <span className="text-sm text-muted-foreground">
+            <CircularTimer timeLeft={timeLeft} totalTime={totalTime} />
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            {studentInfo && (
+              <span className="text-xs text-muted-foreground truncate">
+                👤 {studentInfo.name} - Lớp {studentInfo.className}
+              </span>
+            )}
+            <span className="text-xs text-muted-foreground shrink-0">
               {answeredCount}/{questions.length} câu
             </span>
           </div>
+          <Progress value={progress} className="h-2" />
         </div>
-        <Progress value={progress} className="mt-2 h-2" />
       </div>
 
       {/* Question area */}
       <AnimatePresence mode="wait">
         <motion.div
+          ref={questionAreaRef}
           key={currentQuestion}
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border"
+          className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border relative overflow-hidden"
         >
-          {/* Question number and text */}
-          <div className="mb-6">
-            <span className="bg-orange-100 text-orange-700 text-sm font-bold px-3 py-1 rounded-full">
-              Câu {currentQuestion + 1}
-            </span>
-            <h3 className="text-xl sm:text-2xl font-semibold mt-3 text-foreground leading-relaxed">
+          {/* Decorative corner elements */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-amber-50 to-transparent rounded-tr-3xl pointer-events-none" />
+
+          {/* Question number, type indicator, and text */}
+          <div className="mb-6 relative">
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <span className="bg-orange-100 text-orange-700 text-sm font-bold px-3 py-1 rounded-full">
+                Câu {currentQuestion + 1}
+              </span>
+              <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                q.questionType === 'multiple_choice'
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'bg-violet-100 text-violet-700'
+              }`}>
+                {q.questionType === 'multiple_choice' ? '📌 Trắc nghiệm' : '✏️ Điền đáp án'}
+              </span>
+              <span className="text-xs text-muted-foreground ml-auto">
+                {currentQuestion + 1}/{questions.length}
+              </span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-semibold text-foreground leading-relaxed">
               {q.questionText}
             </h3>
           </div>
@@ -312,7 +393,7 @@ export function QuizView() {
                             : 'bg-gray-100 text-gray-600'
                         }`}
                       >
-                        {optionKey}
+                        {isSelected ? <Check className="w-4 h-4" /> : optionKey}
                       </span>
                       <span className="text-base">{option.replace(/^[A-D]\.\s*/, '')}</span>
                     </div>
@@ -322,11 +403,14 @@ export function QuizView() {
             </div>
           )}
 
-          {/* Fill in the blank */}
+          {/* Fill in the blank with pencil icon */}
           {q.questionType === 'fill_blank' && (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="flex-1 relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-400">
+                    <Pencil className="w-4 h-4" />
+                  </div>
                   <input
                     type="text"
                     value={answers[q.id] || ''}
@@ -334,12 +418,13 @@ export function QuizView() {
                       setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))
                     }
                     placeholder="Nhập câu trả lời của bạn..."
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-lg"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none text-lg focus:ring-2 focus:ring-orange-100"
                   />
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                💡 Nhập câu trả lời ngắn gọn vào ô trên
+              <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <Pencil className="w-3 h-3" />
+                Nhập câu trả lời ngắn gọn vào ô trên
               </p>
             </div>
           )}
@@ -347,48 +432,57 @@ export function QuizView() {
       </AnimatePresence>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-2 sm:gap-4">
         <Button
           variant="outline"
           onClick={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
           disabled={currentQuestion === 0}
-          className="gap-1"
+          className="gap-1 shrink-0"
         >
           <ChevronLeft className="w-4 h-4" />
-          Câu trước
+          <span className="hidden sm:inline">Câu trước</span>
         </Button>
 
-        <div className="flex items-center gap-1 flex-wrap justify-center">
-          {questions.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentQuestion(idx)}
-              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
-                idx === currentQuestion
-                  ? 'bg-orange-500 text-white shadow-md'
-                  : answers[questions[idx].id]
-                    ? 'bg-orange-100 text-orange-700'
-                    : 'bg-gray-100 text-gray-500'
-              }`}
-            >
-              {idx + 1}
-            </button>
-          ))}
+        {/* Question navigation with answered indicators */}
+        <div className="flex items-center gap-1 flex-wrap justify-center overflow-x-auto max-w-[60%]">
+          {questions.map((_, idx) => {
+            const isAnswered = !!answers[questions[idx].id]
+            return (
+              <button
+                key={idx}
+                onClick={() => setCurrentQuestion(idx)}
+                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-semibold transition-all relative ${
+                  idx === currentQuestion
+                    ? 'bg-orange-500 text-white shadow-md'
+                    : isAnswered
+                      ? 'bg-emerald-100 text-emerald-700 border border-emerald-300'
+                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                }`}
+              >
+                {idx + 1}
+                {isAnswered && idx !== currentQuestion && (
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full flex items-center justify-center">
+                    <Check className="w-2 h-2 text-white" />
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
 
         {currentQuestion < questions.length - 1 ? (
           <Button
             onClick={() => setCurrentQuestion((prev) => Math.min(questions.length - 1, prev + 1))}
-            className="gap-1 bg-orange-500 hover:bg-orange-600 text-white"
+            className="gap-1 bg-orange-500 hover:bg-orange-600 text-white shrink-0"
           >
-            Câu sau
+            <span className="hidden sm:inline">Câu sau</span>
             <ChevronRight className="w-4 h-4" />
           </Button>
         ) : (
           <Button
             onClick={() => handleSubmit()}
             disabled={submitting}
-            className="gap-1 bg-emerald-500 hover:bg-emerald-600 text-white"
+            className="gap-1 bg-emerald-500 hover:bg-emerald-600 text-white shrink-0"
           >
             <Send className="w-4 h-4" />
             {submitting ? 'Đang nộp...' : 'Nộp bài'}

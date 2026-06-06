@@ -82,3 +82,62 @@ Stage Summary:
 - Scoreboard shows proper quiz titles and subject names
 - No runtime errors in dev.log
 - Lint checks pass
+
+---
+Task ID: 4
+Agent: Main + 3 Sub-agents
+Task: QA Testing, Bug Fixes, Feature Enhancements, and Styling Improvements
+
+Work Log:
+- Performed full QA testing with agent-browser across all views
+- Identified bugs: duplicate scoreboard entries, study tips key mismatch
+- Launched 3 parallel sub-agents for improvements
+- Fixed study tips key generation (chapter was "chuong-1" not "1")
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**Bug Fixes:**
+- Fixed duplicate scoreboard entries with source tracking and deduplication
+- Fixed study tips key mismatch (chapter value parsing)
+- Scoreboard now sorts by date instead of score
+
+**New Features:**
+1. Confetti celebration animation when score >= 7 (canvas-based)
+2. Study tips (Ôn tập) expandable section per chapter with curriculum content
+3. Statistics tab in scoreboard with stat cards, charts, and top students
+4. Circular timer in quiz view with color changes (orange→amber→red)
+5. Question type indicators (📌 Trắc nghiệm / ✏️ Điền đáp án)
+6. Answered indicator (✓) on question navigation buttons
+7. Student name in quiz header
+8. Retry quiz button on result page
+9. Features section on homepage (4 feature cards)
+10. Quick stats banner with animated counters
+11. "🔥 Phổ biến" badge on Lớp 1 card
+12. Grade card subtitles and chapter counts
+13. Footer quick links section and rotating motivational quotes
+14. Facebook link updated to facebook.com/hattieu.tran.1
+
+**Styling Improvements:**
+- Homepage: floating animations, layered backgrounds, sparkle effects, breathing teacher image
+- Header: wave pattern, study mode indicator, pill-shaped logo container
+- Footer: wave SVG separator, 3-column layout, decorative elements
+- Quiz view: circular timer, decorative corners, better progress visualization
+- Result view: circular progress ring, floating stars, bouncing emojis
+- Scoreboard: source badges, score distribution chart, child-friendly styling
+- New CSS animations: bounce-in, sparkle, slide-up, drift, breathing, spin-slow
+- New CSS patterns: ruler, clouds
+- Glassmorphism card effect
+- Enhanced scrollbar with gradient colors
+
+**Unresolved Issues:**
+- Study tips data only covers Lớp 1-3 Toán and Lớp 1 Ngữ văn; Lớp 4-5 and more Ngữ văn chapters need tips
+- No student authentication (by design - just name/class/school)
+- Results API doesn't filter by subject, only by grade (could be improved)
+- Confetti animation could be more varied with different shapes
+
+**Priority Recommendations for Next Phase:**
+1. Add more study tips for remaining grades/subjects
+2. Add LLM-powered hint system for difficult questions
+3. Add progress tracking across multiple quiz attempts
+4. Add printable score reports
+5. Add sound effects for correct/wrong answers
