@@ -2843,3 +2843,146 @@ Stage Summary:
 - Fixed duplicate title "Kiểm tra Hình học cơ bản" (made unique per grade)
 - Updated seed route to create new quizzes and update chapter names
 
+
+---
+Task ID: 2
+Agent: Quiz Data Developer
+Task: Update Grade 1 quiz data to be more visual/emoji-based
+
+Work Log:
+- Read the existing quiz-data.ts file to understand the QuizData interface and Grade 1 structure
+- Identified all 11 Grade 1 quiz entries: 7 Toán (chapters 1-7) + 4 Ngữ văn (chapters 1-4)
+- Rewrote all Grade 1 Toán questions to use emoji-based visual representations:
+  - Chương 1 (Các số đến 10): Counting emojis, visual comparison of quantities
+  - Chương 2 (Phép cộng phạm vi 10): Visual addition with emoji groups (🍎🍎🍎 + 🍎🍎 = ?)
+  - Chương 3 (Phép trừ phạm vi 10): Visual subtraction with emoji groups (🍎🍎🍎🍎🍎🍎🍎 - 🍎🍎🍎 = ?)
+  - Chương 4 (Các số đến 20): Visual counting, emoji-based place value
+  - Chương 5 (Điểm và đường thẳng): Visual diagrams with location markers (📍━━━📍)
+  - Chương 6 (Hình học cơ bản): Shape emojis (⬜🔴🔵🔺) with real-world objects (⚽🪟🎲)
+  - Chương 7 (Đại lượng): Tool/object emojis for measurement concepts (📏⚖️⏰🥤)
+- Rewrote all Grade 1 Ngữ văn questions with emoji-visual cues:
+  - Chương 1 (Các âm và vần): Letter-animal associations (🐱 Mèo → M, 🐟 Cá → C, 🦋 Bướm → B)
+  - Chương 2 (Vần và tiếng): Emoji-word matching for vần identification
+  - Chương 3 (Tập viết và làm câu): Emoji-enhanced sentence structure questions
+  - Chương 4 (Đọc hiểu): Emoji-paired reading comprehension with short passages
+- Changed all Grade 1 quiz durations from 20-25 min to 15 min (age-appropriate)
+- Fixed incorrect Vietnamese letter associations (e.g., 🐴 Ngựa starts with N not M)
+- Fixed correctAnswer mismatches in multiple choice questions
+- Fixed duplicate correct options in vần questions
+- Verified all correctAnswers match the corresponding option text exactly
+- Ran bun run lint: passed with no errors
+- Ran TypeScript type check: passed with no errors
+
+Stage Summary:
+- All 11 Grade 1 quizzes (7 Toán + 4 Ngữ văn) now use emoji-rich, visual questions
+- Duration reduced to 15 minutes for all Grade 1 quizzes
+- Questions are much more visual and appropriate for kids who cannot yet read
+- Grade 2-5 quiz data remains completely unchanged
+- File is valid TypeScript with no lint errors
+
+---
+Task ID: 3
+Agent: Quiz View Developer
+Task: Update quiz view UI for Grade 1 - more visual and child-friendly
+
+Work Log:
+- Added `isGrade1 = quiz.grade === 1` constant and `grade1Emojis` array after quiz null check
+- Made question text larger for Grade 1: text-2xl sm:text-3xl with leading-loose and Patrick Hand font
+- Made multiple choice answer buttons larger for Grade 1: p-6 padding, w-12 h-12 option circles, text-lg option text
+- Added colorful option circles for Grade 1: A=rose, B=sky, C=emerald, D=amber (both selected and unselected states with dark mode)
+- Made fill_blank input larger for Grade 1: py-5 text-2xl with bigger pencil icon and emoji placeholder "✏️ Viết đáp án đây nhé..."
+- Made question navigation buttons larger for Grade 1: w-12 h-12 sm:w-14 sm:h-14, text-lg, ✅ for answered
+- Added fun mascot emoji display at top of question area for Grade 1 (🐱🐶🌟🎈🦊🐰🌈🍎🌻🎂 cycling per question)
+- Changed progress text for Grade 1 from "X/Y câu" to "Đã làm: X/Y 🌟" with Patrick Hand font
+- Hidden difficulty indicator (Dễ/Trung bình/Khó) for Grade 1
+- Made submit button extra large for Grade 1: text-lg px-6 py-3 h-14 with "🌟 Nộp bài nhé! 🌟" text
+- Made header submit button larger for Grade 1: text-base px-5 py-2.5 h-12 with "🌟 Nộp bài" text
+- Hidden keyboard shortcuts hint for Grade 1
+- Fixed JSX closing bracket issues (missing `}` on conditional rendering blocks)
+- All lint checks pass with no errors
+
+Stage Summary:
+- Grade 1 quiz experience is now significantly more visual and child-friendly
+- All 11 requested changes implemented with conditional `isGrade1` flag
+- Grades 2-5 quiz experience remains completely unchanged
+- Dark mode variants properly applied for all Grade 1 enhancements
+- No new dependencies added
+
+---
+Task ID: 7
+Agent: Database Developer
+Task: Re-seed database with updated quiz data
+
+Work Log:
+- Read current seed route at `/home/z/my-project/src/app/api/seed/route.ts` to understand seeding mechanism
+- Read quiz data from `/home/z/my-project/src/lib/quiz-data.ts` - confirmed 43 quizzes with new emoji-based Grade 1 questions
+- Read additional questions from `/home/z/my-project/src/lib/additional-questions.ts` - identified 12 key mismatches with updated quiz titles
+- Updated all additional-questions keys to match new quiz titles (e.g., "Kiểm tra Các số từ 1 đến 10" → "Kiểm tra Các số đến 10", "Kiểm tra Tập đọc chữ cái" → "Kiểm tra Các âm và vần cơ bản", etc.)
+- Deleted old SQLite database file and ran `bun run db:push` to create fresh database
+- Encountered "readonly database" error when seeding via Next.js API - caused by stale PrismaClient connection to deleted database file
+- Resolved by: (1) seeding directly via bun script using fresh PrismaClient, (2) updating seed route to use its own PrismaClient instead of cached one from db.ts, (3) triggering hot-reload of db.ts to reconnect to new database
+- Added `?reset=true` query parameter to seed route for future re-seeding needs
+- Added update logic for duration and description fields (not just chapterName) in the seed route
+- Verified all 43 quizzes present: Grade 1 (7 toan + 4 ngu-van), Grade 2 (5+3), Grade 3 (5+3), Grade 4 (5+3), Grade 5 (5+3)
+- Verified Grade 1 Toán questions contain emojis (🍎, 🐱, ⭐, 🌟, 🎈, etc.)
+- Verified Grade 1 Ngữ Văn questions contain emojis (🐱, 🐟, 🐶, 🅰️, 🔊, etc.)
+- Checked dev.log - no current errors, all API requests returning 200
+- Ran `bun run lint` - passed with no errors
+
+Stage Summary:
+- Successfully re-seeded database with all 43 quizzes and 505 total questions
+- Grade 1 quizzes now have emoji-based visual questions as specified in updated quiz-data.ts
+- Fixed 12 additional-questions key mismatches to ensure all extra questions are properly linked
+- Improved seed route with fresh PrismaClient and reset support for future use
+- All API endpoints working correctly, no compilation errors, lint passes clean
+
+---
+Task ID: 10 (Main Agent - Round 8)
+Agent: Main
+Task: Make Grade 1 exercises easier, more visual/image-based for kids who can't read yet
+
+Work Log:
+- QA tested current website with agent-browser - confirmed all features working
+- Updated Grade 1 quiz data (7 Toán + 4 Ngữ văn chapters) with emoji-based visual questions
+  - Toán: visual counting (🍎🍎🍎🍎🍎), visual addition (🍎🍎🍎 + 🍎🍎 = ?), visual subtraction, emoji shapes (⬜🔴🔵🔺)
+  - Ngữ văn: letter-animal associations (Con gì bắt đầu bằng chữ 'M'? 🐱🐟🐶🐷), emoji-word matching
+  - Reduced duration from 20-25 min to 15 min for Grade 1
+  - All questions now use emojis as visual cues for pre-literate children
+- Updated quiz-view.tsx for Grade 1 with:
+  - Larger question text (text-2xl sm:text-3xl) with Patrick Hand font
+  - Bigger answer buttons (p-6, w-12 h-12 option circles, text-lg)
+  - Colorful option circles (A=rose, B=sky, C=emerald, D=amber)
+  - Larger fill_blank input (py-5 text-2xl)
+  - Larger navigation buttons (w-12 h-12 sm:w-14 sm:h-14)
+  - Fun mascot emoji display (🐱🐶🌟🎈🦊🐰🌈🍎🌻🎂)
+  - Simplified progress text ("Đã làm: X/Y 🌟")
+  - Hidden difficulty indicator for Grade 1
+  - Larger submit buttons ("🌟 Nộp bài nhé! 🌟")
+  - Hidden keyboard shortcuts for Grade 1
+- Updated chapter-view.tsx for Grade 1 with:
+  - Chapter-specific emoji icons (🍎 for counting, ➕ for addition, ➖ for subtraction, etc.)
+  - Larger chapter heading text (text-xl sm:text-2xl with Patrick Hand font)
+  - Bigger padding for Grade 1 cards (p-5 sm:p-6)
+  - "🎮 Bắt đầu nhé!" button instead of "Kiểm tra online"
+  - "💡 Xem mẹo học bài" instead of "Ôn tập"
+  - Larger study tips text for Grade 1
+  - Hidden difficulty badge for Grade 1
+  - Wider left accent bar for Grade 1
+- Re-seeded database with updated quiz data (43 quizzes, 505 questions)
+- Fixed 12 quiz title key mismatches in additional-questions.ts
+- Verified all API routes return 200 status
+- Verified no lint errors and no runtime errors in dev.log
+
+Stage Summary:
+**Grade 1 Visual Overhaul (Complete):**
+1. Quiz data: All 11 Grade 1 quizzes now use emoji-based visual questions
+2. Quiz view: Bigger, more colorful, with mascot emojis and simplified text for pre-literate children
+3. Chapter view: Chapter-specific emojis, bigger text, kid-friendly button labels
+4. Database: Re-seeded with 43 quizzes and 505 questions
+5. No bugs, no errors, lint passes
+
+**Key Principle Applied:** "Kids at Grade 1 can't read yet, so use more images/emojis"
+- Counting questions use visual objects: 🍎🍎🍎🍎🍎 instead of "5"
+- Addition uses visual representation: 🍎🍎🍎 + 🍎🍎 = ?
+- Letter recognition uses animal emojis: 🐱🐟🐶🐷
+- All Grade 1 UI elements are larger and more colorful

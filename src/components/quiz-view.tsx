@@ -357,6 +357,9 @@ export function QuizView() {
 
   if (!quiz) return null
 
+  const isGrade1 = quiz.grade === 1
+  const grade1Emojis = ['🐱', '🐶', '🌟', '🎈', '🦊', '🐰', '🌈', '🍎', '🌻', '🎂']
+
   const questions = [...quiz.questions].sort((a, b) => a.orderIndex - b.orderIndex)
   const q = questions[currentQuestion]
   const options = q.questionType === 'multiple_choice' ? parseOptions(q.options) : []
@@ -446,11 +449,21 @@ export function QuizView() {
               <Button
                 onClick={() => handleSubmit()}
                 disabled={submitting}
-                className="gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-md hover:shadow-lg transition-all shrink-0"
+                className={`gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white rounded-xl shadow-md hover:shadow-lg transition-all shrink-0 ${
+                  isGrade1
+                    ? 'text-base px-5 py-2.5 h-12 font-[family-name:var(--font-patrick-hand)]'
+                    : 'text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2'
+                }`}
               >
-                <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">{submitting ? 'Đang nộp...' : 'Nộp bài'}</span>
-                <span className="sm:hidden">{submitting ? '...' : 'Nộp'}</span>
+                <Send className={isGrade1 ? 'w-5 h-5' : 'w-3.5 h-3.5 sm:w-4 sm:h-4'} />
+                {isGrade1 ? (
+                  <span>{submitting ? 'Đang nộp...' : '🌟 Nộp bài'}</span>
+                ) : (
+                  <>
+                    <span className="hidden sm:inline">{submitting ? 'Đang nộp...' : 'Nộp bài'}</span>
+                    <span className="sm:hidden">{submitting ? '...' : 'Nộp'}</span>
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -460,8 +473,8 @@ export function QuizView() {
                 👤 {studentInfo.name} - Lớp {studentInfo.className}
               </span>
             )}
-            <span className="text-xs text-muted-foreground shrink-0">
-              {answeredCount}/{questions.length} câu
+            <span className={`shrink-0 ${isGrade1 ? 'text-sm text-orange-600 dark:text-orange-300 font-[family-name:var(--font-patrick-hand)]' : 'text-xs text-muted-foreground'}`}>
+              {isGrade1 ? `Đã làm: ${answeredCount}/${questions.length} 🌟` : `${answeredCount}/${questions.length} câu`}
             </span>
           </div>
           {/* Progress ring bar - gradient from orange to green */}
@@ -497,40 +510,59 @@ export function QuizView() {
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 dark:from-orange-950/30 to-transparent rounded-bl-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-amber-50 dark:from-amber-950/30 to-transparent rounded-tr-3xl pointer-events-none" />
 
+          {/* Fun mascot emoji for Grade 1 */}
+          {isGrade1 && (
+            <div className="text-center mb-4">
+              <span className="text-5xl sm:text-6xl inline-block animate-float">
+                {grade1Emojis[currentQuestion % grade1Emojis.length]}
+              </span>
+            </div>
+          )}
+
           {/* Question number, type indicator, and text */}
           <div className="mb-8 relative">
             <div className="flex items-center gap-2 mb-3 flex-wrap">
-              <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-bold px-3 py-1 rounded-full">
+              <span className={`font-bold px-3 py-1 rounded-full ${
+                isGrade1
+                  ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-lg font-[family-name:var(--font-patrick-hand)]'
+                  : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm'
+              }`}>
                 Câu {currentQuestion + 1}
               </span>
-              <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
+              <span className={`font-semibold px-3 py-1 rounded-full ${
                 q.questionType === 'multiple_choice'
                   ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
                   : 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
-              }`}>
+              } ${isGrade1 ? 'text-sm' : 'text-xs'}`}>
                 {q.questionType === 'multiple_choice' ? '📌 Trắc nghiệm' : '✏️ Điền đáp án'}
               </span>
-              {/* Difficulty indicator */}
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                q.points >= 3
-                  ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                  : q.points >= 2
-                    ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
-                    : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
-              }`}>
-                <span className="inline-flex items-center gap-0.5">
-                  {Array.from({ length: q.points >= 3 ? 3 : q.points >= 2 ? 2 : 1 }).map((_, si) => (
-                    <Star key={si} className="w-3 h-3 fill-current" />
-                  ))}
+              {/* Difficulty indicator - hidden for Grade 1 */}
+              {!isGrade1 && (
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                  q.points >= 3
+                    ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                    : q.points >= 2
+                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                      : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                }`}>
+                  <span className="inline-flex items-center gap-0.5">
+                    {Array.from({ length: q.points >= 3 ? 3 : q.points >= 2 ? 2 : 1 }).map((_, si) => (
+                      <Star key={si} className="w-3 h-3 fill-current" />
+                    ))}
+                  </span>
+                  <span className="ml-1">{q.points >= 3 ? 'Khó' : q.points >= 2 ? 'Trung bình' : 'Dễ'}</span>
                 </span>
-                <span className="ml-1">{q.points >= 3 ? 'Khó' : q.points >= 2 ? 'Trung bình' : 'Dễ'}</span>
-              </span>
+              )}
               <span className="text-xs text-muted-foreground ml-auto">
                 {currentQuestion + 1}/{questions.length}
               </span>
             </div>
             <div className="flex items-start gap-2">
-              <h3 className="text-xl sm:text-2xl font-semibold text-foreground leading-relaxed flex-1">
+              <h3 className={`font-semibold text-foreground flex-1 ${
+                isGrade1
+                  ? 'text-2xl sm:text-3xl leading-loose font-[family-name:var(--font-patrick-hand)]'
+                  : 'text-xl sm:text-2xl leading-relaxed'
+              }`}>
                 {q.questionText}
               </h3>
               <Button
@@ -597,10 +629,27 @@ export function QuizView() {
 
           {/* Multiple choice */}
           {q.questionType === 'multiple_choice' && options.length > 0 && (
-            <div className="space-y-3 mt-2">
+            <div className={`mt-2 ${isGrade1 ? 'space-y-4' : 'space-y-3'}`}>
               {options.map((option, idx) => {
                 const optionKey = String.fromCharCode(65 + idx) // A, B, C, D
                 const isSelected = answers[q.id] === optionKey
+
+                // Colorful option circles for Grade 1
+                const grade1CircleColors = [
+                  { unselected: 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300', selected: 'bg-rose-500 text-white dark:bg-rose-500 dark:text-white' },
+                  { unselected: 'bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300', selected: 'bg-sky-500 text-white dark:bg-sky-500 dark:text-white' },
+                  { unselected: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300', selected: 'bg-emerald-500 text-white dark:bg-emerald-500 dark:text-white' },
+                  { unselected: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300', selected: 'bg-amber-500 text-white dark:bg-amber-500 dark:text-white' },
+                ]
+
+                const circleClass = isGrade1
+                  ? isSelected
+                    ? grade1CircleColors[idx]?.selected || 'bg-orange-500 text-white'
+                    : grade1CircleColors[idx]?.unselected || 'bg-gray-100 text-gray-600'
+                  : isSelected
+                    ? 'bg-orange-500 text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+
                 return (
                   <motion.button
                     key={idx}
@@ -611,23 +660,25 @@ export function QuizView() {
                       setAnswers((prev) => ({ ...prev, [q.id]: optionKey }))
                     }}
                     aria-label={`Đáp án ${optionKey}: ${option.replace(/^[A-D]\.\s*/, '')}`}
-                    className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
+                    className={`w-full text-left rounded-xl border-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 ${
+                      isGrade1 ? 'p-6' : 'p-5'
+                    } ${
                       isSelected
-                        ? 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'
+                        ? isGrade1
+                          ? 'border-orange-500 ring-2 ring-orange-300 shadow-md dark:border-orange-500 dark:ring-orange-600 animate-answer-pop bg-orange-50 dark:bg-orange-950/30'
+                          : 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'
                         : 'border-gray-200 dark:border-gray-700 hover:bg-orange-50 hover:border-orange-300 hover:shadow-md hover:scale-[1.02] dark:hover:bg-orange-950/30 dark:hover:border-orange-700'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className={`flex items-center ${isGrade1 ? 'gap-4' : 'gap-3'}`}>
                       <span
-                        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-all duration-200 ${
-                          isSelected
-                            ? 'bg-orange-500 text-white shadow-md'
-                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
-                        }`}
+                        className={`rounded-full flex items-center justify-center font-bold shrink-0 transition-all duration-200 ${
+                          isGrade1 ? 'w-12 h-12 text-lg' : 'w-9 h-9 text-sm'
+                        } ${circleClass}`}
                       >
-                        {isSelected ? <Check className="w-4 h-4" /> : optionKey}
+                        {isSelected ? <Check className={isGrade1 ? 'w-6 h-6' : 'w-4 h-4'} /> : optionKey}
                       </span>
-                      <span className="text-base leading-relaxed">{option.replace(/^[A-D]\.\s*/, '')}</span>
+                      <span className={`leading-relaxed ${isGrade1 ? 'text-lg font-[family-name:var(--font-patrick-hand)]' : 'text-base'}`}>{option.replace(/^[A-D]\.\s*/, '')}</span>
                     </div>
                   </motion.button>
                 )
@@ -640,8 +691,8 @@ export function QuizView() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="flex-1 relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-400">
-                    <Pencil className="w-4 h-4" />
+                  <div className={`absolute text-orange-400 ${isGrade1 ? 'left-4 top-1/2 -translate-y-1/2' : 'left-3 top-1/2 -translate-y-1/2'}`}>
+                    <Pencil className={isGrade1 ? 'w-6 h-6' : 'w-4 h-4'} />
                   </div>
                   <input
                     type="text"
@@ -649,14 +700,18 @@ export function QuizView() {
                     onChange={(e) =>
                       setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))
                     }
-                    placeholder="Nhập câu trả lời của bạn..."
-                    className="w-full pl-10 pr-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-lg bg-white dark:bg-card input-focus"
+                    placeholder={isGrade1 ? '✏️ Viết đáp án đây nhé...' : 'Nhập câu trả lời của bạn...'}
+                    className={`w-full border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none bg-white dark:bg-card input-focus ${
+                      isGrade1
+                        ? 'pl-12 pr-4 py-5 text-2xl font-[family-name:var(--font-patrick-hand)] placeholder:text-xl'
+                        : 'pl-10 pr-4 py-3 text-lg'
+                    }`}
                   />
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <Pencil className="w-3 h-3" />
-                Nhập câu trả lời ngắn gọn vào ô trên
+              <p className={`flex items-center gap-1 ${isGrade1 ? 'text-base text-orange-600 dark:text-orange-300 font-[family-name:var(--font-patrick-hand)]' : 'text-sm text-muted-foreground'}`}>
+                <Pencil className={isGrade1 ? 'w-4 h-4' : 'w-3 h-3'} />
+                {isGrade1 ? '📝 Viết đáp án vào ô trên nhé!' : 'Nhập câu trả lời ngắn gọn vào ô trên'}
               </p>
             </div>
           )}
@@ -675,13 +730,15 @@ export function QuizView() {
           <span className="hidden sm:inline">Câu trước</span>
         </Button>
 
-        {/* Keyboard shortcuts hint (desktop only) */}
-        <div className="hidden sm:flex items-center justify-center gap-4 text-xs text-muted-foreground mt-1">
-          <span className="flex items-center gap-1"><Keyboard className="w-3 h-3" /> Phím tắt:</span>
-          <span className="flex items-center gap-1"><span className="kbd-hint">1-4</span> Chọn đáp án</span>
-          <span className="flex items-center gap-1"><span className="kbd-hint">←→</span> Chuyển câu</span>
-          <span className="flex items-center gap-1"><span className="kbd-hint">Enter</span> Câu tiếp</span>
-        </div>
+        {/* Keyboard shortcuts hint (desktop only) - hidden for Grade 1 */}
+        {!isGrade1 && (
+          <div className="hidden sm:flex items-center justify-center gap-4 text-xs text-muted-foreground mt-1">
+            <span className="flex items-center gap-1"><Keyboard className="w-3 h-3" /> Phím tắt:</span>
+            <span className="flex items-center gap-1"><span className="kbd-hint">1-4</span> Chọn đáp án</span>
+            <span className="flex items-center gap-1"><span className="kbd-hint">←→</span> Chuyển câu</span>
+            <span className="flex items-center gap-1"><span className="kbd-hint">Enter</span> Câu tiếp</span>
+          </div>
+        )}
 
       {/* Question navigation with answered indicators */}
       <div className="flex items-center gap-1.5 flex-wrap justify-center overflow-x-auto max-w-[60%]">
@@ -694,7 +751,9 @@ export function QuizView() {
                 playClickSound()
                 setCurrentQuestion(idx)
               }}
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 relative focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-1 btn-ripple ${
+              className={`rounded-lg font-semibold transition-all duration-200 relative focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-1 btn-ripple ${
+                isGrade1 ? 'w-12 h-12 sm:w-14 sm:h-14 text-lg' : 'w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm'
+              } ${
                 idx === currentQuestion
                   ? 'bg-orange-100 border-2 border-orange-500 text-orange-700 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:text-orange-300'
                   : isAnswered
@@ -702,7 +761,7 @@ export function QuizView() {
                     : 'bg-amber-50 border-2 border-amber-200 text-amber-600 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30'
               }`}
             >
-              {isAnswered && idx !== currentQuestion ? '✓' : idx + 1}
+              {isAnswered && idx !== currentQuestion ? (isGrade1 ? '✅' : '✓') : idx + 1}
             </button>
             )
           })}
@@ -720,10 +779,12 @@ export function QuizView() {
           <Button
             onClick={() => handleSubmit()}
             disabled={submitting}
-            className="gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white shrink-0 animate-submit-gradient shadow-lg hover:shadow-xl"
+            className={`gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white shrink-0 animate-submit-gradient shadow-lg hover:shadow-xl ${
+              isGrade1 ? 'text-lg px-6 py-3 h-14 font-[family-name:var(--font-patrick-hand)]' : ''
+            }`}
           >
-            <Send className="w-4 h-4" />
-            {submitting ? 'Đang nộp...' : 'Nộp bài'}
+            <Send className={isGrade1 ? 'w-5 h-5' : 'w-4 h-4'} />
+            {submitting ? 'Đang nộp...' : (isGrade1 ? '🌟 Nộp bài nhé! 🌟' : 'Nộp bài')}
           </Button>
         )}
       </div>

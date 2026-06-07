@@ -1,10 +1,23 @@
-import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
 import { quizData } from '@/lib/quiz-data'
 import { additionalQuestions } from '@/lib/additional-questions'
 
-export async function POST() {
+// Use a fresh PrismaClient for seeding to avoid stale connections
+const db = new PrismaClient()
+
+export async function POST(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url)
+    const reset = searchParams.get('reset')
+
+    // If reset=true, clear all existing data first
+    if (reset === 'true') {
+      await db.studentResult.deleteMany({})
+      await db.question.deleteMany({})
+      await db.quiz.deleteMany({})
+    }
+
     // Check if data already exists
     const existingCount = await db.quiz.count()
     if (existingCount > 0) {
@@ -50,11 +63,11 @@ export async function POST() {
           continue
         }
 
-        // Update chapter name if it changed
-        if (existingQuiz.chapterName !== quiz.chapterName) {
+        // Update chapter name and other fields if they changed
+        if (existingQuiz.chapterName !== quiz.chapterName || existingQuiz.description !== quiz.description || existingQuiz.duration !== quiz.duration) {
           await db.quiz.update({
             where: { id: existingQuiz.id },
-            data: { chapterName: quiz.chapterName, description: quiz.description },
+            data: { chapterName: quiz.chapterName, description: quiz.description, duration: quiz.duration },
           })
         }
 

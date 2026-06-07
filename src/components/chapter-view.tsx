@@ -419,11 +419,54 @@ const chapterDifficulty: Record<number, { label: string; class: string; emoji: s
   5: { label: 'Khó', class: 'difficulty-hard', emoji: '🔴' },
 }
 
+// Chapter emojis for visual appeal (especially Grade 1)
+const chapterEmojis: Record<string, string> = {
+  // Grade 1 Toán
+  '1-toan-chuong-1': '🍎', // Các số đến 10
+  '1-toan-chuong-2': '➕', // Phép cộng
+  '1-toan-chuong-3': '➖', // Phép trừ
+  '1-toan-chuong-4': '🔢', // Các số đến 20
+  '1-toan-chuong-5': '📏', // Điểm và đường thẳng
+  '1-toan-chuong-6': '⬜', // Hình học cơ bản
+  '1-toan-chuong-7': '⚖️', // Đại lượng
+  // Grade 1 Ngữ văn
+  '1-ngu-van-chuong-1': '🔤', // Âm và vần
+  '1-ngu-van-chuong-2': '🗣️', // Vần và tiếng
+  '1-ngu-van-chuong-3': '✏️', // Tập viết
+  '1-ngu-van-chuong-4': '📖', // Đọc hiểu
+  // Grade 2 Toán
+  '2-toan-chuong-1': '💯', // Số đến 100
+  '2-toan-chuong-2': '🧮', // Cộng trừ pv100
+  '2-toan-chuong-3': '✖️', // Phép nhân
+  '2-toan-chuong-4': '📐', // Hình học
+  '2-toan-chuong-5': '⏰', // Đại lượng
+  // Grade 2 Ngữ văn
+  '2-ngu-van-chuong-1': '📚', // Đọc hiểu
+  '2-ngu-van-chuong-2': '✍️', // Chính tả
+  '2-ngu-van-chuong-3': '📝', // Tập làm văn
+  // Grade 3 Toán
+  '3-toan-chuong-1': '🎯', // Số đến 1000
+  '3-toan-chuong-2': '✖️', // Phép nhân
+  '3-toan-chuong-3': '➗', // Phép chia
+  '3-toan-chuong-4': '📐', // Hình học/Diện tích
+  '3-toan-chuong-5': '⏱️', // Thời gian/Độ dài
+  // Grade 3 Ngữ văn
+  '3-ngu-van-chuong-1': '📖', // Đọc hiểu
+  '3-ngu-van-chuong-2': '💬', // Luyện từ
+  '3-ngu-van-chuong-3': '📝', // Tập làm văn
+  // Grade 4-5 Toán & Ngữ văn (generic)
+  '4-toan-chuong-1': '🔢', '4-toan-chuong-2': '🧮', '4-toan-chuong-3': '➗', '4-toan-chuong-4': '📐', '4-toan-chuong-5': '📏',
+  '4-ngu-van-chuong-1': '📖', '4-ngu-van-chuong-2': '💬', '4-ngu-van-chuong-3': '📝',
+  '5-toan-chuong-1': '📊', '5-toan-chuong-2': '🔢', '5-toan-chuong-3': '📐', '5-toan-chuong-4': '📈', '5-toan-chuong-5': '📏',
+  '5-ngu-van-chuong-1': '📖', '5-ngu-van-chuong-2': '💬', '5-ngu-van-chuong-3': '📝',
+}
+
 function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
   const [isOpen, setIsOpen] = useState(false)
   const chapterNum = quiz.chapter.replace('chuong-', '')
   const tipKey = `${quiz.grade}-${quiz.subject}-chuong-${chapterNum}`
   const tipsData = studyTips[tipKey]
+  const isGrade1 = quiz.grade === 1
 
   if (!tipsData) return null
 
@@ -431,15 +474,15 @@ function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
     <div className="mt-3">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800 transition-colors py-1"
+        className={`w-full flex items-center gap-2 ${isGrade1 ? 'text-base' : 'text-sm'} font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors py-1`}
       >
-        <Lightbulb className="w-4 h-4" />
-        <span>Ôn tập</span>
+        <Lightbulb className={isGrade1 ? 'w-5 h-5' : 'w-4 h-4'} />
+        <span>{isGrade1 ? '💡 Xem mẹo học bài' : 'Ôn tập'}</span>
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown className="w-4 h-4" />
+          <ChevronDown className={isGrade1 ? 'w-5 h-5' : 'w-4 h-4'} />
         </motion.span>
       </button>
       <AnimatePresence>
@@ -451,15 +494,15 @@ function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mt-2 space-y-3">
+            <div className={`bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl ${isGrade1 ? 'p-5' : 'p-4'} mt-2 space-y-3`}>
               {/* Key knowledge points */}
               <div>
-                <h5 className="text-sm font-bold text-amber-800 mb-2 flex items-center gap-1">
+                <h5 className={`${isGrade1 ? 'text-base' : 'text-sm'} font-bold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1`}>
                   📌 Kiến thức trọng tâm
                 </h5>
                 <ul className="space-y-1">
                   {tipsData.keyPoints.map((point, i) => (
-                    <li key={i} className="text-sm text-amber-700 flex items-start gap-2">
+                    <li key={i} className={`${isGrade1 ? 'text-base' : 'text-sm'} text-amber-700 dark:text-amber-400 flex items-start gap-2`}>
                       <span className="shrink-0">•</span>
                       <span>{point}</span>
                     </li>
@@ -468,12 +511,12 @@ function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
               </div>
               {/* Tips */}
               <div>
-                <h5 className="text-sm font-bold text-amber-800 mb-2 flex items-center gap-1">
+                <h5 className={`${isGrade1 ? 'text-base' : 'text-sm'} font-bold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1`}>
                   💡 Mẹo làm bài tốt
                 </h5>
                 <ul className="space-y-1.5">
                   {tipsData.tips.map((tip, i) => (
-                    <li key={i} className="text-sm text-amber-700 flex items-start gap-2">
+                    <li key={i} className={`${isGrade1 ? 'text-base' : 'text-sm'} text-amber-700 dark:text-amber-400 flex items-start gap-2`}>
                       <span className="shrink-0">✨</span>
                       <span>{tip}</span>
                     </li>
@@ -856,19 +899,22 @@ export function ChapterView() {
             const diff = chapterDifficulty[(index % 5) + 1] || chapterDifficulty[1]
             const completion = completedQuizzes[quiz.id]
             const isCompleted = !!completion
+            const chapterEmojiKey = `${quiz.grade}-${quiz.subject}-${quiz.chapter}`
+            const chapterEmoji = chapterEmojis[chapterEmojiKey] || '📝'
+            const isGrade1 = quiz.grade === 1
             return (
               <motion.div
                 key={quiz.id}
                 variants={item}
                 whileHover={{ scale: 1.01, x: 4 }}
-                className={`bg-white dark:bg-card border-2 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden group ${
+                className={`bg-white dark:bg-card border-2 rounded-2xl ${isGrade1 ? 'p-5 sm:p-6' : 'p-4 sm:p-5'} shadow-sm hover:shadow-md transition-all relative overflow-hidden group ${
                   isCompleted
                     ? 'border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-700'
                     : 'border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700'
                 }`}
               >
                 {/* Left accent bar - green for completed, orange for not */}
-                <div className={`absolute top-0 left-0 bottom-0 w-1 transition-opacity ${
+                <div className={`absolute top-0 left-0 bottom-0 ${isGrade1 ? 'w-1.5' : 'w-1'} transition-opacity ${
                   isCompleted
                     ? 'bg-gradient-to-b from-emerald-400 to-teal-400 opacity-100'
                     : 'bg-gradient-to-b from-orange-400 to-amber-400 opacity-0 group-hover:opacity-100'
@@ -876,15 +922,22 @@ export function ChapterView() {
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1">
+                    {/* Chapter emoji + metadata row */}
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      {/* Chapter emoji icon - bigger for Grade 1 */}
+                      <span className={`${isGrade1 ? 'text-2xl' : 'text-lg'} leading-none`}>
+                        {chapterEmoji}
+                      </span>
                       <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-bold px-2 py-0.5 rounded-full">
                         Chương {index + 1}
                       </span>
 
-                      {/* Difficulty badge */}
-                      <span className={`${diff.class} text-xs px-2 py-0.5 rounded-full font-semibold`}>
-                        {diff.emoji} {diff.label}
-                      </span>
+                      {/* Difficulty badge - hidden for Grade 1 */}
+                      {!isGrade1 && (
+                        <span className={`${diff.class} text-xs px-2 py-0.5 rounded-full font-semibold`}>
+                          {diff.emoji} {diff.label}
+                        </span>
+                      )}
 
                       {quiz.duration > 0 && (
                         <span className="flex items-center gap-1 text-xs text-muted-foreground dark:text-gray-400">
@@ -893,8 +946,8 @@ export function ChapterView() {
                         </span>
                       )}
                       {quiz._count?.questions && (
-                        <span className="text-xs text-muted-foreground dark:text-gray-400">
-                          📝 {quiz._count.questions} câu
+                        <span className={`${isGrade1 ? 'text-sm' : 'text-xs'} text-muted-foreground dark:text-gray-400`}>
+                          📝 {quiz._count.questions} câu hỏi
                         </span>
                       )}
 
@@ -905,7 +958,7 @@ export function ChapterView() {
                         </span>
                       )}
                     </div>
-                    <h3 className="font-semibold text-lg text-foreground">
+                    <h3 className={`font-semibold ${isGrade1 ? 'text-xl sm:text-2xl font-[family-name:var(--font-patrick-hand)]' : 'text-lg'} text-foreground`}>
                       {quiz.chapterName}
                     </h3>
                     <p className="text-muted-foreground dark:text-gray-400 text-sm mt-0.5">
@@ -957,13 +1010,13 @@ export function ChapterView() {
                       playClickSound()
                       handleStartQuiz(quiz.id)
                     }}
-                    className={`font-semibold px-6 py-3 rounded-xl text-base shrink-0 gap-2 shadow-md hover-glow transition-all ${
+                    className={`font-semibold ${isGrade1 ? 'px-8 py-4 text-lg' : 'px-6 py-3 text-base'} rounded-xl shrink-0 gap-2 shadow-md hover-glow transition-all ${
                       isCompleted
                         ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
                         : 'bg-orange-500 hover:bg-orange-600 text-white'
                     }`}
                   >
-                    {isCompleted ? 'Làm lại' : 'Kiểm tra online'}
+                    {isCompleted ? '🔄 Làm lại' : isGrade1 ? '🎮 Bắt đầu nhé!' : 'Kiểm tra online'}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>

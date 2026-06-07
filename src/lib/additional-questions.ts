@@ -7,7 +7,7 @@ import { QuizData } from './quiz-data'
 // Map of quiz title -> additional questions
 export const additionalQuestions: Record<string, QuizData['questions']> = {
   // ===== LỚP 1 - TOÁN =====
-  "Kiểm tra Các số từ 1 đến 10": [
+  "Kiểm tra Các số đến 10": [
     { questionText: "Số nào lớn hơn: 6 hay 8?", questionType: "multiple_choice", options: ["A. 6", "B. 8", "C. Bằng nhau", "D. Không biết"], correctAnswer: "B", points: 1 },
     { questionText: "Đếm ngược từ 5 về 1: 5, 4, ..., 2, 1. Số còn thiếu là?", questionType: "fill_blank", options: [], correctAnswer: "3", points: 1 },
     { questionText: "Số lẻ nào nằm giữa 4 và 8?", questionType: "multiple_choice", options: ["A. 5", "B. 6", "C. 7", "D. 5 và 7"], correctAnswer: "D", points: 1 },
@@ -25,7 +25,7 @@ export const additionalQuestions: Record<string, QuizData['questions']> = {
     { questionText: "Số nào trừ đi 3 thì bằng 5?", questionType: "fill_blank", options: [], correctAnswer: "8", points: 1 },
     { questionText: "9 - 6 = ?", questionType: "multiple_choice", options: ["A. 2", "B. 3", "C. 4", "D. 5"], correctAnswer: "B", points: 1 },
   ],
-  "Kiểm tra Các số đến 20": [
+  "Kiểm tra Các số đến 20. Phép cộng và phép trừ trong phạm vi 20": [
     { questionText: "13 + 4 = ?", questionType: "multiple_choice", options: ["A. 16", "B. 17", "C. 18", "D. 15"], correctAnswer: "B", points: 1 },
     { questionText: "Số 11 gồm mấy chục và mấy đơn vị?", questionType: "fill_blank", options: [], correctAnswer: "1 chục và 1 đơn vị", points: 1 },
     { questionText: "Viết các số chẵn từ 10 đến 20:", questionType: "fill_blank", options: [], correctAnswer: "10 12 14 16 18 20", points: 1 },
@@ -33,7 +33,7 @@ export const additionalQuestions: Record<string, QuizData['questions']> = {
   ],
 
   // ===== LỚP 1 - NGỮ VĂN =====
-  "Kiểm tra Tập đọc chữ cái": [
+  "Kiểm tra Các âm và vần cơ bản": [
     { questionText: "Chữ 'p' đọc là gì?", questionType: "multiple_choice", options: ["A. Pờ", "B. Bờ", "C. Tờ", "D. Nờ"], correctAnswer: "A", points: 1 },
     { questionText: "Có mấy nguyên âm đơn trong tiếng Việt?", questionType: "multiple_choice", options: ["A. 5", "B. 6", "C. 12", "D. 29"], correctAnswer: "A", points: 1 },
     { questionText: "Chữ nào đứng sau chữ 'd' trong bảng chữ cái?", questionType: "fill_blank", options: [], correctAnswer: "đ", points: 1 },
@@ -68,19 +68,19 @@ export const additionalQuestions: Record<string, QuizData['questions']> = {
   ],
 
   // ===== LỚP 2 - NGỮ VĂN =====
-  "Kiểm tra Tập đọc hiểu": [
+  "Kiểm tra Đọc hiểu văn bản ngắn": [
     { questionText: "Từ 'bàn ghế' thuộc nhóm từ nào?", questionType: "multiple_choice", options: ["A. Động vật", "B. Thực vật", "C. Đồ vật", "D. Con người"], correctAnswer: "C", points: 1 },
     { questionText: "Từ trái nghĩa với 'nhanh' là:", questionType: "fill_blank", options: [], correctAnswer: "chậm", points: 1 },
     { questionText: "Câu nào là câu cảm thán?", questionType: "multiple_choice", options: ["A. Trời mưa rồi.", "B. Bạn đi đâu?", "C. Tuyệt quá!", "D. Em đi học."], correctAnswer: "C", points: 1 },
   ],
-  "Kiểm tra Chính tả và Luyện từ": [
+  "Kiểm tra Chính tả và Luyện từ và câu": [
     { questionText: "Điền 'ch' hay 'tr': ...ái cây", questionType: "fill_blank", options: [], correctAnswer: "c", points: 1 },
     { questionText: "Từ nào viết sai chính tả?", questionType: "multiple_choice", options: ["A. Trong trẻo", "B. Sáng sủa", "C. Trọng trè", "D. Xinh đẹp"], correctAnswer: "C", points: 1 },
     { questionText: "Điền 'r' hay 'd': ...ương thuốc", questionType: "fill_blank", options: [], correctAnswer: "d", points: 1 },
   ],
 
   // ===== LỚP 3 - TOÁN =====
-  "Kiểm tra Phép cộng trừ phạm vi 1000": [
+  "Kiểm tra Ôn tập và bổ sung các số đến 1000. Phép cộng trừ": [
     { questionText: "456 + 234 = ?", questionType: "fill_blank", options: [], correctAnswer: "690", points: 1 },
     { questionText: "800 - 275 = ?", questionType: "multiple_choice", options: ["A. 525", "B. 625", "C. 535", "D. 615"], correctAnswer: "A", points: 1 },
     { questionText: "Có 435 học sinh, chuyển đi 128 học sinh. Hỏi còn lại bao nhiêu học sinh?", questionType: "fill_blank", options: [], correctAnswer: "307", points: 1 },
@@ -99,7 +99,7 @@ export const additionalQuestions: Record<string, QuizData['questions']> = {
   ],
 
   // ===== LỚP 3 - NGỮ VĂN =====
-  "Kiểm tra Đọc hiểu": [
+  "Kiểm tra Đọc hiểu văn bản": [
     { questionText: "Từ 'quanh co' có nghĩa là:", questionType: "multiple_choice", options: ["A. Thẳng tắp", "B. Cong queo không thẳng", "C. Rộng lớn", "D. Nhỏ bé"], correctAnswer: "B", points: 1 },
     { questionText: "Từ đồng nghĩa với 'tốt' là:", questionType: "fill_blank", options: [], correctAnswer: "giỏi", points: 1 },
     { questionText: "Trong câu 'Hoa phượng nở đỏ rực', từ chỉ màu sắc là:", questionType: "fill_blank", options: [], correctAnswer: "đỏ", points: 1 },
@@ -128,12 +128,12 @@ export const additionalQuestions: Record<string, QuizData['questions']> = {
   ],
 
   // ===== LỚP 4 - NGỮ VĂN =====
-  "Kiểm tra Đọc hiểu - Kể chuyện": [
+  "Kiểm tra Đọc hiểu văn bản kể chuyện": [
     { questionText: "Sự việc chính trong truyện là:", questionType: "multiple_choice", options: ["A. Chi tiết phụ", "B. Sự việc quan trọng nhất', 'C. Lời kể', 'D. Mô tả cảnh"], correctAnswer: "B", points: 1 },
     { questionText: "Từ 'khắc phục' có nghĩa là:", questionType: "fill_blank", options: [], correctAnswer: "sửa chữa bỏ đi cái sai cái xấu", points: 1 },
     { questionText: "Câu 'Mặc dù trời mưa, em vẫn đi học.' là câu gì?", questionType: "multiple_choice", options: ["A. Câu đơn", "B. Câu ghép", "C. Câu rút gọn", "D. Câu cảm thán"], correctAnswer: "B", points: 1 },
   ],
-  "Kiểm tra Luyện từ và câu - Câu ghép": [
+  "Kiểm tra Luyện từ và câu - Câu ghép, quan hệ từ": [
     { questionText: "Quan hệ từ 'nếu' chỉ mối quan hệ:", questionType: "multiple_choice", options: ["A. Nguyên nhân", "B. Điều kiện", "C. Tương phản", "D. Tiếp nối"], correctAnswer: "B", points: 1 },
     { questionText: "Thêm quan hệ từ: 'Em ốm ... không đi học'", questionType: "fill_blank", options: [], correctAnswer: "nên", points: 1 },
     { questionText: "Quan hệ từ 'và' chỉ mối quan hệ:", questionType: "multiple_choice", options: ["A. Nguyên nhân", "B. Tương phản", "C. Tiếp nối", "D. Điều kiện"], correctAnswer: "C", points: 1 },
@@ -150,19 +150,19 @@ export const additionalQuestions: Record<string, QuizData['questions']> = {
     { questionText: "8,4 - 3,6 = ?", questionType: "fill_blank", options: [], correctAnswer: "4,8", points: 1 },
     { questionText: "2,5 × 4 = ?", questionType: "fill_blank", options: [], correctAnswer: "10", points: 1 },
   ],
-  "Kiểm tra Đại lượng và đo lường": [
+  "Kiểm tra Đại lượng và đo đại lượng": [
     { questionText: "1 km bằng bao nhiêu m?", questionType: "fill_blank", options: [], correctAnswer: "1000", points: 1 },
     { questionText: "1 tấn bằng bao nhiêu kg?", questionType: "multiple_choice", options: ["A. 10 kg", "B. 100 kg", "C. 1000 kg", "D. 10000 kg"], correctAnswer: "C", points: 1 },
     { questionText: "1 giờ bằng bao nhiêu phút?", questionType: "fill_blank", options: [], correctAnswer: "60", points: 1 },
   ],
 
   // ===== LỚP 5 - NGỮ VĂN =====
-  "Kiểm tra Đọc hiểu nâng cao": [
+  "Kiểm tra Đọc hiểu văn bản nghị luận và miêu tả": [
     { questionText: "Ý chính của đoạn văn là:", questionType: "multiple_choice", options: ["A. Chi tiết phụ trong đoạn", "B. Ý quan trọng nhất diễn đạt trong đoạn", "C. Tiêu đề của bài", "D. Tên tác giả"], correctAnswer: "B", points: 1 },
     { questionText: "Từ 'kiên trì' có nghĩa là:", questionType: "fill_blank", options: [], correctAnswer: "kiên nhẫn không bỏ cuộc", points: 1 },
     { questionText: "Tác giả viết bài này nhằm mục đích gì?", questionType: "multiple_choice", options: ["A. Thông tin", "B. Giải trí", "C. Thuyết phục", "D. Tất cả đều có thể"], correctAnswer: "D", points: 1 },
   ],
-  "Kiểm tra Nghị luận cơ bản": [
+  "Kiểm tra Tập làm văn - Viết văn nghị luận cơ bản": [
     { questionText: "Viết câu mở bài cho bài nghị luận cần:", questionType: "multiple_choice", options: ["A. Nêu vấn đề cần nghị luận", "B. Kể chuyện", "C. Miêu tả cảnh", "D. Đặt câu hỏi"], correctAnswer: "A", points: 1 },
     { questionText: "Lập luận là:", questionType: "fill_blank", options: [], correctAnswer: "nêu lý lẽ dẫn chứng để bảo vệ quan điểm", points: 1 },
     { questionText: "Câu kết bài cần làm gì?", questionType: "multiple_choice", options: ["A. Nêu lại vấn đề", "B. Khẳng định lại quan điểm", "C. Đặt câu hỏi", "D. Kể chuyện"], correctAnswer: "B", points: 1 },
