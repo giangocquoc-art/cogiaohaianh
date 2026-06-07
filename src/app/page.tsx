@@ -19,7 +19,7 @@ import { LessonsView } from '@/components/lessons-view'
 import { PracticeView } from '@/components/practice-view'
 import { StudyCalendarView } from '@/components/study-calendar-view'
 import { ParentCornerView } from '@/components/parent-corner-view'
-import { CharacterView } from '@/components/character-view'
+import { DocumentsView } from '@/components/documents-view'
 import { MobileBottomNav } from '@/components/mobile-bottom-nav'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
@@ -45,7 +45,7 @@ function ViewRenderer() {
     practice: <PracticeView />,
     studyCalendar: <StudyCalendarView />,
     parentCorner: <ParentCornerView />,
-    character: <CharacterView />,
+    documents: <DocumentsView />,
   }
 
   // Different transition variants based on view type for app-like feel

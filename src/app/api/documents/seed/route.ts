@@ -1,0 +1,202 @@
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+
+const seedDocuments = [
+  {
+    title: 'Giáo án Toán Lớp 1 - Các số từ 1 đến 10',
+    description: 'Giáo án chi tiết giúp học sinh nhận biết và đếm các số từ 1 đến 10. Bao gồm hoạt động thực hành với vật thật và bài tập trắc nghiệm.',
+    category: 'giao-an',
+    subject: 'toan',
+    grade: 1,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/giao-an-toan-lop-1',
+    fileType: 'pdf',
+    tags: JSON.stringify(['số', 'đếm', 'lớp 1']),
+    likes: 15,
+    downloads: 42,
+  },
+  {
+    title: 'Tài liệu ôn tập Ngữ văn Lớp 2 - Tập đọc hiểu',
+    description: 'Bộ tài liệu ôn tập đọc hiểu cho học sinh lớp 2 với các bài tập đa dạng từ dễ đến khó, giúp rèn kỹ năng đọc và hiểu văn bản.',
+    category: 'tai-lieu-hoc-tap',
+    subject: 'ngu-van',
+    grade: 2,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/ontap-nguvan-lop2',
+    fileType: 'doc',
+    tags: JSON.stringify(['đọc hiểu', 'ôn tập', 'lớp 2']),
+    likes: 23,
+    downloads: 67,
+  },
+  {
+    title: 'Đề thi Toán giữa kì Lớp 3',
+    description: 'Đề thi giữa học kì I môn Toán lớp 3, bao gồm phép cộng trừ có nhớ, bảng cửu chương và giải toán có lời văn.',
+    category: 'de-thi',
+    subject: 'toan',
+    grade: 3,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/de-thi-toan-lop3-gk',
+    fileType: 'pdf',
+    tags: JSON.stringify(['giữa kì', 'đề thi', 'cộng trừ']),
+    likes: 31,
+    downloads: 128,
+  },
+  {
+    title: 'Bài giảng Phân số - Lớp 4',
+    description: 'Video bài giảng trực tuyến về phân số, giúp học sinh lớp 4 hiểu khái niệm phân số, so sánh và thực hành phép tính với phân số.',
+    category: 'bai-giang',
+    subject: 'toan',
+    grade: 4,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/bai-giang-phan-so-lop4',
+    fileType: 'video',
+    tags: JSON.stringify(['phân số', 'video', 'lớp 4']),
+    likes: 18,
+    downloads: 55,
+  },
+  {
+    title: 'Phương pháp dạy học đọc hiểu cho tiểu học',
+    description: 'Tài liệu tham khảo về phương pháp dạy học đọc hiểu hiệu quả cho học sinh tiểu học. Phù hợp cho giáo viên và phụ huynh.',
+    category: 'phuong-phap',
+    subject: 'ngu-van',
+    grade: 0,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/phuong-phap-doc-hieu',
+    fileType: 'link',
+    tags: JSON.stringify(['phương pháp', 'đọc hiểu', 'giáo viên']),
+    likes: 12,
+    downloads: 33,
+  },
+  {
+    title: 'Giáo án Ngữ văn Lớp 1 - Tập viết chữ cái',
+    description: 'Giáo án chi tiết về dạy tập viết các chữ cái tiếng Việt. Bao gồm cách cầm bút, tư thế ngồi viết và bài luyện viết từng nét.',
+    category: 'giao-an',
+    subject: 'ngu-van',
+    grade: 1,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/giao-an-nguvan-lop1',
+    fileType: 'pdf',
+    tags: JSON.stringify(['viết', 'chữ cái', 'lớp 1']),
+    likes: 20,
+    downloads: 76,
+  },
+  {
+    title: 'Slide bài giảng Bảng cửu chương - Lớp 3',
+    description: 'Bộ slide trình chiếu dạy bảng cửu chương 2, 3, 4, 5 với hình ảnh sinh động và bài tập tương tác.',
+    category: 'bai-giang',
+    subject: 'toan',
+    grade: 3,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/slide-bcc-lop3',
+    fileType: 'slides',
+    tags: JSON.stringify(['bảng cửu chương', 'slide', 'lớp 3']),
+    likes: 27,
+    downloads: 89,
+  },
+  {
+    title: 'Tài liệu luyện tập Toán Lớp 5 - Phân số thập phân',
+    description: 'Bài tập luyện tập chuyển đổi giữa phân số và số thập phân, thực hành các phép tính với phân số thập phân.',
+    category: 'tai-lieu-hoc-tap',
+    subject: 'toan',
+    grade: 5,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/luyentap-toan-lop5',
+    fileType: 'doc',
+    tags: JSON.stringify(['phân số thập phân', 'luyện tập', 'lớp 5']),
+    likes: 14,
+    downloads: 51,
+  },
+  {
+    title: 'Đề thi Ngữ văn cuối kì Lớp 4',
+    description: 'Đề thi cuối học kì II môn Ngữ văn lớp 4. Bao gồm phần đọc hiểu, chính tả và tập làm văn miêu tả.',
+    category: 'de-thi',
+    subject: 'ngu-van',
+    grade: 4,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/de-thi-nguvan-lop4-ck',
+    fileType: 'pdf',
+    tags: JSON.stringify(['cuối kì', 'đề thi', 'tập làm văn']),
+    likes: 19,
+    downloads: 95,
+  },
+  {
+    title: 'Phương pháp giải toán có lời văn',
+    description: 'Hướng dẫn phương pháp giải toán có lời văn cho học sinh tiểu học. Các bước phân tích đề, lập kế hoạch và trình bày bài giải.',
+    category: 'phuong-phap',
+    subject: 'toan',
+    grade: 0,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/pp-giai-toan-loi-van',
+    fileType: 'link',
+    tags: JSON.stringify(['toán có lời văn', 'phương pháp', 'giải toán']),
+    likes: 35,
+    downloads: 142,
+  },
+  {
+    title: 'Giáo án Toán Lớp 2 - Phép cộng có nhớ',
+    description: 'Giáo án chi tiết dạy phép cộng có nhớ trong phạm vi 100. Kèm theo các hoạt động nhóm và trò chơi học tập.',
+    category: 'giao-an',
+    subject: 'toan',
+    grade: 2,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/giao-an-toan-lop2-congho',
+    fileType: 'pdf',
+    tags: JSON.stringify(['cộng có nhớ', 'lớp 2', 'giáo án']),
+    likes: 22,
+    downloads: 63,
+  },
+  {
+    title: 'Tài liệu học tập Ngữ văn Lớp 5 - Nghĩa từ và câu',
+    description: 'Bộ tài liệu giúp học sinh lớp 5 hiểu nghĩa của từ và các loại câu trong tiếng Việt. Có bài tập thực hành kèm đáp án.',
+    category: 'tai-lieu-hoc-tap',
+    subject: 'ngu-van',
+    grade: 5,
+    authorName: 'Cô Hải Anh',
+    authorRole: 'teacher',
+    fileUrl: 'https://example.com/tailieu-nguvan-lop5',
+    fileType: 'image',
+    tags: JSON.stringify(['nghĩa từ', 'câu', 'lớp 5']),
+    likes: 8,
+    downloads: 29,
+  },
+]
+
+export async function POST() {
+  try {
+    // Check if documents already exist
+    const existingCount = await db.document.count()
+
+    if (existingCount > 0) {
+      return NextResponse.json({
+        message: 'Tài liệu đã tồn tại',
+        count: existingCount,
+        seeded: false,
+      })
+    }
+
+    // Seed documents
+    const result = await db.document.createMany({
+      data: seedDocuments,
+    })
+
+    return NextResponse.json({
+      message: 'Đã tạo tài liệu mẫu thành công',
+      count: result.count,
+      seeded: true,
+    })
+  } catch (error) {
+    console.error('Error seeding documents:', error)
+    return NextResponse.json({ error: 'Không thể tạo tài liệu mẫu' }, { status: 500 })
+  }
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppStore, type ViewType } from '@/store/app-store'
-import { Home, BookOpen, Zap, Trophy, CalendarDays, Sparkles } from 'lucide-react'
+import { Home, BookOpen, Zap, Trophy, CalendarDays, BookMarked } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface TabItem {
@@ -14,7 +14,7 @@ interface TabItem {
 const tabs: TabItem[] = [
   { view: 'home', icon: Home, label: 'Trang chủ', emoji: '🏠' },
   { view: 'lessons', icon: BookOpen, label: 'Bài học', emoji: '📚' },
-  { view: 'character', icon: Sparkles, label: 'Nhân vật', emoji: '🥚' },
+  { view: 'documents', icon: BookMarked, label: 'Tài liệu', emoji: '📚' },
   { view: 'leaderboard', icon: Trophy, label: 'Xếp hạng', emoji: '🏆' },
   { view: 'studyCalendar', icon: CalendarDays, label: 'Lịch', emoji: '📅' },
 ]

@@ -68,3 +68,23 @@ model ScoreEntry {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Document {
+  id          String   @id @default(cuid())
+  title       String   // Document title
+  description String   // Description/summary
+  category    String   // "giao-an" | "tai-lieu-hoc-tap" | "de-thi" | "bai-giang" | "phuong-phap"
+  subject     String   // "toan" | "ngu-van" | "all"
+  grade       Int      // 1-5, or 0 for all grades
+  authorName  String   // Teacher/author name
+  authorRole  String   @default("teacher") // "teacher" | "admin"
+  fileUrl     String?  // URL to external resource (Google Drive, YouTube, etc.)
+  fileType    String?  // "pdf" | "doc" | "video" | "link" | "image" | "slides"
+  thumbnailUrl String? // Optional thumbnail image URL
+  likes       Int      @default(0) // Like count
+  downloads   Int      @default(0) // Download/view count
+  tags        String?  // JSON array of tags e.g. ["phân số","lớp 3"]
+  isApproved  Boolean  @default(true) // Admin approval status
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

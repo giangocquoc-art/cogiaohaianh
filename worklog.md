@@ -2153,3 +2153,263 @@ Stage Summary:
 5. Could add teacher dashboard CSV import for batch scores
 6. Could add VLM-powered question image understanding
 7. Could add weekly email/SMS progress reports for parents
+
+---
+Task ID: 50
+Agent: Feature Developer - Documents View
+Task: Replace CharacterView with DocumentsView (Tài Liệu sharing feature)
+
+Work Log:
+- Read worklog.md and understood the project structure (Vietnamese educational website for grades 1-5)
+- Verified Prisma schema already had Document model (giao-an, tai-lieu-hoc-tap, de-thi, bai-giang, phuong-phap categories)
+- Ran `bun run db:push` — Document model already in sync with database
+- Created `/src/app/api/documents/route.ts`:
+  - GET endpoint with filters: category, subject, grade, search, limit, offset
+  - Returns documents + total counts (totalLikes, totalDownloads)
+  - POST endpoint to create new document with validation
+  - PATCH endpoint to increment likes or downloads
+- Created `/src/app/api/documents/seed/route.ts`:
+  - 12 seed documents covering all categories, grades, and subjects
+  - Checks if documents already exist before seeding
+- Created `/src/components/documents-view.tsx`:
+  - Navigation buttons (back, home) at top
+  - Hero section with "📚 Thư Viện Tài Liệu" title and warm emerald/teal/amber gradient
+  - Search bar with clear button
+  - Category filter pills (Tất cả, Giáo án, Tài liệu học tập, Đề thi, Bài giảng, Phương pháp)
+  - Grade filter (Tất cả lớp, Lớp 1-5) and Subject filter (Tất cả, Toán, Ngữ văn)
+  - Stats summary row (total documents, total likes, total downloads)
+  - Responsive document grid (1/2/3 cols)
+  - DocumentCard component with: category color-coded badge, file type badge, title, truncated description, author with avatar initial, grade/subject badges, like/download counts, date, "Xem tài liệu" button
+  - "Chia sẻ tài liệu" Dialog with form: title, description, category, subject, grade, author (auto-filled from studentInfo), file URL, file type, tags
+  - Loading skeleton states, empty state with filter reset
+  - Framer Motion staggered entrance animations
+  - Warm orange/amber/brown color palette consistent with site
+  - Dark mode support with warm brown/amber tones
+  - font-[family-name:var(--font-patrick-hand)] for headings
+- Updated `/src/store/app-store.ts`: Changed 'character' to 'documents' in ViewType
+- Updated `/src/app/page.tsx`: Replaced CharacterView import/component with DocumentsView
+- Updated `/src/components/app-header.tsx`:
+  - Changed nav item from character/Sparkles/Nhân vật to documents/BookMarked/Tài liệu
+  - Updated breadcrumb exclusion from 'character' to 'documents'
+  - Removed unused Sparkles import
+- Updated `/src/components/mobile-bottom-nav.tsx`:
+  - Changed tab from character/Sparkles/Nhân vật/🥚 to documents/BookMarked/Tài liệu/📚
+  - Updated import: removed Sparkles, using BookMarked
+- Updated `/src/components/home-view.tsx`:
+  - Changed feature card from Nhân Vật to Tài Liệu with emerald/teal gradient
+  - Description: 'Chia sẻ tài liệu giảng dạy và học tập'
+  - Action navigates to 'documents' view
+- Updated `/src/components/xp-widget.tsx`:
+  - Changed onClick from setView('character') to setView('documents')
+  - Changed title from 'Xem nhân vật học tập' to 'Xem tài liệu học tập'
+- Ran `bun run lint` — all checks pass with no errors
+- Did NOT delete old character-view.tsx or /api/character route
+
+Stage Summary:
+- Replaced CharacterView (🥚 Nhân Vật) with DocumentsView (📚 Tài Liệu) feature
+- Created 3 new files: documents-view.tsx, /api/documents/route.ts, /api/documents/seed/route.ts
+- Updated 6 existing files: app-store.ts, page.tsx, app-header.tsx, mobile-bottom-nav.tsx, home-view.tsx, xp-widget.tsx
+- All lint checks pass, no runtime errors
+- Feature includes: search, category/grade/subject filters, document cards, like/download tracking, add document dialog, auto-seeding, dark mode, responsive design, Framer Motion animations
+
+---
+Task ID: 52
+Agent: Feature Developer
+Task: Add Teacher Community, AI Suggestions, and Document Detail features
+
+Work Log:
+- Created `/api/documents/suggest/route.ts` backend API:
+  - POST endpoint using z-ai-web-dev-sdk LLM
+  - Accepts grade, subject, topic (user input)
+  - Returns 3-5 suggested document titles, descriptions, and categories
+  - System prompt as "Cô Giáo Hải Anh" with friendly Vietnamese tone
+  - JSON response parsing with fallback error handling
+- Created `/api/documents/contributors/route.ts` backend API:
+  - GET endpoint returning top contributing teachers based on document count
+  - Uses Prisma groupBy to aggregate by authorName
+  - Returns name, documentCount, totalLikes, totalDownloads, subjects per contributor
+- Updated `/src/components/documents-view.tsx` with 3 new features:
+  1. **Document Detail Modal (DocumentDetailModal component)**:
+     - Full title and description in dialog
+     - Author info with large avatar initial
+     - Category, file type, grade, and subject badges
+     - Like and download counts as interactive stat cards
+     - Tags displayed as badges
+     - File URL section with link display
+     - "Xem tài liệu" button (opens URL) and "Chia sẻ" button (Web Share API / clipboard)
+     - Related documents section (same category, max 4)
+     - Related docs are clickable to open in detail or download
+     - Dialog with category color strip at top
+  2. **AI Document Suggestion Section (💡 Gợi ý Tài liệu)**:
+     - Grade selector (Lớp 1-5)
+     - Subject selector (Toán / Ngữ văn)
+     - Topic text input with Enter key support
+     - "Tìm gợi ý" button with Sparkles icon
+     - Loading state with spinner
+     - Error display with rose-colored alert
+     - Animated suggestion result cards (staggered entrance)
+     - Each card shows: category emoji/icon, category label, title, description
+     - "Thêm" button to add suggestion to library (creates document via API)
+     - Warm amber/orange gradient section with decorative elements
+  3. **Teacher Community Section (🤝 Cộng đồng Giáo viên)**:
+     - Fetches top contributors from /api/documents/contributors
+     - Shows top 3 teachers by default with "Xem tất cả" toggle
+     - Each teacher card: avatar initial with colored gradient, name, document count, likes
+     - Subject badges (Toán, Ngữ văn, Tất cả) with color coding
+     - Stats mini row with ThumbsUp and Download icons
+     - Warm emerald/teal gradient section with decorative elements
+     - "Xem tất cả" / "Thu gọn" button when more than 3 contributors
+- Updated DocumentCard component: changed button text from "Xem tài liệu" to "Xem chi tiết", added Eye icon, added onClick prop for opening detail modal
+- Added new imports: Share2, Lightbulb, Users, Sparkles, ChevronRight, ExternalLink, Tag, Eye, ThumbsUp
+- Added Contributor, SuggestedDocument types and avatarColors gradient array
+- Added state variables: selectedDoc, detailOpen, relatedDocs, contributors, showAllContributors, suggestGrade, suggestSubject, suggestTopic, suggestions, suggesting, suggestError, addingDocIndex
+- Added handleDocClick, handleSuggest, handleAddSuggestion callback functions
+- Fixed lint error: changed `interface RelatedDocument extends DocumentData {}` to `type RelatedDocument = DocumentData`
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+**3 New Features Added to Documents View:**
+
+1. **Document Detail Modal:**
+   - Full document info dialog with author, stats, tags, file URL
+   - Like and download interactive stat cards
+   - Share button (Web Share API / clipboard)
+   - Related documents section with clickable items
+   - Category color strip and responsive design
+
+2. **AI Document Suggestions (💡 Gợi ý Tài liệu):**
+   - Backend: POST /api/documents/suggest using z-ai-web-dev-sdk LLM
+   - Grade/subject/topic input form
+   - 3-5 AI-generated document suggestions with titles, descriptions, categories
+   - "Thêm vào thư viện" button to add suggestion as real document
+   - Animated result cards with staggered entrance
+   - Error handling and loading states
+
+3. **Teacher Community (🤝 Cộng đồng Giáo viên):**
+   - Backend: GET /api/documents/contributors with groupBy aggregation
+   - Top 3 contributing teachers displayed by default
+   - "Xem tất cả" toggle to show all contributors
+   - Teacher cards with avatar, name, stats, subject badges
+   - Warm emerald/teal styling
+
+**Files Created:**
+- `/src/app/api/documents/suggest/route.ts`
+- `/src/app/api/documents/contributors/route.ts`
+
+**Files Modified:**
+- `/src/components/documents-view.tsx` - Added 3 new sections + detail modal + new API integrations
+
+---
+Task ID: 51
+Agent: Styling Developer
+Task: Improve DocumentsView styling with more visual details
+
+Work Log:
+- Added useRef to imports in documents-view.tsx
+- Added TrendingUp and Star icons to lucide-react imports
+- Expanded categoryConfig with leftBorder, gradient, darkGradient properties for each category (giao-an, tai-lieu-hoc-tap, de-thi, bai-giang, phuong-phap)
+- Added useAnimatedCounter hook with requestAnimationFrame-based counter animation (ease-out cubic)
+- Added searchFocused and categoryCounts state variables
+- Added category count computation in fetchDocuments callback
+- Enhanced hero section: pattern-dots overlay, 6 floating decorative elements with framer-motion spring animation, larger heading (lg:text-5xl), docs-hero-wave class for wave SVG separator, deeper gradient colors
+- Enhanced search bar: animated magnifying glass icon (scale on focus), search focus shadow (orange), spring scale animation on input wrapper, motion.button for clear icon
+- Enhanced category filter pills: min-h-[44px] touch-friendly height, category-count-badge with count per category, whileHover/whileTap motion animations, scrollbar-hide class
+- Enhanced grade/subject filters: min-h-[36px] touch-friendly, responsive flex-col/flex-row layout, transition-all duration-200
+- Enhanced stats section: animated counters using useAnimatedCounter, icons per stat (FileText, Heart, Eye), whileHover scale+y animation, responsive text sizing
+- Added section dividers between major sections
+- Added featured document highlight card: gradient animated border (featured-doc-border), Star badge, most downloaded document display, "Xem ngay" and "Thích" buttons
+- Added "Được xem nhiều" horizontal scroll section: TrendingUp icon, top 5 most-viewed documents, horizontal scrollable cards with category color strip, numbered ranking (#1-#5), scrollbar-hide
+- Enhanced document card: bg-gradient-to-br with category gradient, border-l-4 with category color left border, doc-card-shimmer hover overlay, whileHover y:-6 scale:1.02
+- Enhanced "Chia sẻ tài liệu" button: animate-share-glow pulsing glow effect
+- Enhanced no results state: animated 📭 emoji (y+rotate), larger text, different message for filtered vs empty, X icon on "Xóa bộ lọc" button
+- Added new CSS animations to globals.css: search-pulse, share-glow, empty-float, doc-card-shimmer (hover sweep), featured-doc-border (gradient shift), scrollbar-hide, counter-pop, docs-hero-wave (with dark variant), category-count-badge, filter-transition
+
+Stage Summary:
+**DocumentsView Visual Enhancements:**
+1. Hero: Pattern overlay, 6 framer-motion floating decorations, wave SVG separator, deeper gradient
+2. Animated Counters: Stats count up from 0 with ease-out cubic easing
+3. Featured Document: Gradient animated border card showing most downloaded document
+4. Most Viewed: Horizontal scrollable "Được xem nhiều" section with top 5 cards
+5. Document Cards: Category gradient backgrounds, color-coded left borders, shimmer hover overlay
+6. Share Button: Pulsing emerald glow animation
+7. Search Bar: Animated magnifying glass, focus shadow, spring scale wrapper
+8. Category Filters: Count badges (e.g., "Giáo án (2)"), touch-friendly 44px height, motion animations
+9. No Results: Animated floating 📭, contextual messages
+10. Section Dividers: Gradient dividers between major sections
+11. Dark Mode: All new elements have warm brown/amber dark variants
+12. Responsive: Touch-friendly buttons, responsive grid (1/2/3 cols), mobile-friendly filter layout
+
+---
+Task ID: 50 (Main Agent - Round 7)
+Agent: Main
+Task: Replace CharacterView (🥚 Nhân Vật) with DocumentsView (📚 Tài Liệu) + Styling + Features
+
+Work Log:
+- Read worklog.md and assessed current project status (2340 lines, extensive feature set)
+- Identified all character-view references: store, page, header, mobile-nav, home-view, xp-widget
+- Added Document model to Prisma schema with fields: title, description, category, subject, grade, authorName, fileUrl, fileType, likes, downloads, tags, isApproved
+- Ran db:push to sync schema and regenerate Prisma client
+- Created `/api/documents/route.ts` - GET (list with filters), POST (create), PATCH (like/download)
+- Created `/api/documents/seed/route.ts` - Seeds 12 sample documents across 5 categories
+- Created `/api/documents/contributors/route.ts` - Aggregates documents by author for teacher community
+- Created `/api/documents/suggest/route.ts` - LLM-powered document suggestions using z-ai-web-dev-sdk
+- Launched subagent (Task 50) to create DocumentsView component and update all references
+  - Changed ViewType 'character' → 'documents' in store
+  - Replaced CharacterView with DocumentsView in page.tsx
+  - Updated app-header.tsx nav item: Nhân vật/Sparkles → Tài liệu/BookMarked
+  - Updated mobile-bottom-nav.tsx tab: 🥚Nhân vật → 📚Tài Liệu
+  - Updated home-view.tsx feature card: Nhân vật → Tài Liệu (emerald/teal gradient)
+  - Updated xp-widget.tsx: character link → documents link
+- Launched subagent (Task 51) for styling improvements to DocumentsView
+  - Added floating decorative elements in hero section
+  - Added animated counters for stats
+  - Added featured/popular document highlight card
+  - Added "📚 Được xem nhiều" horizontal scrollable section
+  - Enhanced document cards with category gradients, color-coded borders, shimmer overlay
+  - Added pulsing glow on share button
+  - Added animated magnifying glass in search bar
+  - Added document count badges on filter categories
+  - Improved no-results state with animated emoji
+- Launched subagent (Task 52) for additional features
+  - Added "🤝 Cộng đồng Giáo viên" section with top contributors
+  - Added "💡 Gợi ý Tài liệu" AI suggestion feature using LLM
+  - Added Document Detail Modal with like/download, share, related documents
+- Verified lint passes with no errors
+- Tested API endpoints: all returning 200 OK with correct data
+- 12 documents seeded across 5 categories (Giáo án, Tài liệu học tập, Đề thi, Bài giảng, Phương pháp)
+
+Stage Summary:
+**New Feature: Tài Liệu Sharing (Replaces Nhân Vật)**
+1. Document model + API routes (GET/POST/PATCH + seed + contributors + suggest)
+2. DocumentsView with search, filters, document grid, detail modal
+3. Teacher Community section with top contributors
+4. AI-powered document suggestions (LLM via z-ai-web-dev-sdk)
+5. Document Detail Modal with like/download/share/related documents
+6. 12 sample documents seeded across all categories and grades
+7. All references updated: store, page, header, mobile-nav, home-view, xp-widget
+8. Old character-view.tsx and /api/character preserved but no longer referenced
+
+**Styling Improvements:**
+1. Hero: floating decorations, wave SVG separator, pattern overlay
+2. Animated counters for stats
+3. Featured document highlight card
+4. "Được xem nhiều" horizontal scroll section
+5. Enhanced document cards with category gradients and shimmer
+6. Pulsing share button glow effect
+7. Animated search bar
+8. Category count badges on filters
+
+**Current Project Status:**
+- 11+ view components: Home, Subject, Chapter, Quiz, Result, Scoreboard, Progress, DailyChallenge, Badges, Leaderboard, Documents (replaced Character)
+- 12+ API routes
+- Full dark mode support with warm colors
+- 12 achievement badges + daily challenge + XP system
+- Document sharing with AI suggestions
+- No lint errors, no runtime errors
+
+**Unresolved / Future Recommendations:**
+1. Could add file upload support for documents (currently link-based only)
+2. Could add document commenting/discussion
+3. Could add document rating system
+4. Could add notification when new documents are shared
+5. Could add document bookmark/favorite feature

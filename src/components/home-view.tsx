@@ -826,13 +826,13 @@ export function HomeView() {
               action: () => setView('parentCorner'),
             },
             {
-              icon: <Sparkles className="w-7 h-7" />,
-              title: 'Nhân Vật',
-              description: 'Nuôi nhân vật học tập tiến hóa cùng em',
-              gradient: 'from-amber-400 to-orange-500',
-              bgLight: 'bg-amber-50 dark:bg-amber-950/30',
-              emoji: '🥚',
-              action: () => setView('character'),
+              icon: <BookMarked className="w-7 h-7" />,
+              title: 'Tài Liệu',
+              description: 'Chia sẻ tài liệu giảng dạy và học tập',
+              gradient: 'from-emerald-400 to-teal-500',
+              bgLight: 'bg-emerald-50 dark:bg-emerald-950/30',
+              emoji: '📚',
+              action: () => setView('documents'),
             },
           ].map((feature, index) => (
             <motion.button

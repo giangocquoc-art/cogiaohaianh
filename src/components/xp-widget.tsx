@@ -115,8 +115,8 @@ export function XPWidget() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 cursor-pointer hover:bg-white/30 transition-colors"
-        onClick={() => useAppStore.getState().setView('character')}
-        title="Xem nhân vật học tập"
+        onClick={() => useAppStore.getState().setView('documents')}
+        title="Xem tài liệu học tập"
       >
         <div className="flex items-center gap-1">
           <span className="text-base">{characterEmoji}</span>
