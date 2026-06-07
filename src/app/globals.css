@@ -1120,7 +1120,7 @@ textarea:focus-visible {
 
 .ticker-content {
   display: inline-block;
-  animation: ticker-scroll 25s linear infinite;
+  animation: ticker-scroll 60s linear infinite;
 }
 
 .ticker-content:hover {

@@ -426,16 +426,16 @@ export function HomeView() {
 
         <div className="relative flex flex-col sm:flex-row items-center gap-6">
           {/* Teacher image with breathing animation */}
-          <div className="relative w-36 h-36 sm:w-48 sm:h-48 shrink-0">
+          <div className="relative w-40 h-40 sm:w-52 sm:h-52 shrink-0">
             {/* Animated glow ring around mascot image */}
             <div className="glow-ring" />
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-full opacity-30 animate-breathing scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-2xl opacity-30 animate-breathing scale-105" />
             <Image
               src="/images/teacher-hero.png"
               alt="Cô Giáo Hải Anh"
               fill
-              sizes="(max-width: 640px) 144px, 192px"
-              className="object-contain drop-shadow-lg animate-breathing"
+              sizes="(max-width: 640px) 160px, 208px"
+              className="object-cover rounded-2xl drop-shadow-lg transition-transform duration-300 hover:scale-[1.02]"
               priority
             />
             {/* Sparkle ring around image */}
@@ -446,7 +446,7 @@ export function HomeView() {
 
           <div className="text-center sm:text-left flex-1">
             {/* Glassmorphism text area */}
-            <div className="bg-white/30 dark:bg-black/30 backdrop-blur-sm rounded-2xl p-4 sm:p-6 -m-4 sm:-m-6">
+            <div className="bg-white/30 dark:bg-black/30 backdrop-blur-sm rounded-2xl p-4 sm:p-5">
             {/* Welcome text with sparkles */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
               <span className="text-xl animate-sparkle">🌟</span>
@@ -763,7 +763,7 @@ export function HomeView() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4"
         >
           {[
             {

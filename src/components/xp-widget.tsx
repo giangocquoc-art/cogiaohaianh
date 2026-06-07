@@ -98,16 +98,16 @@ export function XPWidget() {
 
   const progressPercent = (xpData.xpInCurrentLevel / xpData.xpForNextLevel) * 100
 
-  // Character emoji based on XP level (matches /api/character evolution stages)
-  function getCharacterEmoji(totalXP: number): string {
-    if (totalXP >= 500) return '🦅'
-    if (totalXP >= 300) return '🐔'
-    if (totalXP >= 150) return '🐥'
-    if (totalXP >= 50) return '🐣'
-    return '🥚'
+  // Level emoji based on XP level
+  function getLevelEmoji(level: number): string {
+    if (level >= 5) return '⭐'
+    if (level >= 4) return '🌟'
+    if (level >= 3) return '✨'
+    if (level >= 2) return '💫'
+    return '🌟'
   }
 
-  const characterEmoji = getCharacterEmoji(xpData.totalXP)
+  const levelEmoji = getLevelEmoji(xpData.level)
 
   return (
     <div className="relative">
@@ -119,7 +119,7 @@ export function XPWidget() {
         title="Xem tài liệu học tập"
       >
         <div className="flex items-center gap-1">
-          <span className="text-base">{characterEmoji}</span>
+          <span className="text-base">{levelEmoji}</span>
           <div className="flex flex-col items-start">
             <div className="flex items-center gap-1">
               <Star className="w-3 h-3 text-amber-200" fill="currentColor" />

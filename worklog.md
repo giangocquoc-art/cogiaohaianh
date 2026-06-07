@@ -2413,3 +2413,48 @@ Stage Summary:
 3. Could add document rating system
 4. Could add notification when new documents are shared
 5. Could add document bookmark/favorite feature
+
+---
+Task ID: 23 (Main Agent - Round 4)
+Agent: Main
+Task: User-requested changes: slow marquee, replace teacher image, fix UI overlap, remove 🥚 Nhân Vật
+
+Work Log:
+- Read worklog.md and assessed current project status
+- Slowed down the scrolling announcement ticker from 25s to 60s animation duration in globals.css
+- Replaced teacher-hero.png image with user-uploaded image (teacher in áo dài at school)
+- Fixed UI overlap issues in home-view.tsx:
+  - Removed negative margins (-m-4 sm:-m-6) from glassmorphism text area that caused overflow
+  - Changed teacher image container from circle (rounded-full) to rounded rectangle (rounded-2xl)
+  - Updated image from object-contain to object-cover for better display of new rectangular image
+  - Changed teacher image size from w-36 h-36 / w-48 h-48 to w-40 h-40 / w-52 h-52
+  - Fixed features grid from grid-cols-7 (8 items → odd layout) to grid-cols-4 (8 items → 2 rows)
+- Completely removed 🥚 Nhân Vật (Pet Evolution) feature:
+  - Deleted /src/components/character-view.tsx
+  - Deleted /src/app/api/character/route.ts
+  - Updated xp-widget.tsx: replaced character emoji evolution (🥚→🐣→🐥→🐔→🦅) with level star emojis (🌟→💫→✨→🌟→⭐)
+  - Confirmed no remaining references to character/pet feature in codebase
+  - Note: "nhân vật" references in educational content (like "characters in a story") are legitimate and remain
+- All lint checks pass with no errors
+- Dev server running on port 3000
+
+Stage Summary:
+**Changes Made:**
+1. Ticker/Marquee speed: 25s → 60s (slower, more readable)
+2. Teacher image: Replaced with user-uploaded photo (áo dài, school setting)
+3. Hero section: Fixed glassmorphism negative margin overflow, better image display
+4. Features grid: Fixed from 7-col to 4-col for proper 8-item layout
+5. Character/Pet feature: Completely removed (2 files deleted, xp-widget updated)
+
+**Current Project Status:**
+- Dev server running on port 3000, no errors
+- All lint checks pass
+- 🥚 Nhân Vật feature fully removed
+- UI overlap issues addressed (negative margins, image sizing)
+
+**Unresolved / Future Recommendations:**
+1. Agent-browser cannot connect to localhost:3000 for visual QA testing
+2. Could verify the new teacher image looks good on both mobile and desktop
+3. Could add more quiz questions (currently 248 for 27 quizzes)
+4. Could add teacher document sharing feature (previously requested but not yet implemented)
+5. Could improve the features grid layout further with better visual hierarchy
