@@ -118,7 +118,7 @@ export function AppHeader() {
             </button>
 
             {/* Right section: Study mode + Navigation */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-0.5 sm:gap-1.5 min-w-0 flex-shrink-0">
               {/* Study mode indicator */}
               <AnimatePresence>
                 {isStudying && (

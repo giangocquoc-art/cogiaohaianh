@@ -2458,3 +2458,40 @@ Stage Summary:
 3. Could add more quiz questions (currently 248 for 27 quizzes)
 4. Could add teacher document sharing feature (previously requested but not yet implemented)
 5. Could improve the features grid layout further with better visual hierarchy
+
+---
+Task ID: 23
+Agent: Main
+Task: Replace teacher image, slow down ticker, fix UI overlap, remove pet feature
+
+Work Log:
+- Copied uploaded image pasted_image_1780805795111.png to /public/images/teacher-hero.png (replacing AI teacher hero image)
+- Copied uploaded image pasted_image_1780805782199.png to /public/images/mascot.png (replacing AI mascot image)
+- Changed ticker-content animation speed from 60s to 120s in globals.css (line 1123) for slower, more readable scrolling
+- Fixed back-to-top button overlap with mobile bottom nav: added @media (max-width: 639px) rule to move button up to bottom: 88px on mobile
+- Fixed header right section spacing: changed from gap-1 sm:gap-2 to gap-0.5 sm:gap-1.5 with min-w-0 flex-shrink-0 to prevent overflow
+- Fixed main content bottom padding: increased from pb-20 to pb-24 on mobile for better clearance with bottom nav
+- Searched entire codebase for 🥚 Nhân Vật/Pet Evolution feature - confirmed it does NOT exist in any code file
+- All lint checks pass with no errors
+
+Stage Summary:
+**Changes Made:**
+1. Teacher image replaced with user's uploaded photos (teacher-hero.png + mascot.png)
+2. Ticker scroll speed slowed from 60s to 120s (2x slower for readability)
+3. UI overlap fixes:
+   - Back-to-top button no longer overlaps with mobile bottom nav (moved to bottom: 88px on mobile)
+   - Header navigation spacing tightened to prevent overflow
+   - Main content bottom padding increased (pb-24) for better mobile clearance
+4. 🥚 Nhân Vật (Pet Evolution) feature confirmed not present in codebase - no code to remove
+
+**Files Modified:**
+- /public/images/teacher-hero.png (replaced with user image)
+- /public/images/mascot.png (replaced with user image)
+- /src/app/globals.css (ticker speed, back-to-top mobile fix)
+- /src/components/app-header.tsx (header spacing)
+- /src/app/page.tsx (bottom padding)
+
+**Unresolved Issues:**
+- Dev server stability issues in sandbox environment (process keeps dying)
+- Agent-browser QA testing could not be completed due to server instability
+- Need to verify changes visually when server is stable

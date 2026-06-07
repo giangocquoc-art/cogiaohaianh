@@ -135,7 +135,7 @@ export default function Home() {
         Đến nội dung chính
       </a>
       <AppHeader />
-      <main id="main-content" className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 pb-20 sm:pb-6">
+      <main id="main-content" className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 pb-24 sm:pb-6">
         <ViewRenderer />
       </main>
       <AppFooter />
