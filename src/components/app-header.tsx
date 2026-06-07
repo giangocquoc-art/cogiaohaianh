@@ -102,7 +102,7 @@ export function AppHeader() {
                     alt="Cô Giáo Hải Anh"
                     fill
                     sizes="44px"
-                    className="object-contain p-0.5"
+                    className="object-cover"
                   />
                 </div>
                 <div className="hidden sm:block pr-1">
@@ -361,7 +361,7 @@ export function AppHeader() {
                           alt="Cô Giáo Hải Anh"
                           fill
                           sizes="48px"
-                          className="object-contain p-1"
+                          className="object-cover"
                         />
                       </div>
                       <div>

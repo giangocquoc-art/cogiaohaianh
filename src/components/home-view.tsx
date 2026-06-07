@@ -929,10 +929,10 @@ export function HomeView() {
             <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-emerald-300 animate-spin-slow" />
             <Image
               src="/images/mascot.png"
-              alt="Linh vật"
+              alt="Cô Giáo Hải Anh"
               fill
               sizes="(max-width: 640px) 112px, 160px"
-              className="object-contain animate-float"
+              className="object-cover rounded-2xl"
             />
           </div>
 

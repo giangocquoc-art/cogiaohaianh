@@ -161,7 +161,7 @@ export function AppFooter() {
                     alt="Cô Giáo Hải Anh"
                     fill
                     sizes="56px"
-                    className="object-contain p-1"
+                    className="object-cover"
                   />
                 </div>
                 <div>

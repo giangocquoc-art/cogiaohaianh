@@ -2495,3 +2495,32 @@ Stage Summary:
 - Dev server stability issues in sandbox environment (process keeps dying)
 - Agent-browser QA testing could not be completed due to server instability
 - Need to verify changes visually when server is stable
+
+---
+Task ID: 24
+Agent: Main
+Task: Sync teacher image across all website locations using user's real photo
+
+Work Log:
+- Copied new uploaded image pasted_image_1780807127222.png to both /public/images/teacher-hero.png and /public/images/mascot.png
+- Changed all mascot.png Image components from object-contain to object-cover for better photo display
+- Updated home-view.tsx "Về Cô Giáo Hải Anh" section: changed alt from "Linh vật" to "Cô Giáo Hải Anh", added rounded-2xl, removed animate-float
+- Updated app-header.tsx desktop logo: object-contain p-0.5 → object-cover (fills circle properly)
+- Updated app-header.tsx mobile drawer logo: object-contain p-1 → object-cover
+- Updated app-footer.tsx branding logo: object-contain p-1 → object-cover
+- All lint checks pass
+
+Stage Summary:
+**Changes Made:**
+1. Replaced both teacher-hero.png and mascot.png with user's real photo of Cô Giáo Hải Anh
+2. All 6 image references now use the same synchronized photo
+3. Changed all small mascot images to object-cover for proper photo cropping in circular containers
+4. Updated alt text from "Linh vật" to "Cô Giáo Hải Anh" for better accessibility
+5. Added rounded-2xl to the "About" section image for consistent styling
+
+**Files Modified:**
+- /public/images/teacher-hero.png (replaced with user's photo)
+- /public/images/mascot.png (replaced with user's photo)
+- /src/components/home-view.tsx (image style + alt text)
+- /src/components/app-header.tsx (2 image style changes)
+- /src/components/app-footer.tsx (image style change)
