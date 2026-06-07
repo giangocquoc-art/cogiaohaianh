@@ -27,6 +27,11 @@ interface PracticeTip {
   emoji: string
 }
 
+interface Exercise {
+  question: string
+  answer: string
+}
+
 interface Lesson {
   id: string
   chapter: number
@@ -40,6 +45,8 @@ interface Lesson {
   relatedQuizGrade: number
   relatedQuizSubject: string
   relatedQuizChapter: number
+  lessonContent: string
+  exercises: Exercise[]
 }
 
 /* ─── Constants ─── */
@@ -139,6 +146,19 @@ function DifficultyStars({ level }: { level: number }) {
 /* ─── Expandable lesson card ─── */
 function LessonCard({ lesson, gradeColor, onQuizClick }: { lesson: Lesson; gradeColor: typeof gradeColors[0]; onQuizClick: () => void }) {
   const [expanded, setExpanded] = useState(false)
+  const [revealedExercises, setRevealedExercises] = useState<Set<number>>(new Set())
+
+  const toggleExerciseAnswer = (index: number) => {
+    setRevealedExercises(prev => {
+      const next = new Set(prev)
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+      return next
+    })
+  }
 
   return (
     <motion.div
@@ -224,6 +244,23 @@ function LessonCard({ lesson, gradeColor, onQuizClick }: { lesson: Lesson; grade
             className="overflow-hidden"
           >
             <div className="px-5 pb-5 border-t border-gray-100 dark:border-border pt-4 space-y-5">
+              {/* Lesson Content */}
+              {lesson.lessonContent && (
+                <div>
+                  <h4 className="font-[family-name:var(--font-patrick-hand)] text-base text-foreground flex items-center gap-2 mb-3">
+                    <BookOpen className="w-4 h-4 text-blue-500" />
+                    Nội dung bài học
+                  </h4>
+                  <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30 p-4">
+                    {lesson.lessonContent.split('\n').filter(Boolean).map((paragraph, i) => (
+                      <p key={i} className="text-sm text-foreground leading-relaxed mb-2 last:mb-0">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Key concepts */}
               <div>
                 <h4 className="font-[family-name:var(--font-patrick-hand)] text-base text-foreground flex items-center gap-2 mb-3">
@@ -305,6 +342,53 @@ function LessonCard({ lesson, gradeColor, onQuizClick }: { lesson: Lesson; grade
                   ))}
                 </div>
               </div>
+
+              {/* Practice Exercises */}
+              {lesson.exercises && lesson.exercises.length > 0 && (
+                <div>
+                  <h4 className="font-[family-name:var(--font-patrick-hand)] text-base text-foreground flex items-center gap-2 mb-3">
+                    <Lightbulb className="w-4 h-4 text-green-500" />
+                    Bài tập thực hành
+                  </h4>
+                  <div className="space-y-3">
+                    {lesson.exercises.map((exercise, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + i * 0.05 }}
+                        className="rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-100 dark:border-green-900/30 p-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="text-sm text-foreground leading-relaxed flex-1">
+                            <span className="font-bold text-green-600 dark:text-green-400 mr-1.5">Câu {i + 1}:</span>
+                            {exercise.question}
+                          </p>
+                          <button
+                            onClick={() => toggleExerciseAnswer(i)}
+                            className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
+                          >
+                            {revealedExercises.has(i) ? 'Ẩn đáp án' : 'Xem đáp án'}
+                          </button>
+                        </div>
+                        {revealedExercises.has(i) && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-3 p-3 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800/30"
+                          >
+                            <p className="text-sm text-foreground leading-relaxed">
+                              <span className="font-bold text-green-600 dark:text-green-400">Đáp án: </span>
+                              {exercise.answer}
+                            </p>
+                          </motion.div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

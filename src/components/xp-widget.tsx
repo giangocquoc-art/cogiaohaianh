@@ -115,8 +115,8 @@ export function XPWidget() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 cursor-pointer hover:bg-white/30 transition-colors"
-        onClick={() => useAppStore.getState().setView('documents')}
-        title="Xem tài liệu học tập"
+        onClick={() => useAppStore.getState().setView('profile')}
+        title="Xem hồ sơ học sinh"
       >
         <div className="flex items-center gap-1">
           <span className="text-base">{levelEmoji}</span>
@@ -148,7 +148,7 @@ export function XPWidget() {
             animate={{ opacity: 0, y: -30, scale: 1.3 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2.5, ease: 'easeOut' }}
-            className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap z-50"
+            className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap z-30"
           >
             <span className="text-amber-200 font-bold text-sm drop-shadow-lg">
               +{xpGain} XP! ⭐

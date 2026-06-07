@@ -532,7 +532,7 @@ export function ResultView() {
       {/* Sound toggle button */}
       <button
         onClick={handleToggleSound}
-        className="no-print fixed top-20 right-3 z-50 w-10 h-10 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm shadow-md border border-gray-200 dark:border-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-card transition-colors"
+        className="no-print fixed top-20 right-3 z-45 w-10 h-10 rounded-full bg-white/90 dark:bg-card/90 backdrop-blur-sm shadow-md border border-gray-200 dark:border-border flex items-center justify-center hover:bg-gray-50 dark:hover:bg-card transition-colors"
         title={soundMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
       >
         {soundMuted ? (

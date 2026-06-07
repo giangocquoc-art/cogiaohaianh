@@ -620,7 +620,7 @@ button:active,
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 50;
+  z-index: 45;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -638,7 +638,7 @@ button:active,
 /* On mobile, move back-to-top above the bottom nav */
 @media (max-width: 639px) {
   .back-to-top {
-    bottom: 88px;
+    bottom: 92px;
     right: 16px;
     width: 40px;
     height: 40px;
@@ -939,8 +939,8 @@ textarea:focus-visible {
 }
 
 @keyframes ticker-scroll {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes gradient-shift {
@@ -996,7 +996,7 @@ textarea:focus-visible {
 }
 
 .animate-ticker-scroll {
-  animation: ticker-scroll 20s linear infinite;
+  animation: ticker-scroll 80s linear infinite;
 }
 
 .animate-gradient-shift {
@@ -1130,7 +1130,7 @@ textarea:focus-visible {
 
 .ticker-content {
   display: inline-block;
-  animation: ticker-scroll 120s linear infinite;
+  animation: ticker-scroll 80s linear infinite;
 }
 
 .ticker-content:hover {

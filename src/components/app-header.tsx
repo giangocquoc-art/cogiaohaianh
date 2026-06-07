@@ -118,7 +118,7 @@ export function AppHeader() {
             </button>
 
             {/* Right section: Study mode + Navigation */}
-            <div className="flex items-center gap-0.5 sm:gap-1.5 min-w-0 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
               {/* Study mode indicator */}
               <AnimatePresence>
                 {isStudying && (
@@ -202,7 +202,7 @@ export function AppHeader() {
                           <ChevronDown className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuContent align="end" className="w-52 z-[55]">
                         <DropdownMenuLabel className="text-xs text-muted-foreground">Khác</DropdownMenuLabel>
                         {moreNavItems.map((navItem) => {
                           const isActive = currentView === navItem.view
@@ -224,13 +224,13 @@ export function AppHeader() {
                 )}
               </nav>
 
-              {/* XP Widget - hidden during quiz */}
-              {!isStudying && <XPWidget />}
+              {/* XP Widget - hidden during quiz and on mobile */}
+              {!isStudying && <div className="ml-0.5 hidden sm:block"><XPWidget /></div>}
 
               {/* Theme toggle button */}
               <motion.button
                 onClick={handleToggleTheme}
-                className="flex items-center justify-center w-10 h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
                 aria-label={theme === 'dark' ? 'Chuyển sáng' : 'Chuyển tối'}
                 title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
                 whileTap={{ scale: 0.9 }}

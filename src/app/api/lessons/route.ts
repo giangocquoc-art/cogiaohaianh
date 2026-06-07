@@ -20,6 +20,11 @@ interface PracticeTip {
   emoji: string
 }
 
+interface Exercise {
+  question: string
+  answer: string
+}
+
 interface Lesson {
   id: string
   chapter: number
@@ -27,8 +32,10 @@ interface Lesson {
   description: string
   emoji: string
   difficulty: number // 1-5 stars
+  lessonContent: string // Full lesson content - nội dung bài học thật
   keyConcepts: KeyConcept[]
   examples: Example[]
+  exercises: Exercise[] // Practice exercises
   practiceTips: PracticeTip[]
   relatedQuizGrade: number
   relatedQuizSubject: string
@@ -52,6 +59,8 @@ const lessonsData: LessonsData = {
         description: 'Nhận biết và đếm các số từ 1 đến 10, so sánh các số nhỏ hơn 10',
         emoji: '🔢',
         difficulty: 1,
+        lessonContent: 'Các số tự nhiên từ 1 đến 10 là những số đầu tiên chúng ta học. Mỗi số đại diện cho một số lượng đồ vật khác nhau. Khi đếm, ta bắt đầu từ số 1 và đếm tăng dần: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Để biết số lượng đồ vật, ta chỉ vào từng đồ vật và đếm: một, hai, ba... cho đến khi đếm hết. Khi so sánh hai số, số nào có giá trị lớn hơn thì biểu thị nhiều đồ vật hơn. Ta dùng dấu < (nhỏ hơn) và > (lớn hơn) để so sánh.',
+        exercises: [{"question":"Đếm: 🍊🍊🍊. Mấy quả?","answer":"3 quả cam"},{"question":"Số nào lớn hơn: 7 hay 4?","answer":"7 > 4"},{"question":"Viết số từ 1 đến 5:","answer":"1, 2, 3, 4, 5"}],
         keyConcepts: [
           { text: 'Nhận biết các số từ 1 đến 10', emoji: '👀' },
           { text: 'Đếm số lượng đồ vật từ 1 đến 10', emoji: '🖐️' },
@@ -92,6 +101,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách cộng hai số có tổng không vượt quá 10, sử dụng đồ vật để đếm',
         emoji: '➕',
         difficulty: 2,
+        lessonContent: 'Phép cộng là gộp hai nhóm đồ vật lại với nhau để biết tất cả có bao nhiêu. Khi thấy dấu "+", ta cần tìm tổng của hai số. Ví dụ: 3 + 4 nghĩa là gộp 3 đồ vật với 4 đồ vật, ta đếm tất cả được 7. Dấu "=" có nghĩa là "bằng". Vậy 3 + 4 = 7 đọc là "ba cộng bốn bằng bảy".',
+        exercises: [{"question":"2 + 3 = ?","answer":"5"},{"question":"Lan có 4 kẹo, mẹ cho thêm 3. Mấy cái?","answer":"7 cái kẹo"},{"question":"5 + 5 = ?","answer":"10"}],
         keyConcepts: [
           { text: 'Hiểu phép cộng là gộp thêm vào', emoji: '🤝' },
           { text: 'Biết cách tính tổng hai số trong phạm vi 10', emoji: '🧮' },
@@ -132,6 +143,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách trừ hai số trong phạm vi 10, hiểu phép trừ là bớt đi',
         emoji: '➖',
         difficulty: 2,
+        lessonContent: 'Phép trừ là bớt đi một số lượng từ một nhóm đồ vật. Khi thấy dấu "−", ta cần tìm phần còn lại sau khi bớt. Ví dụ: 7 − 3 nghĩa là từ 7 đồ vật, bớt đi 3 đồ vật, còn lại 4. Phép trừ ngược với phép cộng: nếu 3 + 4 = 7 thì 7 − 4 = 3 và 7 − 3 = 4.',
+        exercises: [{"question":"8 − 3 = ?","answer":"5"},{"question":"6 quả chuối, ăn 2. Còn lại?","answer":"4 quả"},{"question":"10 − 7 = ?","answer":"3"}],
         keyConcepts: [
           { text: 'Hiểu phép trừ là bớt đi hoặc lấy ra', emoji: '🔙' },
           { text: 'Biết cách tính hiệu hai số trong phạm vi 10', emoji: '🧮' },
@@ -174,6 +187,8 @@ const lessonsData: LessonsData = {
         description: 'Nhận biết và đọc các nguyên âm, phụ âm trong tiếng Việt',
         emoji: '🔤',
         difficulty: 1,
+        lessonContent: 'Bảng chữ cái tiếng Việt có 29 chữ cái: a, ă, â, b, c, d, đ, e, ê, g, h, i, k, l, m, n, o, ô, ơ, p, q, r, s, t, u, ư, v, x, y. Trong đó có 12 nguyên âm và 17 phụ âm. Nguyên âm là âm khi phát âm luồng hơi không bị cản trở, còn phụ âm thì luồng hơi bị cản trở.',
+        exercises: [{"question":"Có bao nhiêu nguyên âm?","answer":"12 nguyên âm"},{"question":"\"b\" là nguyên âm hay phụ âm?","answer":"Phụ âm"},{"question":"Viết 3 phụ âm:","answer":"Ví dụ: b, c, d"}],
         keyConcepts: [
           { text: 'Nhận biết 29 chữ cái trong bảng chữ cái tiếng Việt', emoji: '📖' },
           { text: 'Phân biệt nguyên âm (a, ă, â, e, ê, i, o, ô, ơ, u, ư, y) và phụ âm', emoji: '🗣️' },
@@ -214,6 +229,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách ghép âm đầu + vần để tạo tiếng, luyện đánh vần đúng',
         emoji: '🔤',
         difficulty: 2,
+        lessonContent: 'Tiếng Việt được cấu tạo từ âm đầu, vần và thanh điệu. Khi đánh vần, ta tách tiếng thành các phần rồi ghép lại. Ví dụ: tiếng "ba" = b + a, đánh vần: bờ - a - ba. Thanh điệu gồm 5 dấu: sắc, huyền, hỏi, ngã, nặng.',
+        exercises: [{"question":"Đánh vần \"ma\":","answer":"mờ - a - ma"},{"question":"\"bà\" có dấu gì?","answer":"Dấu huyền"},{"question":"Tách tiếng \"cá\":","answer":"c + á"}],
         keyConcepts: [
           { text: 'Hiểu cấu tạo tiếng: âm đầu + vần + thanh điệu', emoji: '🧩' },
           { text: 'Ghép phụ âm với nguyên âm tạo vần: b + a = ba', emoji: '🔗' },
@@ -254,6 +271,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách viết câu đơn giản với chủ ngữ - vị ngữ, đúng chính tả',
         emoji: '✍️',
         difficulty: 2,
+        lessonContent: 'Câu đơn là câu chỉ có một chủ ngữ và một vị ngữ. Chủ ngữ trả lời cho câu hỏi "Ai?", "Cái gì?". Vị ngữ trả lời cho câu hỏi "Làm gì?", "Thế nào?". Khi viết câu, ta phải viết hoa chữ cái đầu câu và đặt dấu chấm ở cuối câu.',
+        exercises: [{"question":"Chủ ngữ: \"Con mèo ngủ.\"","answer":"Con mèo"},{"question":"Vị ngữ: \"Bạn Lan đọc sách.\"","answer":"đọc sách"},{"question":"Viết 1 câu đơn:","answer":"Ví dụ: Con chim bay."}],
         keyConcepts: [
           { text: 'Câu đơn gồm có chủ ngữ (ai? cái gì?) và vị ngữ (làm gì?)', emoji: '🏗️' },
           { text: 'Viết câu đúng cấu trúc: Ai làm gì?', emoji: '📝' },
@@ -298,6 +317,8 @@ const lessonsData: LessonsData = {
         description: 'Đếm, đọc, viết các số từ 1 đến 100, so sánh các số có hai chữ số',
         emoji: '💯',
         difficulty: 2,
+        lessonContent: 'Các số từ 1 đến 100 bao gồm số có 1 chữ số và số có 2 chữ số. Số có 2 chữ số gồm chữ số hàng chục và hàng đơn vị. Ví dụ: số 47 có 4 chục và 7 đơn vị. Khi so sánh, ta so sánh hàng chục trước, nếu bằng nhau thì so sánh hàng đơn vị.',
+        exercises: [{"question":"Phân tích 56:","answer":"50 + 6"},{"question":"73 ___ 69?","answer":"73 > 69"},{"question":"Viết \"bốn mươi hai\":","answer":"42"}],
         keyConcepts: [
           { text: 'Đếm từ 1 đến 100 theo thứ tự', emoji: '🔢' },
           { text: 'Đọc và viết các số có hai chữ số', emoji: '📝' },
@@ -338,6 +359,8 @@ const lessonsData: LessonsData = {
         description: 'Cộng hai số có hai chữ số với tổng không vượt quá 100, bao gồm phép cộng có nhớ',
         emoji: '➕',
         difficulty: 3,
+        lessonContent: 'Khi cộng hai số có 2 chữ số mà tổng hàng đơn vị lớn hơn 9, ta phải nhớ sang hàng chục. Khi đặt tính dọc, phải thẳng hàng: đơn vị dưới đơn vị, chục dưới chục. Cộng từ hàng đơn vị lên.',
+        exercises: [{"question":"45 + 38 = ?","answer":"83"},{"question":"67 + 25 = ?","answer":"92"},{"question":"28 + 35 = ?","answer":"63"}],
         keyConcepts: [
           { text: 'Cộng hai số có hai chữ số (không nhớ và có nhớ)', emoji: '🧮' },
           { text: 'Đặt tính dọc đúng cách: đơn vị dưới đơn vị, chục dưới chục', emoji: '📐' },
@@ -378,6 +401,8 @@ const lessonsData: LessonsData = {
         description: 'Trừ hai số có hai chữ số, bao gồm phép trừ có nhớ',
         emoji: '➖',
         difficulty: 3,
+        lessonContent: 'Khi trừ hai số có 2 chữ số mà hàng đơn vị không đủ trừ, ta phải mượn 1 chục sang hàng đơn vị. Nhớ gạch chéo ở hàng chục khi mượn. Kiểm tra: tổng hiệu + số trừ = số bị trừ.',
+        exercises: [{"question":"63 − 27 = ?","answer":"36"},{"question":"80 − 45 = ?","answer":"35"},{"question":"54 − 28 = ?","answer":"26"}],
         keyConcepts: [
           { text: 'Trừ hai số có hai chữ số (không nhớ và có nhớ)', emoji: '🧮' },
           { text: 'Đặt tính dọc đúng cách: đơn vị dưới đơn vị, chục dưới chục', emoji: '📐' },
@@ -420,6 +445,8 @@ const lessonsData: LessonsData = {
         description: 'Đọc hiểu các đoạn văn ngắn, trả lời câu hỏi về nội dung bài đọc',
         emoji: '📖',
         difficulty: 2,
+        lessonContent: 'Đọc hiểu là kỹ năng quan trọng nhất khi học Ngữ văn. Khi đọc, ta cần đọc trơn toàn bài, ngắt nghỉ đúng chỗ, hiểu nội dung chính và trả lời được câu hỏi về bài. Các câu hỏi thường hỏi: Ai? Làm gì? Ở đâu? Khi nào?',
+        exercises: [{"question":"Khi đọc đoạn văn cần làm gì?","answer":"Đọc trơn toàn bài"},{"question":"Câu hỏi thường hỏi gì?","answer":"Ai? Làm gì? Ở đâu?"},{"question":"Tìm ý chính đoạn văn.","answer":"(Tùy bài đọc)"}],
         keyConcepts: [
           { text: 'Đọc trơn toàn bài, ngắt nghỉ đúng chỗ', emoji: '🗣️' },
           { text: 'Hiểu nội dung chính của đoạn văn', emoji: '🧠' },
@@ -460,6 +487,8 @@ const lessonsData: LessonsData = {
         description: 'Học về danh từ, động từ, tính từ và cách đặt câu đúng ngữ pháp',
         emoji: '📝',
         difficulty: 2,
+        lessonContent: 'Từ được phân thành: Danh từ (chỉ người, vật, sự việc), Động từ (chỉ hành động), Tính từ (chỉ đặc điểm). Khi đặt câu, cần có đủ chủ ngữ (danh từ) và vị ngữ (động từ/tính từ).',
+        exercises: [{"question":"\"Chạy\" là DT hay ĐT?","answer":"Động từ"},{"question":"Tìm tính từ: \"Bông hoa đỏ rất đẹp.\"","answer":"đỏ, đẹp"},{"question":"Đặt câu có DT và ĐT:","answer":"Ví dụ: Con chim bay."}],
         keyConcepts: [
           { text: 'Danh từ: từ chỉ người, vật, sự việc (bàn, ghế, mẹ, bạn)', emoji: '📌' },
           { text: 'Động từ: từ chỉ hành động (chạy, nhảy, đọc, viết)', emoji: '🏃' },
@@ -500,6 +529,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách viết câu ghép và ghép các câu thành đoạn văn ngắn',
         emoji: '✍️',
         difficulty: 3,
+        lessonContent: 'Đoạn văn ngắn gồm 3-5 câu cùng nói về một chủ đề. Câu đầu là câu mở đoạn, câu cuối là câu kết đoạn. Dùng từ nối: và, nhưng, vì, nên để liên kết các câu.',
+        exercises: [{"question":"Câu mở đoạn làm gì?","answer":"Giới thiệu chủ đề"},{"question":"Nối bằng \"và\": \"Em đi học.\" + \"Em ăn trưa.\"","answer":"Em đi học và ăn trưa."}],
         keyConcepts: [
           { text: 'Viết câu ghép bằng từ nối: và, nhưng, vì, nên', emoji: '🔗' },
           { text: 'Sắp xếp các câu thành đoạn văn có ý nghĩa', emoji: '📋' },
@@ -544,6 +575,8 @@ const lessonsData: LessonsData = {
         description: 'Đếm, đọc, viết và so sánh các số đến 1000, hiểu hàng trăm, chục, đơn vị',
         emoji: '🔢',
         difficulty: 2,
+        lessonContent: 'Số có 3 chữ số gồm hàng trăm, hàng chục và hàng đơn vị. Ví dụ: 527 = 500 + 20 + 7. Khi so sánh, ta so sánh từ hàng trăm xuống.',
+        exercises: [{"question":"Phân tích 456:","answer":"400 + 50 + 6"},{"question":"389 ___ 401?","answer":"389 < 401"},{"question":"Viết \"năm trăm hai mươi bảy\":","answer":"527"}],
         keyConcepts: [
           { text: 'Đếm từ 100 đến 1000 theo từng trăm', emoji: '💯' },
           { text: 'Phân tích số: trăm - chục - đơn vị (456 = 4 trăm + 5 chục + 6 đơn vị)', emoji: '🧮' },
@@ -584,6 +617,8 @@ const lessonsData: LessonsData = {
         description: 'Cộng và trừ các số có ba chữ số, đặt tính dọc và tính nhẩm',
         emoji: '🧮',
         difficulty: 3,
+        lessonContent: 'Cộng trừ số có 3 chữ số tương tự số có 2 chữ số nhưng thêm hàng trăm. Đặt tính dọc thẳng hàng. Cộng/trừ từ hàng đơn vị lên.',
+        exercises: [{"question":"356 + 478 = ?","answer":"834"},{"question":"700 − 245 = ?","answer":"455"},{"question":"400 + 300 = ?","answer":"700"}],
         keyConcepts: [
           { text: 'Cộng/trừ số có ba chữ số (không nhớ và có nhớ)', emoji: '📐' },
           { text: 'Đặt tính dọc: đơn vị dưới đơn vị, chục dưới chục, trăm dưới trăm', emoji: '📏' },
@@ -624,6 +659,8 @@ const lessonsData: LessonsData = {
         description: 'Học thuộc bảng cửu chương từ 2 đến 9, vận dụng vào giải toán',
         emoji: '✖️',
         difficulty: 3,
+        lessonContent: 'Phép nhân là cộng nhiều lần một số giống nhau. Bảng cửu chương từ 2 đến 9 cần học thuộc. Tính chất giao hoán: a x b = b x a.',
+        exercises: [{"question":"7 × 8 = ?","answer":"56"},{"question":"6 quả cam/rổ, 5 rổ. Mấy quả?","answer":"30 quả"},{"question":"9 × 4 = ?","answer":"36"}],
         keyConcepts: [
           { text: 'Hiểu phép nhân là cộng nhiều lần số giống nhau', emoji: '🔄' },
           { text: 'Học thuộc bảng cửu chương 2, 3, 4, 5', emoji: '📚' },
@@ -666,6 +703,8 @@ const lessonsData: LessonsData = {
         description: 'Đọc hiểu văn bản dài hơn, tìm ý chính và chi tiết trong bài',
         emoji: '📖',
         difficulty: 3,
+        lessonContent: 'Đọc hiểu văn bản dài hơn yêu cầu tìm ý chính và ý phụ. Ý chính là nội dung quan trọng nhất. Gạch chân từ ngữ quan trọng khi đọc.',
+        exercises: [{"question":"Ý chính là gì?","answer":"Nội dung quan trọng nhất"},{"question":"Tìm ý chính như thế nào?","answer":"Đọc bài, hỏi: kể về ai? Chuyện gì?"},{"question":"Nêu cảm nghĩ nhân vật:","answer":"(Cá nhân)"}],
         keyConcepts: [
           { text: 'Đọc hiểu văn bản: tìm ý chính và ý phụ', emoji: '🎯' },
           { text: 'Nhận biết thứ tự sự việc trong bài', emoji: '📋' },
@@ -706,6 +745,8 @@ const lessonsData: LessonsData = {
         description: 'Nâng cao kiến thức về từ loại, cấu tạo câu và dấu câu',
         emoji: '📝',
         difficulty: 3,
+        lessonContent: 'Danh từ riêng chỉ tên riêng (Lan, Hà Nội) - luôn viết hoa. Danh từ chung chỉ loại (bạn, con mèo). Câu kể: Ai làm gì? Ai thế nào? Cái gì thế nào?',
+        exercises: [{"question":"\"Hà Nội\" DT riêng hay chung?","answer":"Danh từ riêng"},{"question":"\"Bông hoa rất đẹp.\" mẫu nào?","answer":"Cái gì thế nào?"},{"question":"Viết 1 DT riêng, 1 DT chung:","answer":"Ví dụ: Nam, bạn bè"}],
         keyConcepts: [
           { text: 'Danh từ riêng và danh từ chung', emoji: '📌' },
           { text: 'Động từ chỉ hoạt động và trạng thái', emoji: '🏃' },
@@ -746,6 +787,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách viết đoạn văn chặt chẽ, có mở - thân - kết',
         emoji: '✍️',
         difficulty: 3,
+        lessonContent: 'Đoạn văn có cấu trúc: mở đoạn - phát triển - kết đoạn. Dùng từ nối: đầu tiên, sau đó, cuối cùng để đoạn văn mạch lạc.',
+        exercises: [{"question":"Cấu trúc đoạn văn:","answer":"Mở - Phát triển - Kết"},{"question":"Đặt 2 từ nối:","answer":"Ví dụ: đầu tiên, sau đó"}],
         keyConcepts: [
           { text: 'Cấu trúc đoạn văn: câu mở đoạn - các câu phát triển - câu kết đoạn', emoji: '🏗️' },
           { text: 'Viết đoạn văn kể chuyện (5-7 câu)', emoji: '📖' },
@@ -790,6 +833,8 @@ const lessonsData: LessonsData = {
         description: 'Đọc, viết, so sánh các số đến 100 000, hiểu hàng chục nghìn',
         emoji: '🔢',
         difficulty: 3,
+        lessonContent: 'Số có 5 chữ số gồm: chục nghìn, nghìn, trăm, chục, đơn vị. Khi so sánh, so sánh từ hàng cao nhất xuống.',
+        exercises: [{"question":"Phân tích 52 347:","answer":"50 000 + 2 000 + 300 + 40 + 7"},{"question":"48 923 ___ 52 100?","answer":"48 923 < 52 100"},{"question":"Đọc số: 37 845","answer":"Ba mươi bảy nghìn tám trăm bốn mươi lăm"}],
         keyConcepts: [
           { text: 'Đếm từ 1000 đến 100 000 theo nghìn', emoji: '💯' },
           { text: 'Phân tích số: chục nghìn - nghìn - trăm - chục - đơn vị', emoji: '🧮' },
@@ -830,6 +875,8 @@ const lessonsData: LessonsData = {
         description: 'Thực hiện phép cộng và trừ các số đến hàng chục nghìn',
         emoji: '🧮',
         difficulty: 3,
+        lessonContent: 'Cộng trừ số lớn cần cẩn thận với phép nhớ nhiều lần. Đặt tính dọc, thẳng hàng các chữ số.',
+        exercises: [{"question":"24 567 + 18 394 = ?","answer":"42 961"},{"question":"50 000 − 17 835 = ?","answer":"32 165"},{"question":"2345 − 678 = ?","answer":"1 667"}],
         keyConcepts: [
           { text: 'Cộng/trừ số có 4-5 chữ số, có nhớ nhiều lần', emoji: '📐' },
           { text: 'Đặt tính dọc đúng cách với số lớn', emoji: '📏' },
@@ -870,6 +917,8 @@ const lessonsData: LessonsData = {
         description: 'Nhân số có nhiều chữ số với số có 1 chữ số, chia số có nhiều chữ số cho số có 1 chữ số',
         emoji: '✖️',
         difficulty: 4,
+        lessonContent: 'Nhân số nhiều chữ số: nhân từ phải sang trái. Chia: chia từ trái sang phải, hạ từng chữ số. Kiểm tra kết quả bằng cách tính ngược.',
+        exercises: [{"question":"345 × 7 = ?","answer":"2 415"},{"question":"963 ÷ 3 = ?","answer":"321"},{"question":"235 × 6 = ?","answer":"1 410"}],
         keyConcepts: [
           { text: 'Nhân số có 2-3 chữ số với số có 1 chữ số', emoji: '✖️' },
           { text: 'Chia số có 2-3 chữ số cho số có 1 chữ số', emoji: '➗' },
@@ -912,6 +961,8 @@ const lessonsData: LessonsData = {
         description: 'Đọc hiểu văn bản sâu hơn, phân tích nhân vật và ý nghĩa bài văn',
         emoji: '📖',
         difficulty: 3,
+        lessonContent: 'Đọc hiểu chi tiết yêu cầu phân tích nhân vật: ngoại hình, tính cách, hành động. Phân biệt kể chuyện và miêu tả. Tìm ý nghĩa bài văn.',
+        exercises: [{"question":"Phân tích nhân vật cần tìm gì?","answer":"Ngoại hình, tính cách, hành động"},{"question":"Kể chuyện khác miêu tả thế nào?","answer":"Kể chuyện: nhân vật, sự việc. Miêu tả: cảnh vật"},{"question":"Nêu ý nghĩa bài:","answer":"(Cá nhân)"}],
         keyConcepts: [
           { text: 'Phân tích nhân vật: ngoại hình, tính cách, hành động', emoji: '🎭' },
           { text: 'Tìm ý nghĩa bài văn: bài học rút ra', emoji: '💡' },
@@ -952,6 +1003,8 @@ const lessonsData: LessonsData = {
         description: 'Nâng cao kiến thức về từ loại, câu mở rộng và dấu câu',
         emoji: '📝',
         difficulty: 3,
+        lessonContent: 'Từ đồng nghĩa (xinh - đẹp), từ trái nghĩa (xấu - đẹp). Câu ghép có hơn một chủ ngữ - vị ngữ, nối bằng từ: và, nhưng, vì, nên.',
+        exercises: [{"question":"Từ đồng nghĩa \"đẹp\":","answer":"Xinh, mỹ lệ"},{"question":"Đặt câu ghép \"vì... nên\":","answer":"Ví dụ: Vì trời mưa nên em ở nhà."}],
         keyConcepts: [
           { text: 'Danh từ chỉ đơn vị: cái, con, quả, bức...', emoji: '📌' },
           { text: 'Động từ chỉ hoạt động và trạng thái nâng cao', emoji: '🏃' },
@@ -992,6 +1045,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách viết bài văn miêu tả đồ vật, cây cối, con vật',
         emoji: '🎨',
         difficulty: 4,
+        lessonContent: 'Viết văn miêu tả: giới thiệu, miêu tả từng phần, nêu cảm nghĩ. Dùng từ ngữ sinh động, so sánh và nhân hóa.',
+        exercises: [{"question":"Miêu tả cần viết gì?","answer":"Hình dáng, màu sắc, đặc điểm, cảm nhận"},{"question":"Ví dụ nhân hóa:","answer":"Cây me vẫy tay chào gió"}],
         keyConcepts: [
           { text: 'Dàn ý bài miêu tả: mở bài - thân bài - kết bài', emoji: '📋' },
           { text: 'Miêu tả từ tổng thể đến chi tiết', emoji: '🔍' },
@@ -1036,6 +1091,8 @@ const lessonsData: LessonsData = {
         description: 'Hiểu phân số, chuyển đổi phân số và số thập phân',
         emoji: '🔢',
         difficulty: 4,
+        lessonContent: 'Phân số biểu thị phần của một cái gì đó. Phân số thập phân có mẫu số 10, 100, 1000. Ví dụ: 3/10 = 0,3. So sánh số thập phân: phần nguyên trước, rồi từng chữ số thập phân.',
+        exercises: [{"question":"7/10 = ? (số thập phân)","answer":"0,7"},{"question":"0,6 ___ 0,58?","answer":"0,6 > 0,58"},{"question":"2 3/10 = ? (số thập phân)","answer":"2,3"}],
         keyConcepts: [
           { text: 'Hiểu phân số: tử số / mẫu số, ý nghĩa từng phần', emoji: '🍕' },
           { text: 'Phân số thập phân: mẫu số là 10, 100, 1000...', emoji: '💯' },
@@ -1076,6 +1133,8 @@ const lessonsData: LessonsData = {
         description: 'Cộng, trừ, nhân, chia phân số và giải toán liên quan',
         emoji: '🧮',
         difficulty: 4,
+        lessonContent: 'Cộng trừ phân số cùng mẫu: giữ mẫu, cộng/trừ tử. Khác mẫu: quy đồng. Nhân: tử x tử, mẫu x mẫu. Chia: nhân nghịch đảo.',
+        exercises: [{"question":"2/5 + 1/5 = ?","answer":"3/5"},{"question":"1/3 × 2/5 = ?","answer":"2/15"},{"question":"3/4 ÷ 2/3 = ?","answer":"9/8"}],
         keyConcepts: [
           { text: 'Cộng/trừ phân số cùng mẫu số: giữ mẫu, cộng/trừ tử', emoji: '➕' },
           { text: 'Quy đồng mẫu số để cộng/trừ phân số khác mẫu', emoji: '🔄' },
@@ -1116,6 +1175,8 @@ const lessonsData: LessonsData = {
         description: 'Học các đơn vị đo: độ dài, khối lượng, thời gian, diện tích và chuyển đổi',
         emoji: '📏',
         difficulty: 3,
+        lessonContent: 'Đại lượng đo được: độ dài, khối lượng, thời gian, diện tích. Chuyển đổi: 1 km = 1000 m, 1 tấn = 1000 kg.',
+        exercises: [{"question":"3 km 250 m = ... m","answer":"3 250 m"},{"question":"S HCN 12m × 8m:","answer":"96 m²"},{"question":"2 tấn 5 yến = ... kg","answer":"2 050 kg"}],
         keyConcepts: [
           { text: 'Đơn vị đo độ dài: km, m, dm, cm, mm và chuyển đổi', emoji: '📐' },
           { text: 'Đơn vị đo khối lượng: tấn, tạ, yến, kg, g và chuyển đổi', emoji: '⚖️' },
@@ -1158,6 +1219,8 @@ const lessonsData: LessonsData = {
         description: 'Đọc hiểu văn bản nghị luận, văn bản thông tin, phân tích sâu',
         emoji: '📖',
         difficulty: 4,
+        lessonContent: 'Văn bản nghị luận trình bày ý kiến và dùng lý lẽ thuyết phục. Luận điểm: ý kiến cần chứng minh. Luận cứ: lý lẽ, dẫn chứng.',
+        exercises: [{"question":"Nghị luận là gì?","answer":"Trình bày ý kiến, dùng lý lẽ thuyết phục"},{"question":"Luận điểm khác luận cứ?","answer":"Luận điểm: cần chứng minh. Luận cứ: lý lẽ hỗ trợ"}],
         keyConcepts: [
           { text: 'Nhận biết loại văn bản: nghị luận, thông tin, nghệ thuật', emoji: '📚' },
           { text: 'Tìm luận điểm chính và luận cứ trong văn bản nghị luận', emoji: '🎯' },
@@ -1198,6 +1261,8 @@ const lessonsData: LessonsData = {
         description: 'Học về nghĩa của từ, từ đồng nghĩa, trái nghĩa, đa nghĩa và câu phức',
         emoji: '📝',
         difficulty: 3,
+        lessonContent: 'Từ đồng nghĩa: nghĩa giống nhau. Từ trái nghĩa: nghĩa ngược nhau. Từ đa nghĩa: nhiều nghĩa tùy ngữ cảnh. Câu phức: hơn một chủ ngữ - vị ngữ.',
+        exercises: [{"question":"Đồng nghĩa + trái nghĩa \"tốt\":","answer":"Đồng: hay, giỏi. Trái: xấu, dở"},{"question":"\"Chạy bộ\" và \"chạy việc\" cùng nghĩa?","answer":"Không, từ đa nghĩa"}],
         keyConcepts: [
           { text: 'Từ đồng nghĩa: từ có nghĩa giống hoặc gần giống nhau', emoji: '🤝' },
           { text: 'Từ trái nghĩa: từ có nghĩa ngược nhau', emoji: '⚡' },
@@ -1238,6 +1303,8 @@ const lessonsData: LessonsData = {
         description: 'Học cách viết bài văn nghị luận nêu ý kiến và lý lẽ',
         emoji: '✍️',
         difficulty: 4,
+        lessonContent: 'Bài nghị luận: Mở bài (nêu vấn đề) - Thân bài (luận điểm + luận cứ) - Kết bài (khẳng định quan điểm). Dùng từ nối: ngoài ra, tuy nhiên, tóm lại.',
+        exercises: [{"question":"Cấu trúc bài nghị luận:","answer":"Mở - Thân (luận điểm+luận cứ) - Kết"},{"question":"Dùng \"tuy nhiên\" viết câu:","answer":"Ví dụ: Đọc sách có ích, tuy nhiên cần chọn sách phù hợp."}],
         keyConcepts: [
           { text: 'Dàn ý bài nghị luận: mở bài - thân bài (luận điểm + luận cứ) - kết bài', emoji: '📋' },
           { text: 'Nêu luận điểm rõ ràng và đưa ra lý lẽ thuyết phục', emoji: '🎯' },

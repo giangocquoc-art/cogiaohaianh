@@ -135,7 +135,7 @@ export function HomeView() {
   const { displayText: welcomeText, isTyping } = useTypingEffect('Chào mừng các em! 🎉', 70, 800)
 
   const quizzesCounter = useAnimatedCounter(27, 1500, false)
-  const subjectsCounter = useAnimatedCounter(10, 1500, false)
+  const subjectsCounter = useAnimatedCounter(2, 1200, false)
   const gradesCounter = useAnimatedCounter(5, 1000, false)
   const studentsCounter = useAnimatedCounter(100, 2000, false)
 
@@ -424,9 +424,9 @@ export function HomeView() {
           ))}
         </div>
 
-        <div className="relative flex flex-col sm:flex-row items-center gap-6">
+        <div className="relative flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
           {/* Teacher image with breathing animation */}
-          <div className="relative w-40 h-40 sm:w-52 sm:h-52 shrink-0">
+          <div className="relative w-32 h-32 sm:w-48 sm:h-48 shrink-0">
             {/* Animated glow ring around mascot image */}
             <div className="glow-ring" />
             <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-2xl opacity-30 animate-breathing scale-105" />
@@ -434,7 +434,7 @@ export function HomeView() {
               src="/images/teacher-hero.png"
               alt="Cô Giáo Hải Anh"
               fill
-              sizes="(max-width: 640px) 160px, 208px"
+              sizes="(max-width: 640px) 128px, 192px"
               className="object-cover rounded-2xl drop-shadow-lg transition-transform duration-300 hover:scale-[1.02]"
               priority
             />
@@ -466,7 +466,7 @@ export function HomeView() {
                   >
                     {typeof window !== 'undefined' ? (localStorage.getItem('cogiaohaianh-avatar') || '🐱') : '🐱'}
                   </motion.button>
-                  <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-900 dark:text-orange-100 leading-tight drop-shadow-sm">
+                  <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-5xl text-orange-900 dark:text-orange-100 leading-tight drop-shadow-sm">
                     Chào {studentInfo.name}! 🎉
                   </h2>
                 </div>
@@ -477,7 +477,7 @@ export function HomeView() {
               </>
             ) : (
               <>
-                <h2 className="font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-5xl text-orange-900 dark:text-orange-100 mb-2 leading-tight min-h-[1.3em] drop-shadow-sm">
+                <h2 className="font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-5xl text-orange-900 dark:text-orange-100 mb-2 leading-tight min-h-[1.3em] drop-shadow-sm">
                   {welcomeText}
                   {isTyping && <span className="typing-cursor" />}
                 </h2>

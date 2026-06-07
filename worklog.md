@@ -2524,3 +2524,56 @@ Stage Summary:
 - /src/components/home-view.tsx (image style + alt text)
 - /src/components/app-header.tsx (2 image style changes)
 - /src/components/app-footer.tsx (image style change)
+
+---
+Task ID: 2-b
+Agent: UI Bug Fix Developer
+Task: Fix Multiple UI Bugs
+
+Work Log:
+- Read worklog.md and project files to understand current state
+- Fixed ticker/marquee scrolling speed:
+  - Changed `ticker-scroll` keyframes from `translateX(100%)` → `translateX(-100%)` to `translateX(0)` → `translateX(-50%)` for proper seamless loop
+  - Changed `.ticker-content` animation duration from 200s to 80s (slower, more readable)
+  - Changed `.animate-ticker-scroll` duration from 20s to 80s for consistency
+- Replaced teacher hero image:
+  - Copied `/upload/pasted_image_1780808775043.png` to `/public/images/teacher-hero.png`
+- Fixed UI overlapping issues:
+  - Hidden XP Widget on mobile screens (added `hidden sm:block` to XPWidget wrapper in app-header.tsx) to prevent header crowding
+  - Added `pb-20 sm:pb-6` to footer inner content to prevent footer content from being hidden behind fixed mobile bottom nav
+- Searched for Pet/Character Evolution feature references:
+  - No "pet", "petView", "character-view", or "🥚 Nhân Vật" feature found in codebase
+  - The only "nhân vật" references are about story characters in lesson content (expected Vietnamese literature curriculum content)
+  - No Pet/Character Evolution feature exists to remove
+- Updated Lessons View with new fields:
+  - Added `Exercise` interface with `question` and `answer` fields
+  - Added `lessonContent: string` and `exercises: Exercise[]` to `Lesson` interface
+  - Added "Nội dung bài học" section in expanded card with BookOpen icon header and blue-50/dark:blue-950/30 background
+  - Content rendered as paragraphs split by newlines
+  - Added "Bài tập thực hành" section after practice tips with Lightbulb icon header (green variant)
+  - Each exercise shows question with "Xem đáp án"/"Ẩn đáp án" toggle button
+  - Answer revealed with green background animation using Framer Motion
+  - Added `revealedExercises` state tracking with Set<number> per card
+  - Added `toggleExerciseAnswer` helper function
+- All lint checks pass, no runtime errors in dev.log
+
+Stage Summary:
+**Bug Fixes & UI Improvements:**
+1. Ticker/marquee scrolling: Fixed animation for proper seamless loop, slowed down to 80s duration
+2. Teacher image: Replaced with user's uploaded image
+3. Header overlap: Hidden XP Widget on mobile to prevent crowding
+4. Footer overlap: Added extra bottom padding on mobile to account for fixed bottom nav
+5. Pet/Character Evolution: Feature doesn't exist in codebase - no changes needed
+
+**New Features in Lessons View:**
+1. Lesson Content section: Displays `lessonContent` as paragraphs in blue-themed card
+2. Practice Exercises section: Shows `exercises` with question/answer toggle, green-themed
+3. Both sections conditionally rendered (only shown if data exists)
+4. Interactive "Xem đáp án" button reveals answer with animation
+
+**Files Modified:**
+- `/src/app/globals.css` - Fixed ticker animation keyframes and duration
+- `/src/components/app-header.tsx` - Hidden XP Widget on mobile
+- `/src/components/app-footer.tsx` - Added mobile bottom padding
+- `/src/components/lessons-view.tsx` - Added Exercise interface, Lesson interface fields, lessonContent and exercises sections
+- `/public/images/teacher-hero.png` - Replaced with uploaded image
