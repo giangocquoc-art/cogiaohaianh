@@ -996,7 +996,7 @@ textarea:focus-visible {
 }
 
 .animate-ticker-scroll {
-  animation: ticker-scroll 80s linear infinite;
+  animation: ticker-scroll 200s linear infinite;
 }
 
 .animate-gradient-shift {
@@ -1130,7 +1130,7 @@ textarea:focus-visible {
 
 .ticker-content {
   display: inline-block;
-  animation: ticker-scroll 80s linear infinite;
+  animation: ticker-scroll 200s linear infinite;
 }
 
 .ticker-content:hover {
@@ -2178,6 +2178,7 @@ textarea:focus-visible {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: glow-ring-pulse 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes glow-ring-pulse {

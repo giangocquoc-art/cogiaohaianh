@@ -8,20 +8,59 @@ export async function POST() {
     // Check if data already exists
     const existingCount = await db.quiz.count()
     if (existingCount > 0) {
-      // Data already seeded - add any new additional questions using upsert pattern
+      // Data already seeded - add any new quizzes and additional questions
       let addedCount = 0
+      let newQuizCount = 0
 
       for (const quiz of quizData) {
-        const extraQuestions = additionalQuestions[quiz.title]
-        if (!extraQuestions || extraQuestions.length === 0) continue
-
         // Find the quiz in the database
         const existingQuiz = await db.quiz.findFirst({
           where: { title: quiz.title },
           include: { questions: { select: { questionText: true } } },
         })
 
-        if (!existingQuiz) continue
+        if (!existingQuiz) {
+          // This quiz doesn't exist yet - create it
+          const extraQuestions = additionalQuestions[quiz.title] || []
+          const allQuestions = [...quiz.questions, ...extraQuestions]
+
+          await db.quiz.create({
+            data: {
+              grade: quiz.grade,
+              subject: quiz.subject,
+              chapter: quiz.chapter,
+              chapterName: quiz.chapterName,
+              title: quiz.title,
+              description: quiz.description,
+              duration: quiz.duration,
+              questions: {
+                create: allQuestions.map((q, idx) => ({
+                  questionText: q.questionText,
+                  questionType: q.questionType,
+                  options: JSON.stringify(q.options),
+                  correctAnswer: q.correctAnswer,
+                  points: q.points,
+                  orderIndex: idx,
+                })),
+              },
+            },
+          })
+          newQuizCount++
+          addedCount += allQuestions.length
+          continue
+        }
+
+        // Update chapter name if it changed
+        if (existingQuiz.chapterName !== quiz.chapterName) {
+          await db.quiz.update({
+            where: { id: existingQuiz.id },
+            data: { chapterName: quiz.chapterName, description: quiz.description },
+          })
+        }
+
+        // Add any new additional questions
+        const extraQuestions = additionalQuestions[quiz.title]
+        if (!extraQuestions || extraQuestions.length === 0) continue
 
         // Get existing question texts for dedup
         const existingTexts = new Set(existingQuiz.questions.map(q => q.questionText))
@@ -54,9 +93,10 @@ export async function POST() {
         }
       }
 
-      if (addedCount > 0) {
+      if (addedCount > 0 || newQuizCount > 0) {
         return NextResponse.json({
-          message: `Added ${addedCount} new questions to existing quizzes`,
+          message: `Added ${newQuizCount} new quizzes and ${addedCount} new questions`,
+          newQuizCount,
           addedCount,
         })
       }

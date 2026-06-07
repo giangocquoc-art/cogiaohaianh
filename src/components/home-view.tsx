@@ -265,9 +265,9 @@ export function HomeView() {
         {/* Animated shimmer overlay */}
         <div className="absolute inset-0 animate-shimmer opacity-20 pointer-events-none" />
         {/* Decorative fire emojis */}
-        <div className="absolute top-2 right-4 text-3xl animate-float opacity-60 group-hover:opacity-90 transition-opacity">🔥</div>
-        <div className="absolute bottom-2 right-16 text-2xl animate-sparkle opacity-40" style={{ animationDelay: '0.5s' }}>✨</div>
-        <div className="absolute top-4 right-1/3 text-xl animate-float opacity-30" style={{ animationDelay: '1s' }}>⭐</div>
+        <div className="absolute top-2 right-4 text-3xl animate-float opacity-60 group-hover:opacity-90 transition-opacity pointer-events-none">🔥</div>
+        <div className="absolute bottom-2 right-16 text-2xl animate-sparkle opacity-40 pointer-events-none" style={{ animationDelay: '0.5s' }}>✨</div>
+        <div className="absolute top-4 right-1/3 text-xl animate-float opacity-30 pointer-events-none" style={{ animationDelay: '1s' }}>⭐</div>
 
         <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
           {/* Left: Fire icon + text */}
@@ -332,12 +332,12 @@ export function HomeView() {
         <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-br from-orange-400 via-amber-400 to-yellow-400 opacity-20 pointer-events-none" style={{ WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude' }} />
 
         {/* Floating particle dots */}
-        <div className="particle-dot" style={{ top: '15%', left: '10%' }} />
-        <div className="particle-dot" style={{ top: '30%', right: '15%' }} />
-        <div className="particle-dot" style={{ bottom: '25%', left: '25%' }} />
-        <div className="particle-dot" style={{ top: '50%', right: '30%' }} />
-        <div className="particle-dot" style={{ bottom: '40%', left: '60%' }} />
-        <div className="particle-dot" style={{ top: '70%', left: '45%' }} />
+        <div className="particle-dot pointer-events-none" style={{ top: '15%', left: '10%' }} />
+        <div className="particle-dot pointer-events-none" style={{ top: '30%', right: '15%' }} />
+        <div className="particle-dot pointer-events-none" style={{ bottom: '25%', left: '25%' }} />
+        <div className="particle-dot pointer-events-none" style={{ top: '50%', right: '30%' }} />
+        <div className="particle-dot pointer-events-none" style={{ bottom: '40%', left: '60%' }} />
+        <div className="particle-dot pointer-events-none" style={{ top: '70%', left: '45%' }} />
 
         {/* Floating pencil/ruler emoji decorations */}
         <div className="absolute top-8 left-12 text-3xl opacity-10 dark:opacity-40 animate-float pointer-events-none" style={{ animationDelay: '0.3s' }}>✏️</div>
@@ -353,8 +353,8 @@ export function HomeView() {
         </div>
 
         {/* Layered background patterns */}
-        <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-25" />
-        <div className="absolute inset-0 pattern-dots opacity-20 dark:opacity-8" />
+        <div className="absolute inset-0 pattern-clouds opacity-40 dark:opacity-25 pointer-events-none" />
+        <div className="absolute inset-0 pattern-dots opacity-20 dark:opacity-8 pointer-events-none" />
 
         {/* School building SVG silhouette in background */}
         <div className="absolute bottom-0 left-0 right-0 opacity-[0.07] dark:opacity-[0.04] pointer-events-none">
@@ -394,7 +394,7 @@ export function HomeView() {
         </div>
 
         {/* Floating animated decorations with parallax */}
-        <motion.div style={{ y: parallaxY, opacity: parallaxOpacity }}>
+        <motion.div className="pointer-events-none" style={{ y: parallaxY, opacity: parallaxOpacity }}>
           <div className="absolute top-3 right-8 text-4xl animate-drift-right opacity-70">🌟</div>
           <div className="absolute top-16 right-20 text-2xl animate-sparkle opacity-50" style={{ animationDelay: '0.8s' }}>⭐</div>
           <div className="absolute bottom-8 left-10 text-3xl animate-drift-left opacity-60">📚</div>
@@ -407,7 +407,7 @@ export function HomeView() {
         </motion.div>
 
         {/* Slow-spinning background decoration */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-10 dark:opacity-40 animate-spin-slow">
+        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-10 dark:opacity-40 animate-spin-slow pointer-events-none">
           <div className="w-full h-full rounded-full border-8 border-dashed border-orange-400" />
         </div>
 
@@ -428,8 +428,8 @@ export function HomeView() {
           {/* Teacher image with breathing animation */}
           <div className="relative w-32 h-32 sm:w-48 sm:h-48 shrink-0">
             {/* Animated glow ring around mascot image */}
-            <div className="glow-ring" />
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-2xl opacity-30 animate-breathing scale-105" />
+            <div className="glow-ring pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-2xl opacity-30 animate-breathing scale-105 pointer-events-none" />
             <Image
               src="/images/teacher-hero.png"
               alt="Cô Giáo Hải Anh"
@@ -439,9 +439,9 @@ export function HomeView() {
               priority
             />
             {/* Sparkle ring around image */}
-            <div className="absolute -top-2 -left-2 text-lg animate-sparkle" style={{ animationDelay: '0s' }}>✨</div>
-            <div className="absolute -bottom-1 -right-1 text-lg animate-sparkle" style={{ animationDelay: '0.7s' }}>✨</div>
-            <div className="absolute top-0 right-2 text-sm animate-sparkle" style={{ animationDelay: '1.4s' }}>💫</div>
+            <div className="absolute -top-2 -left-2 text-lg animate-sparkle pointer-events-none" style={{ animationDelay: '0s' }}>✨</div>
+            <div className="absolute -bottom-1 -right-1 text-lg animate-sparkle pointer-events-none" style={{ animationDelay: '0.7s' }}>✨</div>
+            <div className="absolute top-0 right-2 text-sm animate-sparkle pointer-events-none" style={{ animationDelay: '1.4s' }}>💫</div>
           </div>
 
           <div className="text-center sm:text-left flex-1">
@@ -603,11 +603,11 @@ export function HomeView() {
           >
             <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-yellow-950/30 rounded-2xl border-2 border-amber-200 dark:border-amber-800 p-5 shadow-sm group-hover:shadow-md group-hover:border-amber-300 dark:group-hover:border-amber-700 transition-all relative overflow-hidden">
               {/* Decorative elements */}
-              <div className="absolute top-2 right-4 text-xl animate-sparkle opacity-30 dark:opacity-40">✨</div>
-              <div className="absolute bottom-2 left-6 text-lg animate-sparkle opacity-30 dark:opacity-40" style={{ animationDelay: '1s' }}>⭐</div>
+              <div className="absolute top-2 right-4 text-xl animate-sparkle opacity-30 dark:opacity-40 pointer-events-none">✨</div>
+              <div className="absolute bottom-2 left-6 text-lg animate-sparkle opacity-30 dark:opacity-40 pointer-events-none" style={{ animationDelay: '1s' }}>⭐</div>
               {/* Podium decoration */}
-              <div className="absolute top-3 left-3 text-2xl animate-podium-decor">🏆</div>
-              <div className="absolute bottom-3 right-3 text-lg animate-podium-decor opacity-50" style={{ animationDelay: '0.5s' }}>🥇</div>
+              <div className="absolute top-3 left-3 text-2xl animate-podium-decor pointer-events-none">🏆</div>
+              <div className="absolute bottom-3 right-3 text-lg animate-podium-decor opacity-50 pointer-events-none" style={{ animationDelay: '0.5s' }}>🥇</div>
 
               <div className="space-y-3">
                 {topStudents.map((student, index) => {
@@ -925,8 +925,8 @@ export function HomeView() {
         <div className="relative flex flex-col sm:flex-row items-center gap-6">
           {/* Larger mascot with animated border */}
           <div className="relative w-28 h-28 sm:w-40 sm:h-40 shrink-0">
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-300 to-teal-300 opacity-20 animate-breathing scale-105" />
-            <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-emerald-300 animate-spin-slow" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-300 to-teal-300 opacity-20 animate-breathing scale-105 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-emerald-300 animate-spin-slow pointer-events-none" />
             <Image
               src="/images/mascot.png"
               alt="Cô Giáo Hải Anh"
