@@ -30,7 +30,7 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 sm:hidden border-t border-orange-200 dark:border-orange-900/30 bg-white/90 dark:bg-[#1a1208]/90 backdrop-blur-md"
+      className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-white/80 dark:bg-[#1a1208]/80 backdrop-blur-xl border-t border-orange-100/50 dark:border-orange-900/20"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       aria-label="Thanh điều hướng chính"
     >
@@ -44,7 +44,9 @@ export function MobileBottomNav() {
             <button
               key={tab.view}
               onClick={() => setView(tab.view)}
-              className="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 py-1 transition-colors duration-200"
+              className={`flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 py-1 transition-colors duration-200 ${
+                  isActive ? 'text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 rounded-lg' : 'text-gray-400 dark:text-gray-500'
+                }`}
               aria-label={tab.label}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -58,7 +60,7 @@ export function MobileBottomNav() {
                 />
               </div>
               <span
-                className={`text-[10px] leading-tight font-medium transition-colors duration-200 ${
+                className={`text-[9px] leading-tight font-medium transition-colors duration-200 ${
                   isActive
                     ? 'text-orange-500 dark:text-orange-400'
                     : 'text-gray-400 dark:text-gray-500'
@@ -69,7 +71,6 @@ export function MobileBottomNav() {
               {/* Active dot indicator */}
               {isActive && (
                 <motion.div
-                  layoutId="bottomNavDot"
                   className="absolute -bottom-1 w-1 h-1 rounded-full bg-orange-500 dark:bg-orange-400"
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />

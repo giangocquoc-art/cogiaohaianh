@@ -414,7 +414,7 @@ export function QuizView() {
       </AnimatePresence>
 
       {/* Quiz header with student name */}
-      <div className="sticky top-16 z-40 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border dark:border-border">
+      <div className="sticky top-16 z-40 premium-glass rounded-2xl p-3 sm:p-4 shadow-sm">
         <div className="flex flex-col gap-2">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0 w-full sm:w-auto">
@@ -444,15 +444,17 @@ export function QuizView() {
                   )
                 })}
               </div>
-              <CircularTimer timeLeft={timeLeft} totalTime={totalTime} />
+              <div className="ring-2 ring-orange-200 dark:ring-orange-800 rounded-full p-0.5">
+                <CircularTimer timeLeft={timeLeft} totalTime={totalTime} />
+              </div>
               {/* Always-visible submit button */}
               <Button
                 onClick={() => handleSubmit()}
                 disabled={submitting}
-                className={`gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white rounded-xl shadow-md hover:shadow-lg transition-all shrink-0 ${
+                className={`premium-btn gap-1 shrink-0 px-5 sm:px-6 py-2.5 sm:py-3 ${
                   isGrade1
-                    ? 'text-base px-5 py-2.5 h-12 font-[family-name:var(--font-patrick-hand)]'
-                    : 'text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2'
+                    ? 'text-base h-12 font-[family-name:var(--font-patrick-hand)]'
+                    : 'text-xs sm:text-sm'
                 }`}
               >
                 <Send className={isGrade1 ? 'w-5 h-5' : 'w-3.5 h-3.5 sm:w-4 sm:h-4'} />
@@ -478,7 +480,7 @@ export function QuizView() {
             </span>
           </div>
           {/* Progress ring bar - gradient from orange to green */}
-          <div className="relative h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+          <div className="relative h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-[0_2px_8px_rgba(249,115,22,0.15)]">
             <motion.div
               className="h-full rounded-full relative"
               style={{
@@ -504,7 +506,7 @@ export function QuizView() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="bg-white dark:bg-card rounded-2xl p-6 sm:p-8 shadow-md border dark:border-border relative overflow-hidden"
+          className="premium-card p-6 sm:p-8 relative overflow-hidden"
         >
           {/* Decorative corner elements */}
           <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 dark:from-orange-950/30 to-transparent rounded-bl-3xl pointer-events-none" />
@@ -613,7 +615,7 @@ export function QuizView() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  className="flex items-start gap-3 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/30 dark:via-yellow-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4"
+                  className="flex items-start gap-3 premium-card border-l-4 border-l-amber-400 dark:border-l-amber-600 rounded-xl p-4"
                 >
                   <span className="text-xl shrink-0 mt-0.5">💡</span>
                   <div className="flex-1">
@@ -665,9 +667,9 @@ export function QuizView() {
                     } ${
                       isSelected
                         ? isGrade1
-                          ? 'border-orange-500 ring-2 ring-orange-300 shadow-md dark:border-orange-500 dark:ring-orange-600 animate-answer-pop bg-orange-50 dark:bg-orange-950/30'
-                          : 'bg-orange-100 border-orange-500 ring-2 ring-orange-300 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'
-                        : 'border-gray-200 dark:border-gray-700 hover:bg-orange-50 hover:border-orange-300 hover:shadow-md hover:scale-[1.02] dark:hover:bg-orange-950/30 dark:hover:border-orange-700'
+                          ? 'border-orange-500 ring-2 ring-orange-400 bg-orange-50 dark:bg-orange-900/30 shadow-md dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'
+                          : 'border-orange-500 ring-2 ring-orange-400 bg-orange-50 dark:bg-orange-900/30 shadow-md dark:border-orange-500 dark:ring-orange-600 animate-answer-pop'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:shadow-sm dark:hover:bg-orange-950/30 dark:hover:border-orange-700'
                     }`}
                   >
                     <div className={`flex items-center ${isGrade1 ? 'gap-4' : 'gap-3'}`}>
@@ -755,10 +757,10 @@ export function QuizView() {
                 isGrade1 ? 'w-12 h-12 sm:w-14 sm:h-14 text-lg' : 'w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm'
               } ${
                 idx === currentQuestion
-                  ? 'bg-orange-100 border-2 border-orange-500 text-orange-700 shadow-md dark:bg-orange-900/40 dark:border-orange-500 dark:text-orange-300'
+                  ? 'bg-orange-500 text-white shadow-md dark:bg-orange-600 dark:text-white'
                   : isAnswered
-                    ? 'bg-green-100 border-2 border-green-400 text-green-700 dark:bg-green-900/40 dark:border-green-600 dark:text-green-300'
-                    : 'bg-amber-50 border-2 border-amber-200 text-amber-600 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30'
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300'
+                    : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
               }`}
             >
               {isAnswered && idx !== currentQuestion ? (isGrade1 ? '✅' : '✓') : idx + 1}
@@ -779,8 +781,8 @@ export function QuizView() {
           <Button
             onClick={() => handleSubmit()}
             disabled={submitting}
-            className={`gap-1 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white shrink-0 animate-submit-gradient shadow-lg hover:shadow-xl ${
-              isGrade1 ? 'text-lg px-6 py-3 h-14 font-[family-name:var(--font-patrick-hand)]' : ''
+            className={`premium-btn gap-1 shrink-0 px-6 py-3 shadow-lg hover:shadow-xl ${
+              isGrade1 ? 'text-lg h-14 font-[family-name:var(--font-patrick-hand)]' : ''
             }`}
           >
             <Send className={isGrade1 ? 'w-5 h-5' : 'w-4 h-4'} />

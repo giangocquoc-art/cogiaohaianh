@@ -13,9 +13,9 @@ interface SubjectStats {
   avgDuration: number
 }
 
-/* Floating math symbols for decoration */
-const mathSymbols = ['+', '−', '×', '÷', '=', '∑', 'π', '%', '√', '∞']
-const literatureSymbols = ['A', 'B', 'C', 'â', 'ô', 'ê', 'ư', 'ơ', 'ă', 'đ']
+/* Floating math symbols for decoration (reduced from 10 to 5) */
+const mathSymbols = ['+', '×', '÷', '=', 'π']
+const literatureSymbols = ['A', 'B', 'â', 'ơ', 'đ']
 
 const subjectData = {
   toan: {
@@ -99,30 +99,31 @@ export function SubjectView() {
 
   return (
     <div className="space-y-6">
-      {/* Grade header */}
+      {/* Grade header - premium refined */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} ${gc.border} border-2 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
+        className={`rounded-xl p-5 sm:p-6 border border-orange-100 dark:border-orange-900/30 bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 text-center relative overflow-hidden`}
       >
-        {/* Decorative floating elements */}
-        <div className="absolute top-2 left-4 text-lg opacity-20 animate-float" style={{ animationDelay: '0s' }}>📚</div>
-        <div className="absolute top-3 right-6 text-lg opacity-20 animate-float" style={{ animationDelay: '0.5s' }}>✏️</div>
-        <div className="absolute bottom-2 left-8 text-lg opacity-20 animate-float" style={{ animationDelay: '1s' }}>🎒</div>
-        <div className="absolute bottom-3 right-4 text-lg opacity-20 animate-float" style={{ animationDelay: '1.5s' }}>🌟</div>
+        {/* Subtle top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 opacity-60" />
 
-        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl ${gc.text} relative z-10`}>
-          Lớp {selectedGrade} 🎒
+        {/* Keep only 2 floating emojis */}
+        <div className="absolute top-3 left-6 text-lg opacity-15 dark:opacity-35 animate-float" style={{ animationDelay: '0s' }}>📚</div>
+        <div className="absolute bottom-3 right-6 text-lg opacity-15 dark:opacity-35 animate-float" style={{ animationDelay: '1s' }}>✨</div>
+
+        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-3xl sm:text-4xl relative z-10`}>
+          <span className="premium-gradient-text">Lớp {selectedGrade}</span> <span>🎒</span>
         </h2>
-        <p className={`${gc.text} opacity-70 mt-1 relative z-10`}>Chọn môn học để tiếp tục</p>
+        <p className="text-foreground/60 mt-1 relative z-10 text-sm">Chọn môn học để tiếp tục</p>
       </motion.div>
 
-      {/* Student info reminder */}
+      {/* Student info reminder - more subtle */}
       {studentInfo && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-2 text-center text-amber-700 dark:text-amber-300 text-sm"
+          className="bg-orange-50/50 dark:bg-orange-900/20 border border-orange-200/50 dark:border-orange-800/20 rounded-lg px-4 py-2 text-center text-orange-700 dark:text-orange-300 text-sm"
         >
           👤 {studentInfo.name} | Lớp {studentInfo.className}
           {studentInfo.schoolName && ` | ${studentInfo.schoolName}`}
@@ -131,26 +132,26 @@ export function SubjectView() {
 
       {/* Subject cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {/* Math card */}
+        {/* Math card - premium */}
         <motion.button
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          whileHover={{ scale: 1.03, y: -4 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.02, y: -3 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => selectSubject('toan')}
-          className="group cursor-pointer bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-950/40 dark:to-amber-950/40 border-2 border-orange-300 dark:border-orange-700 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all text-left relative overflow-hidden card-glow"
+          className="group cursor-pointer bg-white dark:bg-card premium-card p-6 sm:p-8 text-left relative overflow-hidden"
         >
-          {/* Floating math symbols decoration */}
+          {/* Floating math symbols decoration (5 only) */}
           {mathSymbols.map((symbol, i) => (
             <span
               key={i}
               className="math-symbol"
               style={{
-                top: `${10 + (i * 8) % 80}%`,
-                left: `${5 + (i * 11) % 90}%`,
-                animationDelay: `${i * 0.4}s`,
-                animationDuration: `${3 + (i % 3)}s`,
+                top: `${15 + (i * 16) % 70}%`,
+                left: `${8 + (i * 18) % 85}%`,
+                animationDelay: `${i * 0.5}s`,
+                animationDuration: `${3.5 + (i % 2)}s`,
               }}
             >
               {symbol}
@@ -158,45 +159,48 @@ export function SubjectView() {
           ))}
 
           <div className="flex flex-col items-center text-center gap-4 relative z-10">
-            <div className="relative w-28 h-28 sm:w-36 sm:h-36">
-              <Image
-                src="/images/math-subject.png"
-                alt="Toán"
-                fill
-                sizes="(max-width: 640px) 112px, 144px"
-                className="object-contain group-hover:animate-wiggle"
-              />
+            {/* Subject image with premium ring */}
+            <div className="premium-ring rounded-2xl">
+              <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden">
+                <Image
+                  src="/images/math-subject.png"
+                  alt="Toán"
+                  fill
+                  sizes="(max-width: 640px) 112px, 144px"
+                  className="object-contain group-hover:animate-wiggle"
+                />
+              </div>
             </div>
             <div>
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Calculator className="w-6 h-6 text-orange-600" />
-                <h3 className="font-[family-name:var(--font-patrick-hand)] text-3xl text-orange-700">
+                <h3 className="font-[family-name:var(--font-patrick-hand)] text-3xl text-orange-700 dark:text-orange-300">
                   Toán
                 </h3>
               </div>
-              <p className="text-orange-600 text-sm">
+              <p className="text-orange-600/80 dark:text-orange-400 text-sm">
                 Kiểm tra kiến thức Toán học - Tính toán, Giải bài tập
               </p>
 
-              {/* Star rating / Difficulty */}
+              {/* Star rating / Difficulty - cleaner with text-amber-400 */}
               <div className="flex items-center justify-center gap-3 mt-3">
                 <div className="flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      className={`w-4 h-4 ${star <= 4 ? 'text-amber-400 fill-amber-400' : 'text-gray-300'}`}
+                      className={`w-4 h-4 ${star <= 4 ? 'text-amber-400 fill-amber-400' : 'text-gray-200 dark:text-gray-600'}`}
                     />
                   ))}
                 </div>
-                <span className="difficulty-medium text-xs px-2 py-0.5 rounded-full font-semibold">
+                <span className="premium-badge premium-badge-amber text-xs">
                   Trung bình
                 </span>
               </div>
             </div>
 
-            {/* Quick Stats mini card */}
-            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-xl p-3 w-full border border-orange-200/50 dark:border-orange-800/30">
-              <div className="flex items-center gap-1 mb-2 text-orange-700 dark:text-orange-300">
+            {/* Quick Stats mini card - premium stat */}
+            <div className="premium-stat w-full">
+              <div className="flex items-center gap-1.5 mb-2 text-orange-700 dark:text-orange-300">
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span className="text-xs font-bold">Thống kê nhanh</span>
               </div>
@@ -219,33 +223,33 @@ export function SubjectView() {
               </div>
             </div>
 
-            <div className="bg-orange-500 text-white px-4 py-2 rounded-full font-semibold text-sm group-hover:bg-orange-600 transition-colors flex items-center gap-2 shadow-md hover-glow">
+            <div className="premium-btn flex items-center gap-2">
               <Zap className="w-4 h-4" />
               Bắt đầu làm Toán →
             </div>
           </div>
         </motion.button>
 
-        {/* Vietnamese card */}
+        {/* Vietnamese card - premium */}
         <motion.button
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          whileHover={{ scale: 1.03, y: -4 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.02, y: -3 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => selectSubject('ngu-van')}
-          className="group cursor-pointer bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-950/40 dark:to-rose-950/40 border-2 border-pink-300 dark:border-pink-700 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all text-left relative overflow-hidden card-glow"
+          className="group cursor-pointer bg-white dark:bg-card premium-card p-6 sm:p-8 text-left relative overflow-hidden"
         >
-          {/* Floating literature symbols decoration */}
+          {/* Floating literature symbols decoration (5 only) */}
           {literatureSymbols.map((symbol, i) => (
             <span
               key={i}
               className="literature-symbol"
               style={{
-                top: `${10 + (i * 9) % 80}%`,
-                left: `${5 + (i * 10) % 90}%`,
-                animationDelay: `${i * 0.5}s`,
-                animationDuration: `${4 + (i % 3)}s`,
+                top: `${12 + (i * 18) % 75}%`,
+                left: `${6 + (i * 17) % 88}%`,
+                animationDelay: `${i * 0.6}s`,
+                animationDuration: `${4 + (i % 2)}s`,
               }}
             >
               {symbol}
@@ -253,45 +257,48 @@ export function SubjectView() {
           ))}
 
           <div className="flex flex-col items-center text-center gap-4 relative z-10">
-            <div className="relative w-28 h-28 sm:w-36 sm:h-36">
-              <Image
-                src="/images/vietnamese-subject.png"
-                alt="Ngữ văn"
-                fill
-                sizes="(max-width: 640px) 112px, 144px"
-                className="object-contain group-hover:animate-wiggle"
-              />
+            {/* Subject image with premium ring */}
+            <div className="premium-ring rounded-2xl">
+              <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden">
+                <Image
+                  src="/images/vietnamese-subject.png"
+                  alt="Ngữ văn"
+                  fill
+                  sizes="(max-width: 640px) 112px, 144px"
+                  className="object-contain group-hover:animate-wiggle"
+                />
+              </div>
             </div>
             <div>
               <div className="flex items-center justify-center gap-2 mb-2">
                 <BookOpenText className="w-6 h-6 text-pink-600" />
-                <h3 className="font-[family-name:var(--font-patrick-hand)] text-3xl text-pink-700">
+                <h3 className="font-[family-name:var(--font-patrick-hand)] text-3xl text-pink-700 dark:text-pink-300">
                   Ngữ văn
                 </h3>
               </div>
-              <p className="text-pink-600 text-sm">
+              <p className="text-pink-600/80 dark:text-pink-400 text-sm">
                 Kiểm tra kiến thức Ngữ văn - Đọc hiểu, Chính tả, Luyện từ
               </p>
 
-              {/* Star rating / Difficulty */}
+              {/* Star rating / Difficulty - cleaner with text-amber-400 */}
               <div className="flex items-center justify-center gap-3 mt-3">
                 <div className="flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      className={`w-4 h-4 ${star <= 3 ? 'text-amber-400 fill-amber-400' : 'text-gray-300'}`}
+                      className={`w-4 h-4 ${star <= 3 ? 'text-amber-400 fill-amber-400' : 'text-gray-200 dark:text-gray-600'}`}
                     />
                   ))}
                 </div>
-                <span className="difficulty-easy text-xs px-2 py-0.5 rounded-full font-semibold">
+                <span className="premium-badge premium-badge-emerald text-xs">
                   Cơ bản
                 </span>
               </div>
             </div>
 
-            {/* Quick Stats mini card */}
-            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-xl p-3 w-full border border-pink-200/50 dark:border-pink-800/30">
-              <div className="flex items-center gap-1 mb-2 text-pink-700 dark:text-pink-300">
+            {/* Quick Stats mini card - premium stat */}
+            <div className="premium-stat w-full">
+              <div className="flex items-center gap-1.5 mb-2 text-pink-700 dark:text-pink-300">
                 <BarChart3 className="w-3.5 h-3.5" />
                 <span className="text-xs font-bold">Thống kê nhanh</span>
               </div>
@@ -314,7 +321,7 @@ export function SubjectView() {
               </div>
             </div>
 
-            <div className="bg-pink-500 text-white px-4 py-2 rounded-full font-semibold text-sm group-hover:bg-pink-600 transition-colors flex items-center gap-2 shadow-md hover-glow">
+            <div className="premium-btn flex items-center gap-2" style={{ background: 'linear-gradient(135deg, #ec4899, #f472b6)' }}>
               <Zap className="w-4 h-4" />
               Bắt đầu làm Ngữ văn →
             </div>

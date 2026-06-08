@@ -570,7 +570,7 @@ export function ResultView() {
 
           {/* Circular progress with score */}
           <div className="flex justify-center mb-6 relative">
-            <div className="animate-celebration-pulse rounded-full">
+            <div className={`premium-ring rounded-full ${score >= 7 ? 'animate-celebration-pulse' : ''}`}>
               <CircularProgress score={score} />
             </div>
             {/* New badge indicator near score */}
@@ -581,7 +581,7 @@ export function ResultView() {
                 transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
                 className="absolute -top-2 -right-2 sm:right-4"
               >
-                <div className="bg-gradient-to-br from-amber-400 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg animate-bounce-in flex items-center gap-1">
+                <div className="premium-badge-amber text-xs font-bold px-2.5 py-1 rounded-full shadow-lg animate-bounce-in flex items-center gap-1">
                   <Award className="w-3 h-3" />
                   {newBadges.length} huy hiệu mới!
                 </div>
@@ -707,15 +707,14 @@ export function ResultView() {
         >
           <Button
             onClick={() => setShowReview(!showReview)}
-            variant="outline"
-            className="gap-2 text-base py-3 border-2"
+            className="premium-btn-outline gap-2 text-base py-3"
           >
             <ClipboardList className="w-4 h-4" />
             {showReview ? 'Ẩn đáp án' : 'Xem đáp án'}
           </Button>
           <Button
             onClick={() => { setIsReviewMode(true); setShowReview(false); }}
-            className="gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-base py-3"
+            className="premium-btn gap-2 text-base py-3"
           >
             <Bot className="w-4 h-4" />
             Ôn tập cùng AI 🤖
@@ -723,46 +722,41 @@ export function ResultView() {
           <Button
             onClick={handleRetry}
             disabled={!studentInfo || !selectedQuizId}
-            className="gap-2 bg-orange-500 hover:bg-orange-600 text-white text-base py-3"
+            className="premium-btn gap-2 text-base py-3"
           >
             <RotateCcw className="w-4 h-4" />
             Làm lại bài
           </Button>
           <Button
             onClick={() => setShowCertificate(true)}
-            variant="outline"
-            className="gap-2 text-base py-3 border-2 border-amber-300 text-amber-700 hover:bg-amber-50"
+            className="premium-btn-outline gap-2 text-base py-3 border-amber-400 text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:border-amber-600 dark:hover:bg-amber-950/30"
           >
             <Award className="w-4 h-4" />
             Xem chứng nhận
           </Button>
           <Button
             onClick={handleShare}
-            variant="outline"
-            className="gap-2 text-base py-3 border-2"
+            className="premium-btn-outline gap-2 text-base py-3"
           >
             <Share2 className="w-4 h-4" />
             Chia sẻ
           </Button>
           <Button
             onClick={handlePrint}
-            variant="outline"
-            className="gap-2 text-base py-3 border-2"
+            className="premium-btn-outline gap-2 text-base py-3"
           >
             <Printer className="w-4 h-4" />
             In kết quả
           </Button>
           <Button
             onClick={goBack}
-            variant="outline"
-            className="gap-2 text-base py-3 border-2"
+            className="premium-btn-outline gap-2 text-base py-3"
           >
             Quay lại chương
           </Button>
           <Button
             onClick={goHome}
-            variant="outline"
-            className="gap-2 text-base py-3 border-2"
+            className="premium-btn-outline gap-2 text-base py-3"
           >
             <Home className="w-4 h-4" />
             Trang chủ
@@ -792,10 +786,10 @@ export function ResultView() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className={`rounded-2xl p-4 sm:p-5 border-2 transition-all animate-correct-border ${
+                    className={`premium-card rounded-2xl p-4 sm:p-5 border-2 transition-all animate-correct-border ${
                       isCorrect
-                        ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-700 shadow-sm'
-                        : 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-700 shadow-sm animate-incorrect-border'
+                        ? 'border-l-4 border-l-emerald-400 dark:border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-700 shadow-sm'
+                        : 'border-l-4 border-l-rose-400 dark:border-l-rose-500 bg-rose-50/50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-700 shadow-sm animate-incorrect-border'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -1294,7 +1288,7 @@ export function ResultView() {
           </DialogHeader>
 
           {/* Certificate Card */}
-          <div className="print-certificate relative bg-gradient-to-br from-amber-50 via-white to-orange-50 border-4 border-double border-amber-400 rounded-xl p-6 sm:p-10">
+          <div className="print-certificate relative premium-glass border-4 border-double border-amber-400 rounded-xl p-6 sm:p-10">
             {/* Decorative corners */}
             <div className="absolute top-3 left-3 text-amber-300 text-2xl">❋</div>
             <div className="absolute top-3 right-3 text-amber-300 text-2xl">❋</div>

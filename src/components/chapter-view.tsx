@@ -410,13 +410,13 @@ const studyTips: Record<string, { tips: string[]; keyPoints: string[] }> = {
   },
 }
 
-// Difficulty levels per chapter
+// Difficulty levels per chapter - using premium badge classes
 const chapterDifficulty: Record<number, { label: string; class: string; emoji: string }> = {
-  1: { label: 'Dễ', class: 'difficulty-easy', emoji: '🟢' },
-  2: { label: 'Trung bình', class: 'difficulty-medium', emoji: '🟡' },
-  3: { label: 'Trung bình', class: 'difficulty-medium', emoji: '🟡' },
-  4: { label: 'Khó', class: 'difficulty-hard', emoji: '🔴' },
-  5: { label: 'Khó', class: 'difficulty-hard', emoji: '🔴' },
+  1: { label: 'Dễ', class: 'premium-badge premium-badge-emerald', emoji: '🟢' },
+  2: { label: 'Trung bình', class: 'premium-badge premium-badge-amber', emoji: '🟡' },
+  3: { label: 'Trung bình', class: 'premium-badge premium-badge-amber', emoji: '🟡' },
+  4: { label: 'Khó', class: 'premium-badge premium-badge-rose', emoji: '🔴' },
+  5: { label: 'Khó', class: 'premium-badge premium-badge-rose', emoji: '🔴' },
 }
 
 // Chapter emojis for visual appeal (especially Grade 1)
@@ -494,16 +494,17 @@ function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className={`bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl ${isGrade1 ? 'p-5' : 'p-4'} mt-2 space-y-3`}>
+            <div className={`premium-card ${isGrade1 ? 'p-5' : 'p-4'} mt-2 space-y-3`}>
               {/* Key knowledge points */}
               <div>
-                <h5 className={`${isGrade1 ? 'text-base' : 'text-sm'} font-bold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1`}>
-                  📌 Kiến thức trọng tâm
+                <h5 className={`${isGrade1 ? 'text-base' : 'text-sm'} font-bold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1.5`}>
+                  <span className="premium-icon-container w-7 h-7 text-xs">📌</span>
+                  Kiến thức trọng tâm
                 </h5>
-                <ul className="space-y-1">
+                <ul className="space-y-1.5">
                   {tipsData.keyPoints.map((point, i) => (
-                    <li key={i} className={`${isGrade1 ? 'text-base' : 'text-sm'} text-amber-700 dark:text-amber-400 flex items-start gap-2`}>
-                      <span className="shrink-0">•</span>
+                    <li key={i} className={`${isGrade1 ? 'text-base' : 'text-sm'} text-amber-700 dark:text-amber-400 flex items-start gap-2 leading-relaxed`}>
+                      <span className="shrink-0 text-amber-400">•</span>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -511,13 +512,14 @@ function StudyTipsSection({ quiz }: { quiz: QuizInfo }) {
               </div>
               {/* Tips */}
               <div>
-                <h5 className={`${isGrade1 ? 'text-base' : 'text-sm'} font-bold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1`}>
-                  💡 Mẹo làm bài tốt
+                <h5 className={`${isGrade1 ? 'text-base' : 'text-sm'} font-bold text-amber-800 dark:text-amber-300 mb-2 flex items-center gap-1.5`}>
+                  <span className="premium-icon-container w-7 h-7 text-xs">💡</span>
+                  Mẹo làm bài tốt
                 </h5>
                 <ul className="space-y-1.5">
                   {tipsData.tips.map((tip, i) => (
-                    <li key={i} className={`${isGrade1 ? 'text-base' : 'text-sm'} text-amber-700 dark:text-amber-400 flex items-start gap-2`}>
-                      <span className="shrink-0">✨</span>
+                    <li key={i} className={`${isGrade1 ? 'text-base' : 'text-sm'} text-amber-700 dark:text-amber-400 flex items-start gap-2 leading-relaxed`}>
+                      <span className="shrink-0 text-amber-400">✨</span>
                       <span>{tip}</span>
                     </li>
                   ))}
@@ -672,14 +674,14 @@ export function ChapterView() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-[55] flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-[55] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
           onClick={() => setShowStudentForm(false)}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white dark:bg-card rounded-2xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden"
+            className="bg-white/95 dark:bg-card/95 backdrop-blur-md rounded-2xl p-6 w-full max-w-md shadow-2xl relative overflow-hidden border border-white/20 dark:border-orange-800/20"
           >
             {/* Decorative top strip */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400" />
@@ -718,19 +720,19 @@ export function ChapterView() {
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
                       placeholder="Nhập họ và tên..."
-                      className="w-full px-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white dark:bg-card transition-colors"
+                      className="w-full px-4 py-3 border-2 border-orange-200/60 dark:border-orange-800/40 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white/80 dark:bg-card/80 backdrop-blur-sm transition-colors"
                       autoFocus
                     />
                   </div>
-                  <Button
+                  <button
                     onClick={() => {
                       if (formName.trim()) setFormStep(2)
                     }}
                     disabled={!formName.trim()}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 text-base rounded-xl"
+                    className="w-full premium-btn py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Tiếp theo →
-                  </Button>
+                  </button>
                 </motion.div>
               ) : (
                 <motion.div
@@ -750,7 +752,7 @@ export function ChapterView() {
                       value={formClass}
                       onChange={(e) => setFormClass(e.target.value)}
                       placeholder="VD: 1A, 2B..."
-                      className="w-full px-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white dark:bg-card transition-colors"
+                      className="w-full px-4 py-3 border-2 border-orange-200/60 dark:border-orange-800/40 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white/80 dark:bg-card/80 backdrop-blur-sm transition-colors"
                       autoFocus
                     />
                   </div>
@@ -764,24 +766,23 @@ export function ChapterView() {
                       value={formSchool}
                       onChange={(e) => setFormSchool(e.target.value)}
                       placeholder="Nhập tên trường..."
-                      className="w-full px-4 py-3 border-2 border-orange-200 dark:border-orange-800 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white dark:bg-card transition-colors"
+                      className="w-full px-4 py-3 border-2 border-orange-200/60 dark:border-orange-800/40 rounded-xl focus:border-orange-400 dark:focus:border-orange-500 focus:outline-none text-base bg-white/80 dark:bg-card/80 backdrop-blur-sm transition-colors"
                     />
                   </div>
                   <div className="flex gap-3">
-                    <Button
-                      variant="outline"
+                    <button
                       onClick={() => setFormStep(1)}
-                      className="flex-1 py-3 text-base rounded-xl"
+                      className="flex-1 premium-btn-outline py-3 text-base rounded-xl font-semibold"
                     >
                       ← Quay lại
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       onClick={handleFormSubmit}
                       disabled={!formName.trim() || !formClass.trim()}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 text-base rounded-xl"
+                      className="flex-1 premium-btn py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Bắt đầu →
-                    </Button>
+                    </button>
                   </div>
                 </motion.div>
               )}
@@ -798,16 +799,19 @@ export function ChapterView() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${gc.bg} border-2 border-current/10 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden`}
+        className={`rounded-xl p-5 sm:p-6 border border-orange-100 dark:border-orange-900/30 bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 text-center relative overflow-hidden`}
       >
-        {/* Decorative elements */}
-        <div className="absolute top-2 right-4 text-lg opacity-15 dark:opacity-45 animate-float">📖</div>
-        <div className="absolute bottom-2 left-4 text-lg opacity-15 dark:opacity-45 animate-float" style={{ animationDelay: '0.5s' }}>✏️</div>
+        {/* Subtle top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 opacity-60" />
 
-        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl ${gc.text} relative z-10`}>
-          {subjectEmoji} {subjectName} - Lớp {selectedGrade}
+        {/* Decorative elements */}
+        <div className="absolute top-3 right-6 text-lg opacity-15 dark:opacity-35 animate-float">📖</div>
+        <div className="absolute bottom-3 left-6 text-lg opacity-15 dark:opacity-35 animate-float" style={{ animationDelay: '0.5s' }}>✏️</div>
+
+        <h2 className={`font-[family-name:var(--font-patrick-hand)] text-2xl sm:text-3xl relative z-10`}>
+          {subjectEmoji} <span className="premium-gradient-text">{subjectName}</span> - <span className="premium-gradient-text">Lớp {selectedGrade}</span>
         </h2>
-        <p className={`${gc.text} opacity-70 mt-1 text-sm relative z-10`}>Chọn chương để làm bài kiểm tra</p>
+        <p className="text-foreground/60 mt-1 text-sm relative z-10">Chọn chương để làm bài kiểm tra</p>
       </motion.div>
 
       {/* Chapter Progress Bar */}
@@ -815,7 +819,7 @@ export function ChapterView() {
         <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-card rounded-2xl p-4 shadow-sm border dark:border-border"
+          className="premium-card p-4"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
@@ -826,9 +830,9 @@ export function ChapterView() {
               <span className="font-bold text-emerald-600">{completedCount}</span> / {totalChapters} chương
             </span>
           </div>
-          <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+          <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner">
             <div
-              className="progress-bar-gradient h-full"
+              className="progress-bar-gradient h-full shadow-sm"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -848,7 +852,7 @@ export function ChapterView() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-2 text-center text-amber-700 dark:text-amber-300 text-sm"
+          className="bg-orange-50/50 dark:bg-orange-900/20 border border-orange-200/50 dark:border-orange-800/20 rounded-lg px-4 py-2 text-center text-orange-700 dark:text-orange-300 text-sm"
         >
           👤 {studentInfo.name} | Lớp {studentInfo.className}
           {studentInfo.schoolName && ` | ${studentInfo.schoolName}`}
@@ -907,18 +911,13 @@ export function ChapterView() {
                 key={quiz.id}
                 variants={item}
                 whileHover={{ scale: 1.01, x: 4 }}
-                className={`bg-white dark:bg-card border-2 rounded-2xl ${isGrade1 ? 'p-5 sm:p-6' : 'p-4 sm:p-5'} shadow-sm hover:shadow-md transition-all relative overflow-hidden group ${
+                className={`bg-white dark:bg-card premium-card ${isGrade1 ? 'p-5 sm:p-6' : 'p-4 sm:p-5'} transition-all relative overflow-hidden group ${
                   isCompleted
-                    ? 'border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-700'
-                    : 'border-gray-100 dark:border-border hover:border-orange-200 dark:hover:border-orange-700'
+                    ? 'border-l-4 border-l-emerald-400'
+                    : 'border-l-4 border-l-orange-400'
                 }`}
               >
-                {/* Left accent bar - green for completed, orange for not */}
-                <div className={`absolute top-0 left-0 bottom-0 ${isGrade1 ? 'w-1.5' : 'w-1'} transition-opacity ${
-                  isCompleted
-                    ? 'bg-gradient-to-b from-emerald-400 to-teal-400 opacity-100'
-                    : 'bg-gradient-to-b from-orange-400 to-amber-400 opacity-0 group-hover:opacity-100'
-                }`} />
+                {/* Left accent bar handled by border-l-4 above */}
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex-1">
@@ -1010,11 +1009,8 @@ export function ChapterView() {
                       playClickSound()
                       handleStartQuiz(quiz.id)
                     }}
-                    className={`font-semibold ${isGrade1 ? 'px-8 py-4 text-lg' : 'px-6 py-3 text-base'} rounded-xl shrink-0 gap-2 shadow-md hover-glow transition-all ${
-                      isCompleted
-                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                        : 'bg-orange-500 hover:bg-orange-600 text-white'
-                    }`}
+                    className={`premium-btn font-semibold ${isGrade1 ? 'px-8 py-4 text-lg' : 'px-6 py-3 text-base'} shrink-0 gap-2 transition-all`}
+                    style={isCompleted ? { background: 'linear-gradient(135deg, #10b981, #34d399)' } : undefined}
                   >
                     {isCompleted ? '🔄 Làm lại' : isGrade1 ? '🎮 Bắt đầu nhé!' : 'Kiểm tra online'}
                     <ArrowRight className="w-4 h-4" />

@@ -44,7 +44,6 @@ export function AppFooter() {
   // Animated social proof counter
   useEffect(() => {
     const target = 100
-    let start = 0
     const duration = 2000
     let startTime: number | null = null
 
@@ -83,49 +82,7 @@ export function AppFooter() {
 
   return (
     <footer className="mt-auto relative">
-      {/* Decorative pencil/ruler SVG border at top */}
-      <div className="w-full overflow-hidden leading-[0]">
-        <svg
-          viewBox="0 0 1200 30"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-[20px] sm:h-[25px]"
-          preserveAspectRatio="none"
-        >
-          {/* Ruler marks */}
-          {Array.from({ length: 60 }).map((_, i) => (
-            <line
-              key={`ruler-${i}`}
-              x1={i * 20}
-              y1={i % 5 === 0 ? 0 : 10}
-              x2={i * 20}
-              y2={30}
-              stroke="#f97316"
-              strokeWidth={i % 5 === 0 ? 2 : 1}
-              opacity={0.3}
-            />
-          ))}
-          {/* Pencil silhouette */}
-          <g transform="translate(100, 5) scale(0.8)" opacity="0.2">
-            <rect x="0" y="5" width="40" height="10" rx="1" fill="#f59e0b" />
-            <polygon points="40,5 50,10 40,15" fill="#fbbf24" />
-            <rect x="-5" y="5" width="5" height="10" rx="1" fill="#fb923c" />
-          </g>
-          {/* Another pencil */}
-          <g transform="translate(500, 8) scale(0.6)" opacity="0.15">
-            <rect x="0" y="5" width="40" height="10" rx="1" fill="#f59e0b" />
-            <polygon points="40,5 50,10 40,15" fill="#fbbf24" />
-            <rect x="-5" y="5" width="5" height="10" rx="1" fill="#fb923c" />
-          </g>
-          {/* Book silhouette */}
-          <g transform="translate(900, 3) scale(0.7)" opacity="0.15">
-            <rect x="0" y="0" width="30" height="22" rx="2" fill="#f97316" />
-            <rect x="2" y="2" width="26" height="18" rx="1" fill="#fbbf24" />
-            <line x1="15" y1="2" x2="15" y2="20" stroke="#f97316" strokeWidth="1" />
-          </g>
-        </svg>
-      </div>
-
-      {/* Wave separator */}
+      {/* Refined wave separator */}
       <div className="w-full overflow-hidden leading-[0]">
         <svg
           viewBox="0 0 1440 60"
@@ -135,27 +92,24 @@ export function AppFooter() {
         >
           <path
             d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z"
-            fill="url(#footerGradient)"
+            className="fill-orange-200 dark:fill-orange-900/30"
           />
-          <defs>
-            <linearGradient id="footerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#f97316" />
-              <stop offset="50%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#eab308" />
-            </linearGradient>
-          </defs>
+          <path
+            d="M0,35 C200,55 400,15 720,35 C1040,55 1240,15 1440,35 L1440,60 L0,60 Z"
+            className="fill-amber-200 dark:fill-amber-900/30"
+          />
         </svg>
       </div>
 
       {/* Main footer content */}
-      <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 dark:from-amber-800 dark:via-orange-900 dark:to-amber-800 text-white">
+      <div className="bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 dark:from-[#1a1208] dark:via-[#1f1610] dark:to-[#1a1208] border-t border-orange-200 dark:border-orange-900/20">
         <div className="max-w-6xl mx-auto px-4 py-6 pb-20 sm:pb-6">
           {/* Top section with three columns */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             {/* Column 1: Branding */}
             <div className="flex flex-col items-center sm:items-start gap-3">
               <div className="flex items-center gap-3">
-                <div className="relative w-14 h-14 rounded-2xl bg-white shadow-md overflow-hidden">
+                <div className="relative w-14 h-14 rounded-2xl bg-white dark:bg-card ring-2 ring-orange-200 dark:ring-orange-800 shadow-sm overflow-hidden">
                   <Image
                     src="/images/mascot.png"
                     alt="Cô Giáo Hải Anh"
@@ -165,13 +119,13 @@ export function AppFooter() {
                   />
                 </div>
                 <div>
-                  <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl font-bold">
+                  <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl font-bold text-orange-800 dark:text-amber-200">
                     Cô Giáo Hải Anh 📚
                   </h3>
-                  <p className="text-white/80 text-sm">Giáo viên Tiểu học 🦉</p>
+                  <p className="text-orange-500 dark:text-orange-400 text-sm">Giáo viên Tiểu học 🦉</p>
                 </div>
               </div>
-              <p className="text-white/70 text-sm text-center sm:text-left leading-relaxed">
+              <p className="text-orange-600 dark:text-amber-300/70 text-sm text-center sm:text-left leading-relaxed">
                 Nền tảng học tập trực tuyến dành cho học sinh tiểu học.
                 Ôn tập vui vẻ, kiểm tra hiệu quả! 🎓
               </p>
@@ -179,18 +133,18 @@ export function AppFooter() {
 
             {/* Column 2: Quick Links */}
             <div className="flex flex-col items-center sm:items-start gap-2">
-              <h4 className="font-[family-name:var(--font-patrick-hand)] text-base font-semibold mb-1 flex items-center gap-1">
+              <h4 className="premium-section-header font-[family-name:var(--font-patrick-hand)] text-base font-semibold mb-1 flex items-center gap-1 text-orange-800 dark:text-amber-200">
                 <Sparkles className="w-4 h-4" /> Liên kết nhanh
               </h4>
               {[
-                { icon: <Home className="w-4 h-4" />, label: 'Trang chủ', action: goHome },
-                { icon: <BookOpen className="w-4 h-4" />, label: 'Kiểm tra', action: () => setView('home') },
-                { icon: <Trophy className="w-4 h-4" />, label: 'Bảng điểm', action: () => setView('scoreboard') },
+                { icon: <Home className="w-4 h-4 text-orange-400 dark:text-orange-500" />, label: 'Trang chủ', action: goHome },
+                { icon: <BookOpen className="w-4 h-4 text-orange-400 dark:text-orange-500" />, label: 'Kiểm tra', action: () => setView('home') },
+                { icon: <Trophy className="w-4 h-4 text-orange-400 dark:text-orange-500" />, label: 'Bảng điểm', action: () => setView('scoreboard') },
               ].map((link) => (
                 <button
                   key={link.label}
                   onClick={link.action}
-                  className="flex items-center gap-2 text-white/80 hover:text-orange-300 dark:hover:text-orange-400 text-sm hover:translate-x-1 transition-all duration-200 link-underline"
+                  className="flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 text-sm hover:bg-orange-100 dark:hover:bg-orange-900/20 rounded-lg px-2 py-1 -mx-2 transition-colors"
                 >
                   {link.icon}
                   <span>{link.label}</span>
@@ -200,21 +154,21 @@ export function AppFooter() {
 
             {/* Column 3: Contact */}
             <div className="flex flex-col items-center sm:items-start gap-3">
-              <h4 className="font-[family-name:var(--font-patrick-hand)] text-base font-semibold mb-1">
+              <h4 className="premium-section-header font-[family-name:var(--font-patrick-hand)] text-base font-semibold mb-1 flex items-center gap-1 text-orange-800 dark:text-amber-200">
                 📬 Liên hệ
               </h4>
               <a
                 href="https://www.facebook.com/hattieu.tran.1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 hover:scale-105 rounded-full px-4 py-2 transition-all text-sm w-fit"
+                className="flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800/30 rounded-full px-4 py-2 transition-all text-sm w-fit"
               >
                 <Facebook className="w-4 h-4" />
                 <span>Facebook</span>
               </a>
               <a
                 href="mailto:cohaianh@gmail.com"
-                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 hover:scale-105 rounded-full px-4 py-2 transition-all text-sm w-fit"
+                className="flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800/30 rounded-full px-4 py-2 transition-all text-sm w-fit"
               >
                 <Mail className="w-4 h-4" />
                 <span>Email</span>
@@ -224,31 +178,31 @@ export function AppFooter() {
 
           {/* Social proof counter */}
           <div className="mt-5 flex items-center justify-center gap-2">
-            <Users className="w-4 h-4 text-white/60" />
-            <span className="text-white/80 text-sm">
-              Đã giúp <span ref={countRef} className="font-bold text-white text-base">{studentCount}+</span> học sinh trên toàn quốc 🌍
+            <Users className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+            <span className="text-orange-600 dark:text-orange-400 text-sm">
+              Đã giúp <span ref={countRef} className="text-orange-700 dark:text-orange-300 font-bold text-base">{studentCount}+</span> học sinh trên toàn quốc 🌍
             </span>
           </div>
 
           {/* Motivational quote */}
-          <div className="mt-4 py-3 px-4 bg-white/10 rounded-2xl text-center relative overflow-hidden">
-            <p className="text-white/90 text-sm italic font-medium min-h-[1.5em] transition-all duration-500 animate-[fadeSlide_0.5s_ease-in-out]">
+          <div className="mt-4 py-3 px-4 bg-orange-100/50 dark:bg-orange-900/20 border border-orange-200/50 dark:border-orange-800/20 rounded-2xl text-center relative overflow-hidden">
+            <p className="text-orange-700 dark:text-amber-200/80 italic font-medium text-sm min-h-[1.5em] transition-all duration-500 animate-[fadeSlide_0.5s_ease-in-out]">
               &ldquo;{motivationalQuotes[quoteIndex]}&rdquo;
             </p>
           </div>
 
           {/* Divider */}
-          <div className="border-t border-white/20 mt-4 pt-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-white/70 dark:text-amber-200/70 text-xs">
-              <p className="flex items-center gap-1">
-                Made with <Heart className="w-3 h-3 text-red-300 fill-red-300 animate-pulse-soft" /> Cô Giáo Hải Anh
+          <div className="border-t border-orange-200 dark:border-orange-900/20 mt-4 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+              <p className="flex items-center gap-1 text-orange-500 dark:text-orange-400/70">
+                Made with <Heart className="w-3 h-3 text-red-400 dark:text-red-500 fill-red-400 dark:fill-red-500 animate-pulse-soft" /> Cô Giáo Hải Anh
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-orange-500 dark:text-orange-400/70">
                 <span>📚</span>
                 <span>🦉</span>
                 <span>🎓</span>
               </div>
-              <p>&copy; {new Date().getFullYear()} Cô Giáo Hải Anh. All rights reserved.</p>
+              <p className="text-orange-500 dark:text-orange-400/70">&copy; {new Date().getFullYear()} Cô Giáo Hải Anh. All rights reserved.</p>
             </div>
           </div>
         </div>
@@ -263,7 +217,7 @@ export function AppFooter() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
-            className="back-to-top"
+            className="back-to-top ring-2 ring-orange-200 dark:ring-orange-800"
             aria-label="Lên đầu trang"
             title="Lên đầu trang"
           >

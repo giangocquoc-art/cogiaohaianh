@@ -150,8 +150,8 @@ export function LeaderboardView() {
             onClick={() => setActiveGrade(tab.value)}
             className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               activeGrade === tab.value
-                ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-md'
-                : 'bg-white dark:bg-card border border-gray-200 dark:border-border text-muted-foreground hover:border-amber-300 hover:text-amber-600'
+                ? 'premium-btn text-white shadow-md'
+                : 'premium-btn-outline text-muted-foreground'
             }`}
           >
             {tab.label}
@@ -181,7 +181,7 @@ export function LeaderboardView() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-yellow-950/30 rounded-3xl p-6 border-2 border-amber-200 dark:border-amber-800 shadow-lg relative overflow-hidden"
+              className="premium-card rounded-3xl p-6 border-2 border-amber-200 dark:border-amber-800 shadow-lg shadow-amber-200/50 dark:shadow-amber-900/20 relative overflow-hidden"
             >
               {/* Decorative stars */}
               <div className="absolute top-2 left-4 text-xl animate-sparkle opacity-40">⭐</div>
@@ -238,7 +238,7 @@ export function LeaderboardView() {
 
                       {/* Podium bar */}
                       <div
-                        className={`w-20 sm:w-28 ${heightClass} ${medal.bg} rounded-t-xl border-2 ${medal.border} ${medal.shadow} shadow-lg flex items-center justify-center relative overflow-hidden ${isGold ? 'gold-shimmer' : ''}`}
+                        className={`w-20 sm:w-28 ${heightClass} ${medal.bg} rounded-t-xl border-2 ${medal.border} shadow-lg ${isGold ? 'shadow-amber-300/60' : actualRank === 2 ? 'shadow-gray-300/50' : 'shadow-amber-400/40'} flex items-center justify-center relative overflow-hidden ${isGold ? 'gold-shimmer' : ''}`}
                       >
                         {/* Crown sparkles for 1st place */}
                         {isGold && (
@@ -266,7 +266,7 @@ export function LeaderboardView() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="bg-white dark:bg-card rounded-3xl border-2 border-gray-100 dark:border-amber-900/30 overflow-hidden shadow-sm"
+              className="premium-card rounded-3xl border-2 border-gray-100 dark:border-amber-900/30 overflow-hidden shadow-sm"
             >
               <div className="p-4 border-b border-gray-100 dark:border-amber-900/20">
                 <h3 className="font-[family-name:var(--font-patrick-hand)] text-xl text-foreground flex items-center gap-2">
@@ -286,19 +286,19 @@ export function LeaderboardView() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 + index * 0.03 }}
-                      className={`flex items-center gap-3 px-4 py-3 border-b border-gray-50 dark:border-amber-900/20 transition-colors ${
+                      className={`premium-card flex items-center gap-3 px-4 py-3 border-b border-gray-50 dark:border-amber-900/20 transition-colors ${
                         isCurrentUser
                           ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-l-4 border-l-amber-400'
                           : index % 2 === 0
                             ? 'bg-gray-50/50 dark:bg-gray-800/30'
-                            : 'bg-white dark:bg-card'
+                            : ''
                       }`}
                     >
                       {/* Rank with change arrow */}
                       <div className="flex items-center gap-1 shrink-0">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                           isCurrentUser
-                            ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md'
+                            ? 'premium-badge-amber shadow-md'
                             : 'bg-gray-100 dark:bg-gray-700 text-muted-foreground'
                         }`}>
                           {entry.rank}
@@ -402,7 +402,7 @@ export function LeaderboardView() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border-2 border-orange-200 dark:border-orange-800 rounded-2xl p-5"
+            className="premium-stat border-2 border-orange-200 dark:border-orange-800 rounded-2xl p-5"
           >
             <h3 className="font-[family-name:var(--font-patrick-hand)] text-lg text-orange-800 dark:text-orange-200 mb-3 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-orange-500" />

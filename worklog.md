@@ -2986,3 +2986,278 @@ Stage Summary:
 - Addition uses visual representation: 🍎🍎🍎 + 🍎🍎 = ?
 - Letter recognition uses animal emojis: 🐱🐟🐶🐷
 - All Grade 1 UI elements are larger and more colorful
+
+---
+Task ID: 3-a
+Agent: Premium CSS & Header Developer
+Task: Premium CSS overhaul + Header redesign
+
+Work Log:
+- Added comprehensive Premium UI System CSS to globals.css (350+ lines of new CSS):
+  - Premium glass morphism (.premium-glass) with strong blur and saturate, dark mode support
+  - Premium card (.premium-card) with gradient top border on hover, elevated shadows, dark mode
+  - Premium button (.premium-btn) with gradient, outline variant (.premium-btn-outline), dark mode
+  - Premium section header (.premium-section-header) with orange accent line
+  - Premium badges (.premium-badge, .premium-badge-amber/rose/emerald) with gradient pill styling
+  - Premium divider (.premium-divider) with centered gradient
+  - Premium floating animation (.premium-float) with subtle vertical bounce
+  - Premium reveal animation (.premium-reveal) with fade-up on scroll visibility
+  - Premium icon container (.premium-icon-container) with gradient background
+  - Premium stat card (.premium-stat) with subtle gradient background
+  - Premium slide-in animation (.animate-premium-slide-in) and stagger delays (.stagger-1 through .stagger-6)
+  - Premium gradient text (.premium-gradient-text)
+  - Premium ring decoration (.premium-ring) for image borders
+  - Premium hover tooltip (.premium-hover-info) using data-tooltip attribute
+  - Premium scrollbar (.premium-scroll) for dark mode
+- Slowed down ticker scroll animation from 200s to 350s in both .ticker-content and .animate-ticker-scroll
+- Redesigned app-header.tsx with premium glassmorphism styling:
+  - Header: Changed from animated gradient bg to glassmorphism (bg-white/80 backdrop-blur-xl border-b)
+  - Dark header: bg-[#1a1208]/80 with border-orange-900/20
+  - Removed animate-gradient-shift and pattern-wave overlay from header
+  - Logo: Removed white pill container, added ring-2 ring-orange-200 to avatar
+  - Title: Changed to text-orange-600 dark:text-amber-200 for premium muted feel
+  - Subtitle: Changed to text-orange-400 dark:text-amber-400 text-[10px]
+  - Mobile logo: Changed from white text to text-orange-600 dark:text-amber-200
+  - Study mode indicator: Changed from white/blue glass to bg-orange-50 with text-orange-600
+  - Nav buttons: Changed from text-white/hover:bg-white/20 to text-foreground/80/hover:bg-orange-50/50/rounded-lg
+  - Active nav: Changed from bg-white/20 nav-active (white underline) to bg-orange-50 text-orange-600 with orange dot indicator
+  - Updated .nav-active CSS from white underline to orange dot (6px circle, bounce-in animation)
+  - Theme toggle: Changed to rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-500
+  - Mobile buttons: Changed from white/hover:bg-white/20 to text-foreground/80/hover:bg-orange-50/50/rounded-lg
+  - Breadcrumb: Changed from text-white/90 bg-white/15 to text-orange-500 bg-orange-50 text-orange-600
+  - Mobile drawer: Changed to bg-white/95 dark:bg-[#1a1208]/95 backdrop-blur-xl
+  - Drawer header: Changed from gradient bg to softer orange-50/amber-50 bg
+  - Drawer avatar: Added ring-2 ring-orange-200, removed bg-white shadow-md
+  - Drawer close button: Changed from white/20 to bg-orange-100/50 text-orange-600 rounded-lg
+  - Drawer footer: Changed to bg-white/90 dark:bg-[#1a1208]/90 backdrop-blur-xl with border-orange-100
+- All lint checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+- 350+ lines of premium CSS utility classes added (glass morphism, cards, buttons, badges, animations, dividers, etc.)
+- Ticker scroll speed slowed from 200s to 350s for better readability
+- Header completely redesigned with premium glassmorphism aesthetic
+- Nav system changed from bright gradient with white text to clean, refined glass with orange accent system
+- Dark mode properly supported across all premium components
+- Consistent orange-accented design language throughout header and navigation
+
+---
+Task ID: 3-c
+Agent: Premium Footer Developer
+Task: Premium footer redesign
+
+Work Log:
+- Removed entire pencil/ruler SVG border section (ruler marks, pencil silhouettes, book silhouettes)
+- Refined wave separator: changed from single gradient-filled path to dual-layer wave with subtle colors (orange-200/amber-200 light, orange-900/30/amber-900/30 dark)
+- Replaced heavy gradient footer background with clean premium design: from-orange-50 via-amber-50 to-yellow-50 with dark mode custom colors (#1a1208, #1f1610) and border-t
+- Updated all text colors from white to orange/amber premium palette:
+  - Primary text: text-orange-800 dark:text-amber-200
+  - Subtitle text: text-orange-600 dark:text-amber-300/70
+  - Links: text-orange-600 dark:text-orange-400 with hover variants
+  - Quote: text-orange-700 dark:text-amber-200/80
+- Updated branding column: logo container changed from bg-white shadow-md to bg-white dark:bg-card ring-2 ring-orange-200 dark:ring-orange-800 shadow-sm
+- Title: text-orange-800 dark:text-amber-200, subtitle: text-orange-500 dark:text-orange-400
+- Added premium-section-header class to "Liên kết nhanh" and "Liên hệ" headings
+- Quick links: added hover:bg-orange-100 dark:hover:bg-orange-900/20 rounded-lg px-2 py-1 -mx-2 transition-colors
+- Link icons: text-orange-400 dark:text-orange-500
+- Contact buttons: changed from bg-white/20 to bg-orange-100 dark:bg-orange-900/30 with border border-orange-200 dark:border-orange-800/30
+- Social proof counter: text-orange-600 dark:text-orange-400, bold number text-orange-700 dark:text-orange-300 font-bold
+- Motivational quote: changed from bg-white/10 to bg-orange-100/50 dark:bg-orange-900/20 with border border-orange-200/50
+- Bottom divider: border-orange-200 dark:border-orange-900/20 (was border-white/20)
+- Copyright: text-orange-500 dark:text-orange-400/70
+- Heart icon: text-red-400 dark:text-red-500
+- Back-to-top button: added ring-2 ring-orange-200 dark:ring-orange-800
+- All lint checks pass with no errors
+
+Stage Summary:
+- Footer completely redesigned from bright gradient to clean premium aesthetic
+- Removed decorative pencil/ruler SVG border for cleaner look
+- Dual-layer wave separator with subtle orange-200/amber-200 colors
+- Light background with warm orange/amber tones instead of heavy orange gradient
+- All text uses premium orange/amber color palette instead of white
+- Logo container refined with ring instead of shadow
+- Contact buttons use bordered pill style instead of translucent
+- Section headers use premium-section-header accent line
+- Dark mode fully supported with warm brown/amber tones
+- Consistent orange-accented design language throughout footer
+
+---
+Task ID: 3-b
+Agent: Premium Homepage Developer
+Task: Premium homepage redesign
+
+Work Log:
+- Updated announcement ticker: changed from rounded-2xl bg-gradient-to-r with shadow-md to rounded-xl with /90 opacity, backdrop-blur-sm, shadow-sm, and premium-glass class
+- Changed ticker text from font-semibold to font-medium with tracking-wide and text-white/95
+- Redesigned daily challenge card: replaced heavy gradient (from-orange-500 via-red-500 to-amber-500) with refined glass effect (from-orange-50 via-amber-50 to-yellow-50 dark variants with border-2 border-orange-200)
+- Added premium-card class to daily challenge card
+- Updated fire icon container: bg-white/20 → bg-orange-100 dark:bg-orange-900/40 text-orange-500 dark:text-orange-400
+- Changed daily challenge title: text-white → text-orange-700 dark:text-orange-200
+- Changed daily challenge subtitle: text-white/80 → text-orange-600 dark:text-orange-300/70
+- Updated countdown: bg-white/15 → bg-orange-100 dark:bg-orange-900/40 with font-mono text-sm font-bold and text-orange-600 dark:text-orange-300
+- Removed excessive decorative emojis from daily challenge (kept only 🔥)
+- Redesigned hero section: replaced heavy gradient with clean premium design (from-orange-50/80 via-white to-amber-50/80 with border border-orange-100/50)
+- Removed wave-separator class, decorative gradient border, wave SVG, school building SVG silhouette, slow-spinning decoration, and school emoji composition
+- Reduced floating decorations from 9 to 3 subtle ones
+- Changed glassmorphism text area: bg-white/30 → bg-white/50, backdrop-blur-sm → backdrop-blur-md, rounded-2xl → rounded-xl
+- Applied premium-gradient-text class to welcome/greeting text
+- Reduced sparkle emojis from 3 to 1
+- Changed sparkles row color: text-amber-500 → text-orange-400 dark:text-orange-500
+- Changed font-semibold to font-medium in sparkles row
+- Replaced all section dividers (h-px bg-gradient-to-r) with premium-divider class
+- Added premium-section-header class to all section headers (Popular Quizzes, Top Students, Grade Cards, Features)
+- Added premium-card class to popular quiz cards, top students container, grade cards, feature cards, teacher section, study banner
+- Changed "Làm bài" button from custom orange styling to premium-btn class
+- Changed grade badge from font-bold to font-medium
+- Applied premium-badge premium-badge-rose to Lớp 1 "Phổ biến" badge
+- Applied premium-badge-amber to top student rank medals
+- Changed font-semibold → font-medium for student names and counts
+- Updated stats banner: replaced heavy gradient with clean premium design, applied premium-stat and premium-icon-container classes
+- Removed animate-gradient-shift, glow-ring, animate-breathing, animate-sparkle, animate-float, animate-border-glow, card-glow, hover-lift, hover-scale, shimmer overlay effects from various elements for cleaner look
+- Changed main spacing from space-y-10 to space-y-12
+- Reduced teacher section: removed dashed border spin, reduced badge animations
+- Changed various font-bold → font-medium throughout
+- All lint checks pass, no runtime errors
+
+Stage Summary:
+- Homepage completely redesigned with premium, refined aesthetic
+- Removed excessive animations (sparkle, float, drift, breathing, spin-slow, shimmer, wiggle, glow) for cleaner look
+- Applied consistent premium CSS classes: premium-glass, premium-card, premium-btn, premium-section-header, premium-badge-amber, premium-badge-rose, premium-divider, premium-stat, premium-icon-container, premium-gradient-text
+- Daily challenge card: from heavy red/orange gradient to light glass card with orange accents
+- Hero section: from heavy orange/amber gradient to clean white/cream with subtle borders
+- Stats banner: from heavy orange gradient to clean white card with individual stat cards
+- All section dividers now use premium-divider for consistency
+- Font weights refined: font-bold → font-medium for most subtitle/label text
+- Spacing increased to space-y-12 for more breathing room
+- Dark mode fully supported with warm brown/amber tones throughout all changes
+
+---
+Task ID: 3-d
+Agent: Premium Views Developer
+Task: Premium subject & chapter views upgrade
+
+Work Log:
+- Upgraded subject-view.tsx with premium styling:
+  - Grade header: replaced heavy gradient border with subtle top accent line (h-0.5 gradient), refined padding and border (rounded-xl p-5 sm:p-6 border border-orange-100 bg-gradient-to-r from-orange-50/50 to-amber-50/50)
+  - Removed excessive floating emojis (reduced from 4 to 2)
+  - Title uses premium-gradient-text class for "Lớp X"
+  - Subject cards: applied premium-card class replacing card-glow, cleaner white background (bg-white dark:bg-card)
+  - Subject images: wrapped in premium-ring for elegant border effect
+  - "Bắt đầu" buttons: switched to premium-btn class
+  - Stats mini card: uses premium-stat class
+  - Reduced floating symbols from 10 to 5 per subject (math: +, ×, ÷, =, π; literature: A, B, â, ơ, đ)
+  - Star ratings: text-amber-400 with premium-badge classes (premium-badge-amber, premium-badge-emerald)
+  - Student info reminder: more subtle (bg-orange-50/50 dark:bg-orange-900/20 border border-orange-200/50 rounded-lg)
+- Upgraded chapter-view.tsx with premium styling:
+  - Chapter cards: applied premium-card class with border-l-4 accent (emerald for completed, orange for not)
+  - Difficulty badges: switched to premium-badge-amber, premium-badge-emerald, premium-badge-rose classes
+  - "Kiểm tra online" button: uses premium-btn class (with green gradient for completed state)
+  - Progress bar: thinner (h-2) with shadow-inner and shadow-sm on the fill, wrapped in premium-card
+  - Student form modal: glassmorphism overlay (bg-black/30 backdrop-blur-sm), modal card with bg-white/95 backdrop-blur-md border-white/20
+  - Input fields: softer borders (border-orange-200/60), semi-transparent backgrounds (bg-white/80 backdrop-blur-sm)
+  - Form buttons: premium-btn and premium-btn-outline classes replacing Button components
+  - Study tips section: premium-card on tips container, premium-icon-container for 📌 and 💡 icons, leading-relaxed typography
+  - Header: premium-gradient-text for subject name and grade, subtle top accent line, refined padding
+  - Student info: more subtle (bg-orange-50/50 dark:bg-orange-900/20)
+- All lint checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+- Subject view upgraded with premium-card, premium-btn, premium-ring, premium-stat, premium-gradient-text, premium-badge classes
+- Chapter view upgraded with premium-card, premium-btn, premium-btn-outline, premium-badge, premium-icon-container classes
+- Glassmorphism and refined styling applied to student form modal
+- Reduced visual clutter (fewer floating symbols, thinner progress bar, softer borders)
+- Both views maintain dark mode support with warm amber/brown tones
+- All premium CSS classes from globals.css properly utilized
+
+---
+Task ID: 3-e
+Agent: Premium Views Developer
+Task: Premium quiz/result/leaderboard/mobile nav upgrade
+
+Work Log:
+- Updated quiz-view.tsx with premium styling:
+  - Quiz header: Changed to `premium-glass` glassmorphism background
+  - Timer: Added `ring-2 ring-orange-200 dark:ring-orange-800` wrapper around circular timer
+  - Progress bar: Added subtle gradient shadow (`shadow-[0_2px_8px_rgba(249,115,22,0.15)]`)
+  - Question area: Applied `premium-card` class for refined card design
+  - Answer options: Updated selected state to `ring-2 ring-orange-400 bg-orange-50 dark:bg-orange-900/30`; hover state to `hover:border-orange-300 hover:shadow-sm`
+  - Question navigation: Current question `bg-orange-500 text-white shadow-md`; answered `bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300`; unanswered `bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400`
+  - Submit buttons: Changed to `premium-btn` class with larger padding
+  - Hint cards: Applied `premium-card` with amber accent left border (`border-l-4 border-l-amber-400`)
+- Updated result-view.tsx with premium styling:
+  - Score circle: Added `premium-ring` wrapper; `animate-celebration-pulse` only for scores >= 7
+  - Badge notification indicator: Changed to `premium-badge-amber` class
+  - Result actions: Primary buttons (AI review, retry) use `premium-btn`; secondary buttons (review, certificate, share, print, back, home) use `premium-btn-outline`
+  - Certificate button: Custom amber-tinted `premium-btn-outline` with amber border colors
+  - Answer review items: Applied `premium-card` with `border-l-4` accent (emerald for correct, rose for wrong)
+  - Certificate dialog: Changed background to `premium-glass` glassmorphism
+- Updated leaderboard-view.tsx with premium styling:
+  - Podium container: Applied `premium-card` with `shadow-amber-200/50 dark:shadow-amber-900/20` glow
+  - Podium bars: Added color-specific shadow glow (gold `shadow-amber-300/60`, silver `shadow-gray-300/50`, bronze `shadow-amber-400/40`)
+  - Ranking table: Applied `premium-card` to container
+  - Each ranking entry: Applied `premium-card` for consistent card styling
+  - User rank badge: Changed to `premium-badge-amber`
+  - Filter tabs: Active tab uses `premium-btn`; inactive uses `premium-btn-outline`
+  - Info/XP section: Applied `premium-stat` class
+- Updated mobile-bottom-nav.tsx with premium styling:
+  - Background: Glassmorphism with `bg-white/80 dark:bg-[#1a1208]/80 backdrop-blur-xl`
+  - Border: `border-orange-100/50 dark:border-orange-900/20`
+  - Active tab: Added `bg-orange-50 dark:bg-orange-900/20 rounded-lg` subtle background
+  - Labels: Changed from `text-[10px]` to `text-[9px]` for more refined appearance
+  - Active dot: Removed `layoutId` animation for simpler, subtler indicator
+- All lint checks pass with no errors
+- No runtime errors in dev.log
+
+Stage Summary:
+- Applied premium CSS classes (premium-glass, premium-card, premium-btn, premium-btn-outline, premium-ring, premium-badge-amber, premium-stat) across 4 view components
+- Quiz view: glassmorphism header, premium card question area, refined answer states, premium submit buttons
+- Result view: premium ring score circle, premium action buttons, premium card answer review with left-border accents, glassmorphism certificate
+- Leaderboard view: premium card podium with glow shadows, premium badges for user rank, premium button filter tabs, premium stat info section
+- Mobile bottom nav: glassmorphism background, subtle active tab background, refined label size
+
+---
+Task ID: 3-a through 3-e (Round 5 - Premium UI Overhaul)
+Agent: Main + 5 Sub-agents
+Task: Comprehensive Premium UI Upgrade across entire website
+
+Work Log:
+- Added 350+ lines of premium CSS utilities to globals.css (glassmorphism, premium cards, buttons, badges, dividers, animations, reveal effects, gradient text, ring decorations, tooltips, scrollbars)
+- Slowed down ticker scroll from 200s to 350s for better readability
+- Redesigned header: glassmorphism background (bg-white/80 backdrop-blur-xl), refined logo with ring border, cleaner nav buttons with orange accents, premium mobile drawer
+- Redesigned homepage: cleaner hero with subtle borders, refined daily challenge card (light bg instead of heavy gradient), premium-card for all quiz/grade cards, premium-divider for sections, premium-gradient-text for headings, reduced excessive decorative elements
+- Redesigned footer: removed ruler SVG, clean orange-50/amber-50 background instead of heavy gradient, premium contact buttons with borders, refined typography
+- Upgraded subject view: premium-card for subject cards, premium-ring on images, premium-btn for start buttons, premium-stat for stats, reduced floating symbols from 10 to 5 per subject
+- Upgraded chapter view: premium-card with left accent borders, premium-badge classes for difficulty, premium-btn for CTA buttons, glassmorphism student form modal
+- Upgraded quiz view: premium-glass header, premium-card question area, refined answer option states with ring effects, premium-btn submit button, premium-card hint cards
+- Upgraded result view: premium-ring on score circle, premium-btn/premium-btn-outline for actions, premium-card answer review with colored left borders, premium-glass certificate dialog
+- Upgraded leaderboard view: premium-card podium and entries, premium-badge for ranks, premium-btn/premium-btn-outline filter tabs, premium-stat info section
+- Upgraded mobile bottom nav: glassmorphism background, refined active indicator with subtle bg
+- QA tested with agent-browser: all views rendering correctly, no console errors, dark mode working
+
+Stage Summary:
+**Premium UI System:**
+1. 20+ premium CSS utility classes added (premium-glass, premium-card, premium-btn, premium-badge, premium-divider, premium-stat, premium-icon-container, premium-gradient-text, premium-ring, premium-reveal, premium-float, etc.)
+2. All with full dark mode support using warm brown/amber tones
+3. Ticker scroll slowed to 350s for readability
+
+**Components Upgraded (10 files):**
+1. app-header.tsx - Glassmorphism header, refined nav, premium mobile drawer
+2. home-view.tsx - Clean hero, premium cards, refined daily challenge, reduced clutter
+3. app-footer.tsx - Clean background, refined contact buttons, removed ruler SVG
+4. subject-view.tsx - Premium cards, reduced floating symbols, refined stats
+5. chapter-view.tsx - Premium cards with accent borders, glassmorphism form, premium badges
+6. quiz-view.tsx - Glass header, premium question area, refined answer states
+7. result-view.tsx - Premium score ring, premium action buttons, premium review cards
+8. leaderboard-view.tsx - Premium podium, premium entries, premium filters
+9. mobile-bottom-nav.tsx - Glassmorphism nav, refined active indicators
+10. globals.css - 350+ lines of premium CSS utilities
+
+**QA Results:**
+- All lint checks pass
+- No console errors
+- No runtime errors
+- Homepage, Subject, Chapter, Quiz, Result views all verified working
+- Dark mode verified working
+- Mobile layout verified working
+- Only 2 subjects (Toán & Ngữ văn) correctly displayed

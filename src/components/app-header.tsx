@@ -83,20 +83,18 @@ export function AppHeader() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-900 dark:via-orange-950 dark:to-amber-900 animate-gradient-shift transition-shadow duration-300 ${scrolled ? 'header-shadow' : 'shadow-lg'}`}
+        className={`sticky top-0 z-50 bg-white/80 dark:bg-[#1a1208]/80 backdrop-blur-xl border-b border-orange-100/50 dark:border-orange-900/20 transition-shadow duration-300 ${scrolled ? 'header-shadow shadow-sm' : 'shadow-sm'}`}
       >
-        {/* Subtle wave pattern overlay */}
-        <div className="absolute inset-0 pattern-wave opacity-30 pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-4 py-2 relative">
           <div className="flex items-center justify-between">
-            {/* Logo - prominent with white pill container */}
+            {/* Logo - clean refined design */}
             <button
               onClick={goHome}
               className="flex items-center gap-2.5 hover:opacity-90 transition-opacity"
             >
-              <div className="bg-white dark:bg-amber-950 rounded-full shadow-md px-2 py-1 flex items-center gap-2">
-                <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden">
+              <div className="flex items-center gap-2">
+                <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden ring-2 ring-orange-200 dark:ring-orange-800">
                   <Image
                     src="/images/mascot.png"
                     alt="Cô Giáo Hải Anh"
@@ -105,14 +103,14 @@ export function AppHeader() {
                     className="object-cover"
                   />
                 </div>
-                <div className="hidden sm:block pr-1">
-                  <h1 className="font-[family-name:var(--font-patrick-hand)] text-orange-700 dark:text-amber-200 text-lg sm:text-xl font-bold leading-tight">
+                <div className="hidden sm:block">
+                  <h1 className="font-[family-name:var(--font-patrick-hand)] text-orange-600 dark:text-amber-200 text-lg sm:text-xl font-bold leading-tight">
                     Cô Giáo Hải Anh
                   </h1>
-                  <p className="text-orange-500 dark:text-amber-300 text-[10px] leading-tight font-medium">Học Tập Vui Vẻ 🌟</p>
+                  <p className="text-orange-400 dark:text-amber-400 text-[10px] leading-tight font-medium">Học Tập Vui Vẻ 🌟</p>
                 </div>
               </div>
-              <span className="sm:hidden font-[family-name:var(--font-patrick-hand)] text-white dark:text-amber-100 text-lg font-bold drop-shadow-md">
+              <span className="sm:hidden font-[family-name:var(--font-patrick-hand)] text-orange-600 dark:text-amber-200 text-lg font-bold">
                 CGHA
               </span>
             </button>
@@ -126,11 +124,11 @@ export function AppHeader() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="hidden sm:flex items-center gap-1.5 bg-white/20 dark:bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 text-white dark:text-amber-100 text-xs font-semibold"
+                    className="hidden sm:flex items-center gap-1.5 bg-orange-50 dark:bg-orange-900/20 rounded-full px-3 py-1 text-orange-600 dark:text-orange-400 text-xs font-semibold"
                   >
                     <BookCheck className="w-3.5 h-3.5" />
                     <span>Đang làm bài</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse-soft" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse-soft" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -148,7 +146,7 @@ export function AppHeader() {
                       variant="ghost"
                       size="sm"
                       onClick={goBack}
-                      className="text-white dark:text-amber-100 hover:bg-white/20 dark:hover:bg-white/10 gap-1 text-sm sm:text-base h-9 sm:h-10"
+                      className="text-foreground/80 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 gap-1 text-sm sm:text-base h-9 sm:h-10 rounded-lg"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       <span className="hidden sm:inline">Quay lại</span>
@@ -166,7 +164,7 @@ export function AppHeader() {
                           variant="ghost"
                           size="sm"
                           onClick={goBack}
-                          className="text-white dark:text-amber-100 hover:bg-white/20 dark:hover:bg-white/10 gap-1 text-sm sm:text-base h-9 sm:h-10"
+                          className="text-foreground/80 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 gap-1 text-sm sm:text-base h-9 sm:h-10 rounded-lg"
                         >
                           <ArrowLeft className="w-4 h-4" />
                           <span className="hidden sm:inline">Quay lại</span>
@@ -182,7 +180,7 @@ export function AppHeader() {
                           variant="ghost"
                           size="sm"
                           onClick={navItem.action}
-                          className={`text-white hover:bg-white/20 gap-1 text-sm sm:text-base h-9 sm:h-10 ${isActive ? 'bg-white/20 nav-active' : ''}`}
+                          className={`text-foreground/80 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 gap-1 text-sm sm:text-base h-9 sm:h-10 rounded-lg ${isActive ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : ''}`}
                         >
                           <navItem.icon className="w-4 h-4" />
                           <span className="hidden sm:inline">{navItem.label}</span>
@@ -196,7 +194,7 @@ export function AppHeader() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={`text-white hover:bg-white/20 gap-1 text-sm sm:text-base h-9 sm:h-10 ${moreNavItems.some((item) => currentView === item.view) ? 'bg-white/20 nav-active' : ''}`}
+                          className={`text-foreground/80 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 gap-1 text-sm sm:text-base h-9 sm:h-10 rounded-lg ${moreNavItems.some((item) => currentView === item.view) ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : ''}`}
                         >
                           <span className="hidden sm:inline">Xem thêm</span>
                           <ChevronDown className="w-4 h-4" />
@@ -230,7 +228,7 @@ export function AppHeader() {
               {/* Theme toggle button */}
               <motion.button
                 onClick={handleToggleTheme}
-                className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-500 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-colors"
                 aria-label={theme === 'dark' ? 'Chuyển sáng' : 'Chuyển tối'}
                 title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
                 whileTap={{ scale: 0.9 }}
@@ -264,7 +262,7 @@ export function AppHeader() {
               {isStudying ? (
                 <button
                   onClick={goBack}
-                  className="sm:hidden flex items-center gap-1 text-white hover:bg-white/20 transition-colors px-2 py-1 rounded-xl text-sm font-medium"
+                  className="sm:hidden flex items-center gap-1 text-foreground/80 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 transition-colors px-2 py-1 rounded-lg text-sm font-medium"
                   aria-label="Quay lại"
                 >
                   <ArrowLeft className="w-5 h-5" />
@@ -273,7 +271,7 @@ export function AppHeader() {
               ) : (
                 <button
                   onClick={() => setDrawerOpen(true)}
-                  className="sm:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white hover:bg-white/20 transition-colors"
+                  className="sm:hidden flex items-center justify-center w-10 h-10 rounded-lg text-foreground/80 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 transition-colors"
                   aria-label="Mở menu"
                 >
                   <Menu className="w-6 h-6" />
@@ -287,32 +285,32 @@ export function AppHeader() {
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-1 text-white/90 text-xs sm:text-sm mt-1 pb-1"
+              className="flex items-center gap-1 text-orange-500 dark:text-orange-400 text-xs sm:text-sm mt-1 pb-1"
             >
               <BookOpen className="w-3 h-3" />
               <span>Trang chủ</span>
               {gradeLabel && (
                 <>
-                  <span className="text-white/40 mx-0.5">›</span>
-                  <span className="bg-white/15 px-1.5 py-0.5 rounded text-white">{gradeLabel}</span>
+                  <span className="text-orange-300 dark:text-orange-600 mx-0.5">›</span>
+                  <span className="bg-orange-50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded text-orange-600 dark:text-orange-400">{gradeLabel}</span>
                 </>
               )}
               {currentView === 'chapters' && useAppStore.getState().selectedSubject && (
                 <>
-                  <span className="text-white/40 mx-0.5">›</span>
-                  <span className="bg-white/15 px-1.5 py-0.5 rounded text-white">
+                  <span className="text-orange-300 dark:text-orange-600 mx-0.5">›</span>
+                  <span className="bg-orange-50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded text-orange-600 dark:text-orange-400">
                     {useAppStore.getState().selectedSubject === 'toan' ? 'Toán' : 'Ngữ văn'}
                   </span>
                 </>
               )}
               {(currentView === 'quiz' || currentView === 'result') && (
                 <>
-                  <span className="text-white/40 mx-0.5">›</span>
-                  <span className="bg-white/15 px-1.5 py-0.5 rounded text-white">
+                  <span className="text-orange-300 dark:text-orange-600 mx-0.5">›</span>
+                  <span className="bg-orange-50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded text-orange-600 dark:text-orange-400">
                     {useAppStore.getState().selectedSubject === 'toan' ? 'Toán' : 'Ngữ văn'}
                   </span>
-                  <span className="text-white/40 mx-0.5">›</span>
-                  <span className="bg-white/15 px-1.5 py-0.5 rounded text-white">
+                  <span className="text-orange-300 dark:text-orange-600 mx-0.5">›</span>
+                  <span className="bg-orange-50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded text-orange-600 dark:text-orange-400">
                     {currentView === 'quiz' ? 'Kiểm tra' : 'Kết quả'}
                   </span>
                 </>
@@ -343,7 +341,7 @@ export function AppHeader() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white dark:bg-[#1a1208] z-[70] shadow-2xl overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-[280px] max-w-[80vw] bg-white/95 dark:bg-[#1a1208]/95 backdrop-blur-xl z-[70] shadow-2xl overflow-y-auto"
               role="dialog"
               aria-modal="true"
               aria-label="Menu điều hướng"
@@ -352,10 +350,10 @@ export function AppHeader() {
               <div className="relative">
                 {/* Subtle gradient at top */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 via-pink-400 to-amber-400" />
-                <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 dark:from-amber-900 dark:via-orange-950 dark:to-amber-900 p-5">
+                <div className="bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 dark:from-orange-950/50 dark:via-amber-950/50 dark:to-orange-950/50 p-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white shadow-md">
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-orange-200 dark:ring-orange-800">
                         <Image
                           src="/images/mascot.png"
                           alt="Cô Giáo Hải Anh"
@@ -365,15 +363,15 @@ export function AppHeader() {
                         />
                       </div>
                       <div>
-                        <h2 className="font-[family-name:var(--font-patrick-hand)] text-orange-800 dark:text-amber-200 text-lg font-bold">
+                        <h2 className="font-[family-name:var(--font-patrick-hand)] text-orange-600 dark:text-amber-200 text-lg font-bold">
                           Cô Giáo Hải Anh
                         </h2>
-                        <p className="text-orange-600 dark:text-amber-300 text-xs">Học Tập Vui Vẻ 🌟</p>
+                        <p className="text-orange-400 dark:text-amber-400 text-xs">Học Tập Vui Vẻ 🌟</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setDrawerOpen(false)}
-                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/20 text-white hover:bg-white/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
+                      className="w-9 h-9 flex items-center justify-center rounded-lg bg-orange-100/50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
                       aria-label="Đóng menu"
                     >
                       <X className="w-5 h-5" />
@@ -409,7 +407,7 @@ export function AppHeader() {
               )}
 
               {/* Drawer nav items */}
-              <div className="p-4 space-y-1">
+              <div className="p-4 space-y-1.5">
                 {/* Back button if not home */}
                 {currentView !== 'home' && (
                   <button
@@ -450,7 +448,7 @@ export function AppHeader() {
               </div>
 
               {/* Drawer footer with branding */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 dark:border-orange-900/30">
+              <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white/90 dark:bg-[#1a1208]/90 backdrop-blur-xl border-orange-100 dark:border-orange-900/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
                     <GraduationCap className="w-5 h-5" />
