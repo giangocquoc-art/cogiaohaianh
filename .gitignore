@@ -1,6 +1,5 @@
 ﻿node_modules/
-dist/
-build/
+.next/
 .vercel/
 .env
 .env.local
