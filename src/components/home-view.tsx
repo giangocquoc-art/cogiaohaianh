@@ -338,11 +338,11 @@ export function HomeView() {
         </motion.div>
 
         <div className="relative flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-          {/* Teacher image */}
+          {/* Teacher image - synced with header logo */}
           <div className="relative w-32 h-32 sm:w-48 sm:h-48 shrink-0">
             <div className="absolute inset-0 bg-gradient-to-br from-orange-200 to-amber-100 dark:from-orange-800 dark:to-amber-800 rounded-2xl opacity-20 pointer-events-none" />
             <Image
-              src="/images/teacher-hero.png"
+              src="/images/mascot.png"
               alt="Cô Giáo Hải Anh"
               fill
               sizes="(max-width: 640px) 128px, 192px"

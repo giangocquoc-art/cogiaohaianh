@@ -3261,3 +3261,21 @@ Stage Summary:
 - Dark mode verified working
 - Mobile layout verified working
 - Only 2 subjects (Toán & Ngữ văn) correctly displayed
+
+---
+Task ID: 25
+Agent: Main
+Task: Sync logo image in hero welcome section with header logo
+
+Work Log:
+- Read worklog.md and project files to understand current state
+- Identified that header logo uses /images/mascot.png while hero welcome section used /images/teacher-hero.png
+- Updated home-view.tsx to change hero section image from /images/teacher-hero.png to /images/mascot.png
+- Now all 3 image locations on homepage use the same mascot.png: header logo, hero welcome, teacher intro
+- Verified with agent-browser that page renders correctly
+- Lint checks pass with no errors
+
+Stage Summary:
+- Hero welcome section image now synced with header logo (both use mascot.png)
+- Brand identity consistent across all sections
+- No more teacher-hero.png references in codebase
